@@ -22,6 +22,7 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
@@ -33,7 +34,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.umiperer"
+        applicationId "com.okays.umiperer"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
@@ -52,3 +53,11 @@ android {
 flutter {
     source '../..'
 }
+
+dependencies {
+
+    implementation platform('com.google.firebase:firebase-bom:26.2.0')
+
+    implementation 'com.google.firebase:firebase-analytics'
+}
+

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "612366601319",
+    "project_id": "umpireer",
+    "storage_bucket": "umpireer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:612366601319:android:8b6f22b43905f090a018c2",
+        "android_client_info": {
+          "package_name": "com.okays.umiperer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "612366601319-qt677j5f5fq252mrn5ao09roteedq4n6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9OApy2-N-8njUrG0IURUAneagEtjN5ho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "612366601319-qt677j5f5fq252mrn5ao09roteedq4n6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
