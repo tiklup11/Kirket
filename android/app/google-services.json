@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "612366601319-b71e6jo4lg6cb7fajolti95j9k2hfsna.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.okays.umiperer",
+            "certificate_hash": "d13a8e4dfe945318250ec92c82057aa1be97a257"
+          }
+        },
+        {
           "client_id": "612366601319-qt677j5f5fq252mrn5ao09roteedq4n6.apps.googleusercontent.com",
           "client_type": 3
         }

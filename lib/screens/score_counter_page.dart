@@ -8,6 +8,10 @@ class ScoreCounterPage extends StatefulWidget {
 class _ScoreCounterPageState extends State<ScoreCounterPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Counter"),
+      ),
+    );
   }
 }
