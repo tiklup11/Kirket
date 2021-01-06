@@ -61,7 +61,7 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   _uploadUserData(User user) {
-    // print('qwerty:: called');
+    print('qwerty:: called');
     final _firestore = FirebaseFirestore.instance;
     final userCollection = _firestore.collection('users');
     userCollection.doc(user.uid.toString()).set({
@@ -72,7 +72,10 @@ class _SignInPageState extends State<SignInPage> {
       'lastLogin': DateTime.now(),
     });
 
-    // print('qwerty:: ${user.email}');
+    if(user==null){
+      print("QWERT::::::: user is null");
+    }
+    print('qwerty:: ${user.email}');
   }
 
   @override
@@ -97,93 +100,23 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  Stack darkThemeLogin() {
-    return
-      Stack(children: [
-        Container(color: Color(0xFF00005A),),
-      Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              'assets/images/team1.png',
-            ),
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
-      Column(
-        children: [
-          SizedBox(
-            height: (83.33*SizeConfig.heightMultiplier).roundToDouble(),
-          ),
-          GestureDetector(
-            onTap: (){
-              _signInWithGoogle();
-              setState(() {
-                isLoading = true;
-              });
-            },
-            child: Container(
-                margin: EdgeInsets.symmetric(horizontal: (15.81*SizeConfig.widthMultiplier).roundToDouble()),
-                padding: EdgeInsets.symmetric(vertical: (0.61*SizeConfig.heightMultiplier).roundToDouble()),
-                decoration: BoxDecoration(
-                    color: Color(0xFF0000CC),
-                    borderRadius: BorderRadius.circular((0.8*SizeConfig.heightMultiplier).roundToDouble())),
-                child:
-                isLoading?
-                loadingScreen():
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image(
-                      image: AssetImage('assets/images/team1.png'),
-                      height: (3.67*SizeConfig.heightMultiplier).roundToDouble(),
-                      width: (7.65*SizeConfig.widthMultiplier).roundToDouble(),
-                    ),
-                    SizedBox(
-                      width: (2.55*SizeConfig.widthMultiplier).roundToDouble(),
-                    ),
-                    Text(
-                      'Continue with Google',
-                      style: TextStyle(color: Colors.white),
-                    )
-                  ],
-                ),),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: (6.63*SizeConfig.widthMultiplier).roundToDouble(),
-                vertical: (0.49*SizeConfig.heightMultiplier).roundToDouble()),
-            margin: EdgeInsets.only(
-                left: (5.1*SizeConfig.widthMultiplier).roundToDouble(),
-                right: (5.1*SizeConfig.widthMultiplier).roundToDouble(),
-                top: (4.9*SizeConfig.heightMultiplier).roundToDouble()),
-            child: Center(
-              child: Text(
-                "By continuing you agree Okays's Terms of services & Privacy Policy.",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white,
-                    fontSize: (1.47*SizeConfig.textMultiplier).roundToDouble()),
-              ),
-            ),
-          )
-        ],
-      ),
-    ],);
-  }
 
   Stack lightThemeLogin() {
     return
       Stack(children: [
         Container(color: Color(0xFF466EB6),),
-      Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              'assets/images/team1.png',
-            ),
-            fit: BoxFit.contain,
-          ),
+      Center(
+        child: Container(
+          child: Icon(Icons.sports_handball, size:300,),
+          //TODO: infuture add image releated to cricket
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage(
+          //       'assets/images/team1.png',
+          //     ),
+          //     fit: BoxFit.contain,
+          //   ),
+          // ),
         ),
       ),
       Column(
@@ -199,11 +132,12 @@ class _SignInPageState extends State<SignInPage> {
               });
             },
             child: Container(
+              height: 40,
                 margin: EdgeInsets.symmetric(horizontal:( 15.81*SizeConfig.widthMultiplier).roundToDouble()),
                 padding: EdgeInsets.symmetric(vertical: (0.61*SizeConfig.heightMultiplier).roundToDouble()),
                 decoration: BoxDecoration(
                   // color: CupertinoColors.systemBlue,
-                  color: Colors.blue,
+                  color: Colors.black54,
                   borderRadius: BorderRadius.circular((0.8*SizeConfig.heightMultiplier).roundToDouble()),
                 ),
                 child:
@@ -212,14 +146,14 @@ class _SignInPageState extends State<SignInPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image(
-                      image: AssetImage('assets/images/team1.png'),
-                      height: (3.67*SizeConfig.heightMultiplier).roundToDouble(),
-                      width: (7.65*SizeConfig.widthMultiplier).roundToDouble(),
-                    ),
-                    SizedBox(
-                      width: (2.55*SizeConfig.widthMultiplier).roundToDouble(),
-                    ),
+                    // Image(
+                    //   image: AssetImage('assets/images/team1.png'),
+                    //   height: (3.67*SizeConfig.heightMultiplier).roundToDouble(),
+                    //   width: (7.65*SizeConfig.widthMultiplier).roundToDouble(),
+                    // ),
+                    // SizedBox(
+                    //   width: (2.55*SizeConfig.widthMultiplier).roundToDouble(),
+                    // ),
                     Text(
                       'Continue with Google',
                       style: TextStyle(color: Colors.white),
@@ -246,5 +180,80 @@ class _SignInPageState extends State<SignInPage> {
         ],
       ),
     ]);
+  }
+
+  Stack darkThemeLogin() {
+    return
+      Stack(children: [
+        Container(color: Color(0xFF00005A),),
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                'assets/images/team1.png',
+              ),
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+        Column(
+          children: [
+            SizedBox(
+              height: (83.33*SizeConfig.heightMultiplier).roundToDouble(),
+            ),
+            GestureDetector(
+              onTap: (){
+                _signInWithGoogle();
+                setState(() {
+                  isLoading = true;
+                });
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: (15.81*SizeConfig.widthMultiplier).roundToDouble()),
+                padding: EdgeInsets.symmetric(vertical: (0.61*SizeConfig.heightMultiplier).roundToDouble()),
+                decoration: BoxDecoration(
+                    color: Color(0xFF0000CC),
+                    borderRadius: BorderRadius.circular((0.8*SizeConfig.heightMultiplier).roundToDouble())),
+                child:
+                isLoading?
+                loadingScreen():
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: AssetImage('assets/images/team1.png'),
+                      height: (3.67*SizeConfig.heightMultiplier).roundToDouble(),
+                      width: (7.65*SizeConfig.widthMultiplier).roundToDouble(),
+                    ),
+                    SizedBox(
+                      width: (2.55*SizeConfig.widthMultiplier).roundToDouble(),
+                    ),
+                    Text(
+                      'Continue with Google',
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
+                ),),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: (6.63*SizeConfig.widthMultiplier).roundToDouble(),
+                  vertical: (0.49*SizeConfig.heightMultiplier).roundToDouble()),
+              margin: EdgeInsets.only(
+                  left: (5.1*SizeConfig.widthMultiplier).roundToDouble(),
+                  right: (5.1*SizeConfig.widthMultiplier).roundToDouble(),
+                  top: (4.9*SizeConfig.heightMultiplier).roundToDouble()),
+              child: Center(
+                child: Text(
+                  "By continuing you agree Okays's Terms of services & Privacy Policy.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white,
+                      fontSize: (1.47*SizeConfig.textMultiplier).roundToDouble()),
+                ),
+              ),
+            )
+          ],
+        ),
+      ],);
   }
 }

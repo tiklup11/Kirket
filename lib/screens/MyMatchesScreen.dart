@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/screens/fill_new_match_details_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MyMatchesScreen extends StatelessWidget {
+  MyMatchesScreen({this.user});
+  final User user;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -39,7 +42,7 @@ class MyMatchesScreen extends StatelessWidget {
                         onPressed: (){
                         Navigator.pop(context);
                         Navigator.push(context, MaterialPageRoute(builder: (context){
-                          return FillNewMatchDetailsPage();
+                          return FillNewMatchDetailsPage(user: user);
                         }));
                       print("pressed");
                     }),

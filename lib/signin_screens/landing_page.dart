@@ -76,7 +76,7 @@ class _LandingPageBodyState extends State<LandingPageBody> {
                         } else{
                           // print('qwerty ::${user?.uid}');
                           return
-                            MatchHomeScreens();
+                            MatchHomeScreens(user: user,);
                         }
                       } else{
                         return Scaffold(

@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/LiveMatchesScreen.dart';
 import 'package:umiperer/screens/upcoming_matches_screens.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 
 // class MatchesHomeScreen extends StatelessWidget {
@@ -89,7 +89,8 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 /// This is the stateful widget that the main application instantiates.
 class MatchHomeScreens extends StatefulWidget {
-  MatchHomeScreens({Key key}) : super(key: key);
+  MatchHomeScreens({this.user});
+  final User user;
 
   @override
   _MatchHomeScreensState createState() => _MatchHomeScreensState();
@@ -100,12 +101,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-   static List<Widget> _widgetOptions = <Widget>[
-    LiveMatchesScreen(),
-     MyMatchesScreen(),
-     UpcomingMatchesScreen(),
-     // ProfileScreen(),
-  ];
+   static List<Widget> _widgetOptions;
 
   void _signOut() async{
     // print('signing out');
@@ -121,6 +117,18 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _widgetOptions = <Widget>[
+      LiveMatchesScreen(),
+      MyMatchesScreen(user: widget.user,),
+      UpcomingMatchesScreen(),
+      // ProfileScreen(),
+    ];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
@@ -131,14 +139,17 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              child: Text('Drawer Header'),
-              decoration: BoxDecoration(
-                color: Colors.blue,
+            UserAccountsDrawerHeader(
+              accountName: Text(widget.user.displayName),
+              accountEmail: Text(widget.user.email),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: NetworkImage(widget.user.photoURL),
+                // backgroundColor:Colors.white,
               ),
             ),
             ListTile(
               title: Text('Item 1'),
+              trailing: Icon(Icons.arrow_right),
               onTap: () {
                 // Update the state of the app.
                 // ...
@@ -146,7 +157,10 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
             ),
             ListTile(
               title: Text('Logout'),
-              onTap: _signOut
+              onTap: (){
+                showAlertDialog(context);
+              },
+              trailing: Icon(Icons.arrow_right),
             ),
           ],
         ),
@@ -185,6 +199,42 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
         selectedItemColor: Colors.blueAccent,
         onTap: _onItemTapped,
       ),
+    );
+  }
+
+
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Log0ut"),
+      onPressed:  (){
+        Navigator.pop(context);
+        _signOut();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Confirm"),
+      content: Text("Would you like to log out?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
