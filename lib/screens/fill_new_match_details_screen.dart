@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:umiperer/modals/Match.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:umiperer/screens/counter_page.dart';
+import 'package:umiperer/modals/constants.dart';
+import 'package:umiperer/screens/init_cricket_match_page.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -34,7 +35,7 @@ class MatchDetailsForm extends StatefulWidget {
 class MatchDetailsFormState extends State<MatchDetailsForm> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Match newMatch;
+  CricketMatch newMatch;
   var uuid = Uuid();
 
   void showInSnackBar(String value) {
@@ -55,17 +56,19 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         newMatch.getOverCount()!='' && newMatch.getPlayerCount()!='' &&
         newMatch.getTeam1Name()!='' && newMatch.getTeam2Name()!=''
     )
+
     {
       // print('QWWWWWWWWW:::   ${newMatch.getTeam1Name()}');
       generateIdForMatch();
       //TODO: 1.Upload Match Details on firebase
       uploadMatchDataToCloud();
       //2. Navigate to a screen and pass Match
-      Navigator.push(context, MaterialPageRoute(builder: (context){
-        return CounterPage();
-      },
-      ),
-      );
+      Navigator.pop(context);
+      // Navigator.push(context, MaterialPageRoute(builder: (context){
+      //   return CounterPage();
+      // },
+      // ),
+      // );
       //TODO: show toast msg instead
       // showInSnackBar("Match Created");
 
@@ -95,6 +98,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'team2name': newMatch.getTeam2Name(),
       'overCount': newMatch.getOverCount(),
       'playerCount': newMatch.getPlayerCount(),
+      'timeStamp': DateTime.now()
 
     });
   }
@@ -103,7 +107,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    newMatch = Match();
+    newMatch = CricketMatch(matchStatus: STATUS_MY_MATCH);
   }
 
   @override

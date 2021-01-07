@@ -1,8 +1,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
-import 'package:umiperer/main.dart';
-import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/MatchScreens.dart';
 import 'package:umiperer/signin_screens/sign_in_screen.dart';
 

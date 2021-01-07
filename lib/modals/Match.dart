@@ -1,14 +1,28 @@
-import 'package:umiperer/screens/profile_page.dart';
 
-class Match{
 
-  Match();
+import 'package:flutter/cupertino.dart';
+
+class CricketMatch{
+
+  CricketMatch({@required this.matchStatus});
 
   String _team1Name;
   String _team2Name;
   int _oversCount;
   int _playersCount;
   String _matchId;
+
+  //this will decide weather match is []
+  String matchStatus;
+
+
+  void setIsMatchLive(String value){
+    matchStatus = value;
+  }
+
+  String getIsMatchLive(){
+    return matchStatus;
+  }
 
   void setMatchId(String value){
     _matchId = value;

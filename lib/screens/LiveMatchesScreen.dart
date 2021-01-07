@@ -6,8 +6,8 @@ class LiveMatchesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        MatchCard(team1Name: 'Gulawad',team2Name: "Somakhedi",isThisLive: true,),
-        MatchCard(team1Name: 'Gulawad',team2Name: "Somakhedi",isThisLive: false,),
+        // MatchCard(team1Name: 'Gulawad',team2Name: "Somakhedi",isThisLive: true,),
+        // MatchCard(team1Name: 'Gulawad',team2Name: "Somakhedi",isThisLive: false,),
       ],
     );
   }
