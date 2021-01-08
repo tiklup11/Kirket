@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/screens/counter_page.dart';
+import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final usersRef = FirebaseFirestore.instance.collection('users');
 //where actual counting happens
 class InitCricketMatch extends StatefulWidget {
-  InitCricketMatch({this.match});
+
+  InitCricketMatch({this.match,this.user});
+
   final CricketMatch match;
+  final User user;
   @override
   _InitCricketMatchState createState() => _InitCricketMatchState();
 }
@@ -195,15 +203,34 @@ class _InitCricketMatchState extends State<InitCricketMatch> {
         highlightElevation: 0,
         color: Colors.black12,
         minWidth: double.infinity,
-        child: Text("Continue"),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Continue"),
+            Icon(Icons.arrow_forward)
+          ],
+        ),
         onPressed: (){
+          uploadTossDataToCloud();
+          Navigator.pop(context);
           //TODO: navigate to counterPage
           Navigator.push(context, MaterialPageRoute(builder: (context){
-            return MatchDetails();
+            return MatchDetails(match: widget.match,user: widget.user,);
           }));
         },
       ),
     );
+  }
+
+  uploadTossDataToCloud(){
+
+    widget.match.setBatOrBall(batOrBall);
+    widget.match.setTossWinner(tossWinner);
+
+    usersRef.doc(widget.user.uid).collection("createdMatches").doc(widget.match.getMatchId()).update({
+      "whatChoose": widget.match.getChoosedOption(),
+          "tossWinner": widget.match.getTossWinner(),
+    });
   }
 
 }

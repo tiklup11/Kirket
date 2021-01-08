@@ -49,15 +49,24 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
 
               final team1Name = matchData.data()['team1name'];
               final team2Name = matchData.data()['team2name'];
-              // final oversCount = matchData.data()['oversCount'];
+              final oversCount = matchData.data()['overCount'];
               final matchId = matchData.data()['matchId'];
+              final playerCount = matchData.data()['playerCount'];
+              final tossWinner = matchData.data()['tossWinner'];
+              final batOrBall = matchData.data()['whatChoose'];
+              final location = matchData.data()['matchLocation'];
 
               final CricketMatch match = CricketMatch(matchStatus: STATUS_MY_MATCH);
               match.setTeam1Name(team1Name);
               match.setTeam2Name(team2Name);
               match.setMatchId(matchId);
+              match.setPlayerCount(playerCount);
+              match.setLocation(location);
+              match.setTossWinner(tossWinner);
+              match.setBatOrBall(batOrBall);
+              match.setOverCount(oversCount);
 
-              matchCards.add(MatchCardForCounting(match: match));
+              matchCards.add(MatchCardForCounting(match: match,user: widget.user,));
             }
 
             return ListView.builder(
@@ -99,6 +108,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                       print("pressed");
                     }),
                     FlatButton(
+                        minWidth: double.infinity,
                         child: Text("Create Tournament"),
                         onPressed: (){
                           print("pressed");

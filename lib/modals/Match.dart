@@ -11,10 +11,37 @@ class CricketMatch{
   int _oversCount;
   int _playersCount;
   String _matchId;
+  String _location;
+
+  String _tossWinner;
+  String _chooseToBatOrBall;
 
   //this will decide weather match is []
   String matchStatus;
 
+  String getLocation(){
+    return _location;
+  }
+
+  void setLocation(String value){
+    _location=value;
+  }
+
+  String getTossWinner(){
+    return _tossWinner;
+  }
+
+  void setTossWinner(String value){
+    _tossWinner=value;
+  }
+
+  String getChoosedOption(){
+    return _chooseToBatOrBall;
+  }
+
+  void setBatOrBall(String value){
+    _chooseToBatOrBall=value;
+  }
 
   void setIsMatchLive(String value){
     matchStatus = value;

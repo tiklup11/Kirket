@@ -1,13 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:umiperer/modals/Match.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:umiperer/modals/constants.dart';
-import 'package:umiperer/screens/init_cricket_match_page.dart';
 import 'package:uuid/uuid.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -50,25 +48,21 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
   void _handleSubmitted() {
 
+    ///null checking and then generating MatchID, then uploading
+    ///data to cloud.
 
     if (newMatch.getOverCount()!=null && newMatch.getPlayerCount()!=null &&
-    newMatch.getTeam1Name()!=null && newMatch.getTeam2Name()!=null &&
+    newMatch.getTeam1Name()!=null && newMatch.getTeam2Name()!=null && newMatch.getLocation()!=null &&
         newMatch.getOverCount()!='' && newMatch.getPlayerCount()!='' &&
-        newMatch.getTeam1Name()!='' && newMatch.getTeam2Name()!=''
-    )
-
-    {
+        newMatch.getTeam1Name()!='' && newMatch.getTeam2Name()!='' && newMatch.getLocation()!=''
+    ) {
       // print('QWWWWWWWWW:::   ${newMatch.getTeam1Name()}');
       generateIdForMatch();
       //TODO: 1.Upload Match Details on firebase
       uploadMatchDataToCloud();
       //2. Navigate to a screen and pass Match
       Navigator.pop(context);
-      // Navigator.push(context, MaterialPageRoute(builder: (context){
-      //   return CounterPage();
-      // },
-      // ),
-      // );
+
       //TODO: show toast msg instead
       // showInSnackBar("Match Created");
 
@@ -83,7 +77,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
   generateIdForMatch(){
     final String matchId = uuid.v1();
     newMatch.setMatchId(matchId);
-
   }
 
   uploadMatchDataToCloud(){
@@ -98,7 +91,10 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'team2name': newMatch.getTeam2Name(),
       'overCount': newMatch.getOverCount(),
       'playerCount': newMatch.getPlayerCount(),
-      'timeStamp': DateTime.now()
+      'matchLocation': newMatch.getLocation(),
+      'timeStamp': DateTime.now(),
+      'tossWinner': null,
+      'whatChoose': null, //bat or ball
 
     });
   }
@@ -112,7 +108,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
   @override
   Widget build(BuildContext context) {
-    const sizedBoxSpace = SizedBox(height: 24);
+     final sizedBoxSpace = SizedBox(height: 24);
 
     return Scaffold(
 
@@ -198,13 +194,30 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                   },
                 ),
                 sizedBoxSpace,
+                TextFormField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    icon: Icon(Icons.location_on),
+                    hintText: "Enter Location",
+                    labelText:
+                    "Match Location",
+                  ),
+                  // onEditingComplete: ,
+                  onChanged: (value) {
+                    newMatch.setLocation(value);
+                    print("Location:: $value");
+                  },
+                ),
+                sizedBoxSpace,
                 Center(
-                  child: RaisedButton(
+                  child: MaterialButton(
+                    elevation: 0,
+                    highlightElevation: 0,
+                    color: Colors.black12,
                     child: Text(
                         "Create Match"),
                     onPressed: (){
                       _handleSubmitted();
-                      //TODO: take to SCORE_COUNTER_PAGE
                     },
                   ),
                 ),

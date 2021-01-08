@@ -1,14 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/modals/constants.dart';
-import 'package:umiperer/screens/live_score_page.dart';
 import 'package:umiperer/screens/init_cricket_match_page.dart';
-import 'package:umiperer/screens/upcoming_matches_screens.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
+
+final usersRef = FirebaseFirestore.instance.collection('users');
 
 class MatchCardForCounting extends StatefulWidget {
-  MatchCardForCounting({this.match});
+  MatchCardForCounting({this.match, this.user});
 
   final CricketMatch match;
+  final User user;
 
   @override
   _MatchCardForCountingState createState() => _MatchCardForCountingState();
@@ -18,7 +21,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 6,left: 10,right: 10),
+      margin: EdgeInsets.only(top: 6, left: 10, right: 10),
       height: 145,
       child: Card(
         child: Column(
@@ -67,10 +70,33 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                 color: Colors.black12,
                 minWidth: double.infinity,
                 child: Text("Start Match"),
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return InitCricketMatch(match: widget.match,);
-                  }));
+                onPressed: () {
+                  if (widget.match.getTossWinner() == null &&
+                      widget.match.getChoosedOption() == null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return InitCricketMatch(
+                            match: widget.match,
+                            user: widget.user,
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return MatchDetails(
+                            match: widget.match,
+                            user: widget.user,
+                          );
+                        },
+                      ),
+                    );
+                  }
                 },
               ),
             )
@@ -78,31 +104,5 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
         ),
       ),
     );
-  }
-
-  navigatorQuery(BuildContext context) {
-    switch (widget.match.matchStatus) {
-      case STATUS_MY_MATCH:
-        {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return InitCricketMatch(match: widget.match,);
-          }));
-        }
-        break;
-      case STATUS_LIVE:
-        {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return LiveScorePage();
-          }));
-        }
-        break;
-      case STATUS_UPCOMING:
-        {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return UpcomingMatchesScreen();
-          }));
-        }
-        break;
-    }
   }
 }
