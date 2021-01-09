@@ -87,6 +87,16 @@ class MatchDetails extends StatelessWidget {
   deleteTheMatchFromCloud(BuildContext context) async{
     print("deleting the docs");
 
+    final team1BatsmenRef = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection(match.getTeam1Name()).doc(match.getTeam1Name()).collection('batsmen').get();
+    for(var docs in team1BatsmenRef.docs){
+      await docs.reference.delete();
+    }
+
+    final team1BowlerRef = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection(match.getTeam1Name()).doc(match.getTeam1Name()).collection('bowlers').get();
+    for(var docs in team1BowlerRef.docs){
+      await docs.reference.delete();
+    }
+
     final team1Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection(match.getTeam1Name()).get();
     for(var docs in team1Ref.docs){
       await docs.reference.delete();

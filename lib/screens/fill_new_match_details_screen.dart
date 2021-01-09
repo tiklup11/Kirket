@@ -95,6 +95,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'timeStamp': DateTime.now(),
       'tossWinner': null,
       'whatChoose': null, //bat or ball
+      'isMatchStarted': false,
 
     });
   }

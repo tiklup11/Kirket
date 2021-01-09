@@ -69,7 +69,10 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                 highlightElevation: 0,
                 color: Colors.black12,
                 minWidth: double.infinity,
-                child: Text("Start Match"),
+                child:
+                widget.match.getIsMatchStarted()?
+                    Text("Continue.."):
+                Text("Start Match"),
                 onPressed: () {
                   if (widget.match.getTossWinner() == null &&
                       widget.match.getChoosedOption() == null) {

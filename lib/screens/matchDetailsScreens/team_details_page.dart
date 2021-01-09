@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
+
 
 //this tab is under MatchDetails
 class TeamDetails extends StatefulWidget {
@@ -15,80 +15,33 @@ class _TeamDetailsState extends State<TeamDetails> {
   bool isListACollapsed = true;
   bool isListBCollapsed = true;
 
-  List<Widget> teamAPlayers = [
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-  ];
+  List<Widget> teamAPlayers = [];
 
-  List<Widget> teamBPlayers = [
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-    Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: Text("Team_B Player 1")),
-  ];
+  List<Widget> teamBPlayers = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    buildPlayersName();
+  }
+
+  buildPlayersName(){
+    for(int i=0;i<widget.match.getPlayerCount();i++){
+
+      teamAPlayers.add(Container(
+          margin: EdgeInsets.symmetric(vertical: 4),
+          child: Text("${widget.match.getTeam1Name()} Player_${i+1}")),);
+
+      teamBPlayers.add(Container(
+          margin: EdgeInsets.symmetric(vertical: 4),
+          child: Text("${widget.match.getTeam2Name()} Player_${i+1}")),);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       color: Colors.black12,
       child: ListView(
@@ -112,7 +65,7 @@ class _TeamDetailsState extends State<TeamDetails> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Team A'),
+                Text('Team ${widget.match.getTeam1Name()}'),
                 isListACollapsed
                     ? Icon(Icons.keyboard_arrow_up_sharp)
                     : Icon(Icons.keyboard_arrow_down_sharp)
@@ -142,7 +95,7 @@ class _TeamDetailsState extends State<TeamDetails> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Team B'),
+                Text('Team ${widget.match.getTeam2Name()}'),
                 isListBCollapsed
                     ? Icon(Icons.keyboard_arrow_up_sharp)
                     : Icon(Icons.keyboard_arrow_down_sharp)

@@ -12,12 +12,19 @@ class CricketMatch{
   int _playersCount;
   String _matchId;
   String _location;
-
+  bool _isMatchStarted;
   String _tossWinner;
   String _chooseToBatOrBall;
-
   //this will decide weather match is []
   String matchStatus;
+
+  bool getIsMatchStarted(){
+    return _isMatchStarted;
+  }
+
+  void setIsMatchStarted(bool value){
+    _isMatchStarted=value;
+  }
 
   String getLocation(){
     return _location;

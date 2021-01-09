@@ -87,7 +87,7 @@ class _OverCardState extends State<OverCard> {
               dropdownValue = newValue;
             });
           },
-          items: <String>['0','1', '2', '3', '4']
+          items: <String>['0','1', '2', '3', '4','5','6','Wide','W']
               .map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,

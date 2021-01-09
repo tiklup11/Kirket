@@ -230,6 +230,7 @@ class _InitCricketMatchState extends State<InitCricketMatch> {
     usersRef.doc(widget.user.uid).collection("createdMatches").doc(widget.match.getMatchId()).update({
       "whatChoose": widget.match.getChoosedOption(),
           "tossWinner": widget.match.getTossWinner(),
+      "isMatchStarted": true,
     });
   }
 

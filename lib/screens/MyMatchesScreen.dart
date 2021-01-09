@@ -55,8 +55,10 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
               final tossWinner = matchData.data()['tossWinner'];
               final batOrBall = matchData.data()['whatChoose'];
               final location = matchData.data()['matchLocation'];
+              final isMatchStarted = matchData.data()['isMatchStarted'];
 
               final CricketMatch match = CricketMatch(matchStatus: STATUS_MY_MATCH);
+
               match.setTeam1Name(team1Name);
               match.setTeam2Name(team2Name);
               match.setMatchId(matchId);
@@ -65,6 +67,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
               match.setTossWinner(tossWinner);
               match.setBatOrBall(batOrBall);
               match.setOverCount(oversCount);
+              match.setIsMatchStarted(isMatchStarted);
 
               matchCards.add(MatchCardForCounting(match: match,user: widget.user,));
             }
