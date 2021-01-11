@@ -31,11 +31,11 @@ class _TeamDetailsState extends State<TeamDetails> {
 
       teamAPlayers.add(Container(
           margin: EdgeInsets.symmetric(vertical: 4),
-          child: Text("${widget.match.getTeam1Name()} Player_${i+1}")),);
+          child: Text(widget.match.team1List[i]),),);
 
       teamBPlayers.add(Container(
           margin: EdgeInsets.symmetric(vertical: 4),
-          child: Text("${widget.match.getTeam2Name()} Player_${i+1}")),);
+          child: Text(widget.match.team2List[i]),),);
     }
   }
 

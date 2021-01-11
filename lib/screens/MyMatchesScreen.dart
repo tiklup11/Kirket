@@ -5,7 +5,6 @@ import 'package:umiperer/screens/fill_new_match_details_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:umiperer/widgets/match_card_for_my_matches.dart';
-import 'package:umiperer/widgets/match_card_view.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -47,6 +46,8 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
             final matchesData = snapshot.data.docs;
             for(var matchData in matchesData){
 
+              final CricketMatch match = CricketMatch(matchStatus: STATUS_MY_MATCH);
+
               final team1Name = matchData.data()['team1name'];
               final team2Name = matchData.data()['team2name'];
               final oversCount = matchData.data()['overCount'];
@@ -56,9 +57,17 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
               final batOrBall = matchData.data()['whatChoose'];
               final location = matchData.data()['matchLocation'];
               final isMatchStarted = matchData.data()['isMatchStarted'];
+              final currentOverNumber = matchData.data()['currentOverNumber'];
 
-              final CricketMatch match = CricketMatch(matchStatus: STATUS_MY_MATCH);
+              if(matchData.data()['teamAPlayers'].cast<String>() != null){
+                final teamAPlayers = matchData.data()['teamAPlayers'].cast<String>();
+                final teamBPlayers = matchData.data()['teamBPlayers'].cast<String>();
 
+                match.team1List=teamAPlayers;
+                match.team2List=teamBPlayers;
+              }
+
+              match.currentOver.setCurrentOverNo(currentOverNumber);
               match.setTeam1Name(team1Name);
               match.setTeam2Name(team2Name);
               match.setMatchId(matchId);

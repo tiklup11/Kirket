@@ -7,17 +7,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 //where actual counting happens
-class InitCricketMatch extends StatefulWidget {
+class TossScreen extends StatefulWidget {
 
-  InitCricketMatch({this.match,this.user});
+  TossScreen({this.match,this.user});
 
   final CricketMatch match;
   final User user;
   @override
-  _InitCricketMatchState createState() => _InitCricketMatchState();
+  _TossScreenState createState() => _TossScreenState();
 }
 
-class _InitCricketMatchState extends State<InitCricketMatch> {
+class _TossScreenState extends State<TossScreen> {
 
   String tossWinner = "who";
   String batOrBall = "";
@@ -32,6 +32,7 @@ class _InitCricketMatchState extends State<InitCricketMatch> {
 
   bool isBattingSelected = false;
   bool isBowlingSelected = false;
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +52,9 @@ class _InitCricketMatchState extends State<InitCricketMatch> {
           ),
         ));
   }
+
+
+
 
   whoWonTossWidget(){
     return Container(
@@ -212,11 +216,6 @@ class _InitCricketMatchState extends State<InitCricketMatch> {
         ),
         onPressed: (){
           uploadTossDataToCloud();
-          Navigator.pop(context);
-          //TODO: navigate to counterPage
-          Navigator.push(context, MaterialPageRoute(builder: (context){
-            return MatchDetails(match: widget.match,user: widget.user,);
-          }));
         },
       ),
     );
@@ -224,14 +223,26 @@ class _InitCricketMatchState extends State<InitCricketMatch> {
 
   uploadTossDataToCloud(){
 
-    widget.match.setBatOrBall(batOrBall);
-    widget.match.setTossWinner(tossWinner);
+    if(tossWinner != "who" && batOrBall != "")
+    {
+      widget.match.setBatOrBall(batOrBall);
+      widget.match.setTossWinner(tossWinner);
 
-    usersRef.doc(widget.user.uid).collection("createdMatches").doc(widget.match.getMatchId()).update({
-      "whatChoose": widget.match.getChoosedOption(),
-          "tossWinner": widget.match.getTossWinner(),
-      "isMatchStarted": true,
-    });
+      usersRef.doc(widget.user.uid).collection("createdMatches").doc(widget.match.getMatchId()).update({
+        "whatChoose": widget.match.getChoosedOption(),
+        "tossWinner": widget.match.getTossWinner(),
+        "isMatchStarted": true,
+      });
+
+      // buildPlayersName();
+      Navigator.pop(context);
+      //TODO: navigate to counterPage
+      Navigator.push(context, MaterialPageRoute(builder: (context){
+        return MatchDetails(match: widget.match,user: widget.user,);
+      }));
+
+    }
+
   }
 
 }

@@ -85,6 +85,9 @@ class MatchDetails extends StatelessWidget {
 
 
   deleteTheMatchFromCloud(BuildContext context) async{
+    ///when we delete a collection,
+    ///inner collections are not deleted, so we have to delete inner collections also
+
     print("deleting the docs");
 
     final team1BatsmenRef = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection(match.getTeam1Name()).doc(match.getTeam1Name()).collection('batsmen').get();

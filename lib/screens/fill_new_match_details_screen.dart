@@ -67,6 +67,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       // showInSnackBar("Match Created");
 
       print('exiting handling sub');
+      buildPlayersName();
     } else {
       showInSnackBar(
         "Please fill all details",
@@ -77,6 +78,30 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
   generateIdForMatch(){
     final String matchId = uuid.v1();
     newMatch.setMatchId(matchId);
+  }
+
+  List<String> teamAPlayers = [];
+
+  List<String> teamBPlayers = [];
+
+  buildPlayersName(){
+
+    for(int i=0;i<newMatch.getPlayerCount();i++){
+
+      teamAPlayers.add("${newMatch.getTeam1Name()} Player_${i+1}");
+
+      teamBPlayers.add("${newMatch.getTeam2Name()} Player_${i+1}");
+    }
+
+    newMatch.team1List=teamAPlayers;
+    newMatch.team2List=teamBPlayers;
+
+    //uploadPlayersList
+    usersRef.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId()).update(
+        {
+          "teamAPlayers":teamAPlayers,
+          "teamBPlayers":teamBPlayers
+        });
   }
 
   uploadMatchDataToCloud(){
@@ -96,7 +121,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'tossWinner': null,
       'whatChoose': null, //bat or ball
       'isMatchStarted': false,
-
+      'currentOverNumber': 0,
     });
   }
 

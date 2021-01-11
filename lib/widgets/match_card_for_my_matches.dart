@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/screens/init_cricket_match_page.dart';
+import 'package:umiperer/screens/toss_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
 
@@ -80,7 +80,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                       context,
                       MaterialPageRoute(
                         builder: (context) {
-                          return InitCricketMatch(
+                          return TossScreen(
                             match: widget.match,
                             user: widget.user,
                           );

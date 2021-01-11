@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/cupertino.dart';
+import 'package:umiperer/modals/CricketOver.dart';
 
 class CricketMatch{
 
@@ -10,13 +11,27 @@ class CricketMatch{
   String _team2Name;
   int _oversCount;
   int _playersCount;
+
+  CricketOver currentOver = CricketOver();
   String _matchId;
   String _location;
   bool _isMatchStarted;
+  bool isFirstOverStarted;
   String _tossWinner;
   String _chooseToBatOrBall;
   //this will decide weather match is []
   String matchStatus;
+
+  List<String> team1List=[];
+  List<String> team2List=[];
+
+  List<String> getTeam1List(){
+    return team1List;
+  }
+
+  List<String> getTeam2List(){
+    return team2List;
+  }
 
   bool getIsMatchStarted(){
     return _isMatchStarted;

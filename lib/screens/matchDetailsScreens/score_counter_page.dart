@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/screens/matchDetailsScreens/custom_dialog.dart';
 import 'package:umiperer/widgets/over_card.dart';
 
 class CounterPage extends StatefulWidget {
@@ -15,11 +17,25 @@ class CounterPage extends StatefulWidget {
 
 class _CounterPageState extends State<CounterPage> {
 
+  final scoreSelectionAreaLength = 240;
   List<Container> balls;
   bool isFirstOverStarted = false;
+  String _chosenValue;
+
+  ScrollController _scrollController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _chosenValue=widget.match.team2List[0];
+    _scrollController = ScrollController(keepScrollOffset: true);
+  }
 
   @override
   Widget build(BuildContext context) {
+
+
     balls = [
       ballWidget(),
       ballWidget(),
@@ -46,6 +62,7 @@ class _CounterPageState extends State<CounterPage> {
           ),
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               // shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemCount: 10,
@@ -56,10 +73,68 @@ class _CounterPageState extends State<CounterPage> {
           Text(
             'OPTIONS FOR NEXT BALL',
           ),
-          isFirstOverStarted?
-          scoreSelectionWidget():
-              startFirstOverBtn(),
+          widget.match.currentOver.getCurrentOverNo()==0?
+          startFirstOverBtn():
+          scoreSelectionWidget()
         ],
+      ),
+    );
+  }
+
+
+  ///next over selection
+  // nextOverPlayerSelectionWidget(){
+  //
+  //   final space = SizedBox(width: 10,);
+  //
+  //   return Container(
+  //     padding: EdgeInsets.only(left: 80,top: 20,bottom: 20),
+  //     width: double.infinity,
+  //     height: scoreSelectionAreaLength.toDouble(),
+  //     color: Colors.white,
+  //     child: Center(
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         // crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: [
+  //           Row(
+  //             // mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               Text("Select Bowler:"),
+  //               space,
+  //               // dropDownWidget(itemList: widget.match.team2List),
+  //             ],
+  //           ),
+  //           // space,
+  //           Row(
+  //             // mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               Text("Select Batsmen1:"),
+  //               space,
+  //               // dropDownWidget(itemList: widget.match.team2List),
+  //             ],
+  //           ),
+  //           // space,
+  //           Row(
+  //             // mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               Text("Select Batsmen2:"),
+  //               space,
+  //               // dropDownWidget(itemList: widget.match.team2List),
+  //             ],
+  //           ),
+  //         ],
+  //   ),
+  //     )
+  //   );
+  // }
+
+  newOverSelectionDialog(){
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => CustomDialog(
+        match: widget.match,
+        user: widget.user,
       ),
     );
   }
@@ -67,14 +142,12 @@ class _CounterPageState extends State<CounterPage> {
   startFirstOverBtn(){
     return Container(
       width: double.infinity,
-      height: 200,
+      height: scoreSelectionAreaLength.toDouble(),
       color: Colors.white,
       child: Container(
         child: FlatButton(
           onPressed: (){
-            setState(() {
-              isFirstOverStarted=true;
-            });
+            newOverSelectionDialog();
           },
           child: Text("START FIRST OVER"),
         ),
@@ -82,19 +155,19 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 
+  updateRuns({String playerName, int runs}){
+
+    //update players runs in collection named after player inside TEAM>BATSMEN>PLAYERSNAME
+    //
+    print("Player $playerName scores $runs");
+
+  }
 
   scoreSelectionWidget({String playersName}){
 
     final double buttonWidth = 60;
     final btnColor = Colors.black12;
     final spaceBtwn = SizedBox(width: 4,);
-
-    updateRuns({String playerName, int runs}){
-
-      //update players runs in collection named after player inside TEAM>BATSMEN>PLAYERSNAME
-      //
-
-    }
 
     return Container(
       height: 200,
@@ -112,31 +185,31 @@ class _CounterPageState extends State<CounterPage> {
                 FlatButton(
                   color: btnColor,
                     minWidth: buttonWidth,
-                    onPressed: updateRuns(playerName: playersName,runs: 0),
+                    onPressed: (){updateRuns(playerName: "RAJU", runs: 0);},
                     child: Text("0")),
                 spaceBtwn,
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
-                    onPressed: updateRuns(playerName: playersName,runs: 1),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 1);},
                     child: Text("1")),
                 spaceBtwn,
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
-                    onPressed: updateRuns(playerName: playersName,runs: 2),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 2);},
                     child: Text("2")),
                 spaceBtwn,
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
-                    onPressed: updateRuns(playerName: playersName,runs: 3),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 3);},
                     child: Text("3")),
                 spaceBtwn,
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
-                    onPressed: updateRuns(playerName: playersName,runs: 4),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 4);},
                     child: Text("4")),
               ],
             ),
@@ -147,33 +220,35 @@ class _CounterPageState extends State<CounterPage> {
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
-                    onPressed: updateRuns(playerName: playersName,runs: 6),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 6);},
                     child: Text("6")),
                 spaceBtwn,
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
-                    onPressed: updateRuns(playerName: playersName,runs: 0),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 0);},
                     child: Text("Wide")),
                 spaceBtwn,
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
                     //TODO: legBye runs need to updated [open new run set]
-                    onPressed: updateRuns(playerName: playersName,runs: 0),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 0);},
                     child: Text("LB")),
                 spaceBtwn,
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
                     //TODO: no-ball -- open new no-ball set
-                    onPressed: updateRuns(playerName: playersName,runs: 1), child: Text("NB")),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 1);},
+                    child: Text("NB")),
                 spaceBtwn,
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
                     //TODO: out btn clicked
-                    onPressed: updateRuns(playerName: playersName,runs: 0), child: Text("Out")),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 0);},
+                    child: Text("Out")),
               ],
             ),
             ///row 3 [over throw, overEnd,]
@@ -184,13 +259,26 @@ class _CounterPageState extends State<CounterPage> {
                     color: btnColor,
                     minWidth: buttonWidth,
                     //TODO: over throw
-                    onPressed: updateRuns(playerName: playersName,runs: 0), child: Text("Over Throw")),
+                    onPressed: (){updateRuns(playerName: playersName, runs: 0);},
+                    child: Text("Over Throw")),
                 spaceBtwn,
                 FlatButton(
                     color: btnColor,
                     minWidth: buttonWidth,
                     //TODO: start new over
-                    onPressed: updateRuns(playerName: playersName,runs: 0), child: Text("Start new over")),
+                    onPressed: (){
+
+                      updateRuns(playerName: playersName, runs: 0);
+
+                      if (_scrollController.hasClients){
+
+                        double offset = _scrollController.offset + 300;
+                        _scrollController.animateTo(offset, duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+                        // _scrollController.jumpTo(300.0);
+
+                      }
+                      },
+                    child: Text("Start new over")),
 
               ],
             ),
@@ -224,18 +312,21 @@ class _CounterPageState extends State<CounterPage> {
             child: Text("OVER NO: $overNo"),
           ),
           //Bowler Name
-          bowlerWidget(),
+          // bowlerWidget(),
           //
-          Row(
-            // mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              batsmanWidget(batsmanName: "Pulkit",isOnStrike: false),
-              batsmanWidget(batsmanName: "Rohit Sharma",isOnStrike: true),
-            ],
-          ),
-          Row(
-            children: balls,
+          // Row(
+          //   // mainAxisSize: MainAxisSize.max,
+          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //   children: [
+          //     batsmanWidget(batsmanName: "Pulkit",isOnStrike: false),
+          //     batsmanWidget(batsmanName: "Rohit Sharma",isOnStrike: true),
+          //   ],
+          // ),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 4,horizontal: 4),
+            child: Row(
+              children: balls,
+            ),
           ),
         ],
       ),
@@ -271,7 +362,7 @@ class _CounterPageState extends State<CounterPage> {
         margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: CircleAvatar(
           radius: 20,
-          backgroundColor: Colors.blue.shade200,
+          backgroundColor: Colors.blue.shade100,
         ));
   }
 
@@ -596,4 +687,23 @@ class _CounterPageState extends State<CounterPage> {
       ),
     );
   }
+
+  List team1List = <String>['Google', 'Apple', 'Amazon', 'Tesla'];
+
+  // dropDownWidget({List<String> itemList}){
+  //   return DropdownButton<String>(
+  //     value: _chosenValue,
+  //     items: itemList.map<DropdownMenuItem<String>>((String value) {
+  //       return DropdownMenuItem<String>(
+  //         value: value,
+  //         child: Text(value),
+  //       );
+  //     }).toList(),
+  //     onChanged: (String value) {
+  //       setState(() {
+  //         _chosenValue = value;
+  //       });
+  //     },
+  //   );
+  // }
 }
