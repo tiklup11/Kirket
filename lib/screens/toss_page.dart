@@ -228,10 +228,16 @@ class _TossScreenState extends State<TossScreen> {
       widget.match.setBatOrBall(batOrBall);
       widget.match.setTossWinner(tossWinner);
 
+      widget.match.setFirstInnings();
+
       usersRef.doc(widget.user.uid).collection("createdMatches").doc(widget.match.getMatchId()).update({
         "whatChoose": widget.match.getChoosedOption(),
         "tossWinner": widget.match.getTossWinner(),
         "isMatchStarted": true,
+        "firstBattingTeam": widget.match.firstBattingTeam,
+        "firstBowlingTeam": widget.match.firstBowlingTeam,
+        "secondBattingTeam": widget.match.secondBattingTeam,
+        "secondBowlingTeam": widget.match.secondBowlingTeam,
       });
 
       // buildPlayersName();

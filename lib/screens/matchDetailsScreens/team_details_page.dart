@@ -48,6 +48,7 @@ class _TeamDetailsState extends State<TeamDetails> {
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            margin: EdgeInsets.only(top: 22,bottom: 2),
             padding: EdgeInsets.only(left: 16, top: 4),
             child: Text(
               "SQUADS",
@@ -115,6 +116,7 @@ class _TeamDetailsState extends State<TeamDetails> {
 
           //matchINFO
           Container(
+            margin: EdgeInsets.only(top: 22,bottom: 2),
             padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
             child: Text(
               "INFO",

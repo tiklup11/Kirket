@@ -17,7 +17,7 @@ class CounterPage extends StatefulWidget {
 
 class _CounterPageState extends State<CounterPage> {
 
-  final scoreSelectionAreaLength = 240;
+  final scoreSelectionAreaLength = 220;
   List<Container> balls;
   bool isFirstOverStarted = false;
   String _chosenValue;
@@ -129,12 +129,19 @@ class _CounterPageState extends State<CounterPage> {
   //   );
   // }
 
-  newOverSelectionDialog(){
+  newOverPlayersSelectionDialog(){
     return showDialog(
       context: context,
       builder: (BuildContext context) => CustomDialog(
         match: widget.match,
         user: widget.user,
+        scrollListAnimationFunction: (){
+          if (_scrollController.hasClients && widget.match.currentOver!=1){
+            double offset = _scrollController.offset + 300;
+            _scrollController.animateTo(offset, duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+            // _scrollController.jumpTo(300.0);
+          }
+        },
       ),
     );
   }
@@ -147,7 +154,7 @@ class _CounterPageState extends State<CounterPage> {
       child: Container(
         child: FlatButton(
           onPressed: (){
-            newOverSelectionDialog();
+            newOverPlayersSelectionDialog();
           },
           child: Text("START FIRST OVER"),
         ),
@@ -170,7 +177,7 @@ class _CounterPageState extends State<CounterPage> {
     final spaceBtwn = SizedBox(width: 4,);
 
     return Container(
-      height: 200,
+      height: scoreSelectionAreaLength.toDouble(),
       color: Colors.white,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10,vertical: 6),
@@ -268,15 +275,10 @@ class _CounterPageState extends State<CounterPage> {
                     //TODO: start new over
                     onPressed: (){
 
-                      updateRuns(playerName: playersName, runs: 0);
+                      newOverPlayersSelectionDialog();
 
-                      if (_scrollController.hasClients){
+                      // updateRuns(playerName: playersName, runs: 0);
 
-                        double offset = _scrollController.offset + 300;
-                        _scrollController.animateTo(offset, duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
-                        // _scrollController.jumpTo(300.0);
-
-                      }
                       },
                     child: Text("Start new over")),
 
@@ -427,7 +429,7 @@ class _CounterPageState extends State<CounterPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.match.getTossWinner(),
+                        widget.match.getTossWinner().toUpperCase(),
                         style: TextStyle(fontSize: 30),
                       ),
                       Text(
@@ -453,12 +455,6 @@ class _CounterPageState extends State<CounterPage> {
             ],
           ),
         ),
-        // Expanded(
-        //   child: Container(
-        //     child: Text("HELLO WORLD"),
-        //     alignment: FractionalOffset.bottomCenter,
-        //   ),
-        // )
       ],
     );
   }
@@ -511,6 +507,7 @@ class _CounterPageState extends State<CounterPage> {
                   )),
             ],
           ),
+          SizedBox(height: 4,),
 
           //Batsman's data
           batsmanScoreRow(
@@ -520,6 +517,7 @@ class _CounterPageState extends State<CounterPage> {
               noOf4s: "7",
               noOf6s: "11",
               SR: "290"),
+          SizedBox(height: 4,),
           batsmanScoreRow(
               playerName: "Rohit Sharma*",
               runs: "99",
@@ -534,7 +532,7 @@ class _CounterPageState extends State<CounterPage> {
             color: Colors.black12,
             height: 2,
           ),
-
+          SizedBox(height: 4,),
           //Bowler's Data
           bowlerStatsRow(
               runs: "R",
@@ -544,7 +542,7 @@ class _CounterPageState extends State<CounterPage> {
               overs: "O",
               wickets: "W",
               textStyle: textStyle),
-
+          SizedBox(height: 4,),
           bowlerStatsRow(
               runs: "34",
               playerName: "Malinga*",
@@ -688,22 +686,4 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 
-  List team1List = <String>['Google', 'Apple', 'Amazon', 'Tesla'];
-
-  // dropDownWidget({List<String> itemList}){
-  //   return DropdownButton<String>(
-  //     value: _chosenValue,
-  //     items: itemList.map<DropdownMenuItem<String>>((String value) {
-  //       return DropdownMenuItem<String>(
-  //         value: value,
-  //         child: Text(value),
-  //       );
-  //     }).toList(),
-  //     onChanged: (String value) {
-  //       setState(() {
-  //         _chosenValue = value;
-  //       });
-  //     },
-  //   );
-  // }
 }

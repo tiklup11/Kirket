@@ -44,8 +44,8 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
     // TODO: implement initState
     super.initState();
     _widgetOptions = <Widget>[
-      LiveMatchesScreen(),
       MyMatchesScreen(user: widget.user,),
+      LiveMatchesScreen(),
       UpcomingMatchesScreen(),
       // ProfileScreen(),
     ];
@@ -101,13 +101,13 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
         unselectedIconTheme: IconThemeData(color: Colors.black38),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
+            icon: Icon(Icons.sports_baseball),
+            label: 'My Matches',
+          ),
+          BottomNavigationBarItem(
             // backgroundColor: Colors.black,
             icon: Icon(Icons.home),
             label: 'Live Scores',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports_baseball),
-            label: 'My Matches',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.sports_handball),

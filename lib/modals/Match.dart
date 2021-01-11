@@ -5,7 +5,9 @@ import 'package:umiperer/modals/CricketOver.dart';
 
 class CricketMatch{
 
-  CricketMatch({@required this.matchStatus});
+  CricketMatch({@required this.matchStatus,
+
+  });
 
   String _team1Name;
   String _team2Name;
@@ -22,8 +24,52 @@ class CricketMatch{
   //this will decide weather match is []
   String matchStatus;
 
+  String firstBattingTeam;
+  String firstBowlingTeam;
+
+  String secondBattingTeam;
+  String secondBowlingTeam;
+
+  String currentBowler;
+  String currentBatsmen1;
+  String currentBatsmen2;
+
   List<String> team1List=[];
   List<String> team2List=[];
+
+  setFirstInnings() {
+    if ( ((getTossWinner() == getTeam1Name()) && (getChoosedOption() == "Bat")))
+    {
+      firstBattingTeam = getTeam1Name();
+      firstBowlingTeam = getTeam2Name();
+
+      secondBowlingTeam = getTeam1Name();
+      secondBattingTeam = getTeam2Name();
+
+    } else if(((getTossWinner() == getTeam2Name()) && (getChoosedOption() == "Bowl")))
+    {
+      firstBattingTeam = getTeam1Name();
+      firstBowlingTeam = getTeam2Name();
+
+      secondBowlingTeam = getTeam1Name();
+      secondBattingTeam = getTeam2Name();
+
+    } else if(((getTossWinner() == getTeam1Name()) && (getChoosedOption() == "Bowl"))){
+      firstBattingTeam = getTeam2Name();
+      firstBowlingTeam=getTeam1Name();
+
+      secondBowlingTeam = getTeam2Name();
+      secondBattingTeam = getTeam1Name();
+    }
+     else if(((getTossWinner() == getTeam2Name()) && (getChoosedOption() == "Bat"))){
+      firstBattingTeam = getTeam2Name();
+      firstBowlingTeam=getTeam1Name();
+
+      secondBowlingTeam = getTeam2Name();
+      secondBattingTeam = getTeam1Name();
+    }
+  }
+
 
   List<String> getTeam1List(){
     return team1List;

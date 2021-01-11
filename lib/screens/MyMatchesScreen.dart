@@ -40,7 +40,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
         builder: (context, snapshot){
 
           if(!snapshot.hasData){
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           } else{
             final List<MatchCardForCounting> matchCards = [];
             final matchesData = snapshot.data.docs;
