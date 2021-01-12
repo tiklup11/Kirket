@@ -122,7 +122,33 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'whatChoose': null, //bat or ball
       'isMatchStarted': false,
       'currentOverNumber': 0,
+      'inningNumber':1,
+      'currentBatsmen1': null,
+      'currentBatsmen2':null,
+      'currentBowler': null,
+      'totalRuns': 0,
+      'wicketsDownOfInning1':0,
+      'currentBallNo': 0,
+
     });
+
+    for(int i=0;i<newMatch.getOverCount();i++){
+      usersRef.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning1overs')
+          .doc("over${i+1}").set({
+
+        "overNo": i+1,
+        "currentBall": 0,
+
+      });
+
+      usersRef.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning2overs')
+          .doc("over${i+1}").set({
+
+        "overNo": i+1,
+        "currentBall": 0,
+
+      });
+    }
   }
 
   @override

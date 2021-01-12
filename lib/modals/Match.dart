@@ -13,6 +13,7 @@ class CricketMatch{
   String _team2Name;
   int _oversCount;
   int _playersCount;
+  int _inningNumber=1;
 
   CricketOver currentOver = CricketOver();
   String _matchId;
@@ -36,6 +37,14 @@ class CricketMatch{
 
   List<String> team1List=[];
   List<String> team2List=[];
+
+  String getCurrentBattingTeam(){
+    if(_inningNumber==1){
+      return firstBattingTeam;
+    } else{
+      return secondBattingTeam;
+    }
+  }
 
   setFirstInnings() {
     if ( ((getTossWinner() == getTeam1Name()) && (getChoosedOption() == "Bat")))
@@ -69,6 +78,20 @@ class CricketMatch{
       secondBattingTeam = getTeam1Name();
     }
   }
+
+  List<String> getTeamListByTeamName(String teamName){
+    if(teamName==getTeam1Name()){
+      return getTeam1List();
+    } else {
+      return getTeam2List();
+    }
+  }
+
+  void setInningNo(int value){
+    _inningNumber = value;
+  }
+
+  int getInningNo(){return _inningNumber;}
 
 
   List<String> getTeam1List(){

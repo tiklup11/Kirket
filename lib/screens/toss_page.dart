@@ -238,6 +238,7 @@ class _TossScreenState extends State<TossScreen> {
         "firstBowlingTeam": widget.match.firstBowlingTeam,
         "secondBattingTeam": widget.match.secondBattingTeam,
         "secondBowlingTeam": widget.match.secondBowlingTeam,
+        "currentBattingTeam": widget.match.getCurrentBattingTeam(),
       });
 
       // buildPlayersName();

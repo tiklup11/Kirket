@@ -8,11 +8,11 @@ final usersRef = FirebaseFirestore.instance.collection('users');
 
 class CustomDialog extends StatefulWidget {
 
-  CustomDialog({this.match,this.user,this.scrollListAnimationFunction});
+  CustomDialog({this.match,this.user});
 
   final User user;
   final CricketMatch match;
-  final Function scrollListAnimationFunction;
+  // final Function scrollListAnimationFunction;
   // final Function isFirstOverStarted;
 
   @override
@@ -30,16 +30,17 @@ class _CustomDialogState extends State<CustomDialog> {
 
   putPlayersInList() {
     for (int i = 0; i < widget.match.getPlayerCount(); i++) {
-      if ((widget.match.getTossWinner() == widget.match.getTeam1Name() &&
-          widget.match.getChoosedOption() == "Bat")
-          || (widget.match.getTossWinner() == widget.match.getTeam2Name() &&
-              widget.match.getChoosedOption() == "Bowl")
-      ) {
-        bowlingTeamPlayers.add(widget.match.getTeam1List()[i]);
-        battingTeamPlayers.add(widget.match.getTeam2List()[i]);
-      } else {
-        bowlingTeamPlayers.add(widget.match.getTeam2List()[i]);
-        battingTeamPlayers.add(widget.match.getTeam1List()[i]);
+
+      if(widget.match.getInningNo()==1){
+
+        print("WWWWWWWWWWWWWWW: ${widget.match.firstBattingTeam}");
+        //for first inning
+        battingTeamPlayers.add(widget.match.getTeamListByTeamName(widget.match.firstBattingTeam)[i]);
+        bowlingTeamPlayers.add(widget.match.getTeamListByTeamName(widget.match.firstBowlingTeam)[i]);
+      } else{
+        //this is for second inning
+        battingTeamPlayers.add(widget.match.getTeamListByTeamName(widget.match.secondBattingTeam)[i]);
+        bowlingTeamPlayers.add(widget.match.getTeamListByTeamName(widget.match.secondBowlingTeam)[i]);
       }
     }
   }
@@ -128,54 +129,48 @@ class _CustomDialogState extends State<CustomDialog> {
                         .doc(widget.match.getMatchId())
                         .update(
                         {
-                          "currentOverNumber": FieldValue.increment(1)
+                          "currentOverNumber": FieldValue.increment(1),
+                          "currentBatsmen1": selectedBatsmen1,
+                          "currentBatsmen2": selectedBatsmen2,
+                          "currentBowler": selectedBowler,
+                          "currentOver": widget.match.currentOver.getCurrentOverNo(),
                         });
 
                     //newCollection in the name of team of 1st Inning
                     usersRef.doc(widget.user.uid)
                         .collection("createdMatches")
                         .doc(widget.match.getMatchId())
-                        .collection('firstInning').doc(widget.match.firstBattingTeam).set({
-
-                      "currentBatsmen1": selectedBatsmen1,
-                      "currentBatsmen2": selectedBatsmen2,
-                      "currentBowler": selectedBowler,
-                      "currentOver": widget.match.currentOver.getCurrentOverNo(),
-
+                        .collection('firstInning').doc("BattingTeam").collection('Players').doc(selectedBatsmen1).set({
+                      "runs":0,
+                      "balls":0,
+                      "noOf4s":0,
+                      "noOf6s":0,
+                      "name":selectedBatsmen1,
+                      "isBatting": true,
+                      "isOnStrike": true,
                     });
 
                     //playerCollection
                     usersRef.doc(widget.user.uid)
                         .collection("createdMatches")
                         .doc(widget.match.getMatchId())
-                        .collection('firstInning').doc(widget.match.firstBattingTeam).collection("BattingTeam").doc(
-                      selectedBatsmen1
+                        .collection('firstInning').doc("BattingTeam").collection("Players").doc(
+                      selectedBatsmen2
                     ).set({
                       "runs":0,
                       "balls":0,
                       "noOf4s":0,
                       "noOf6s":0,
-                      "name":selectedBatsmen1
-                    });
-
-                    usersRef.doc(widget.user.uid)
-                        .collection("createdMatches")
-                        .doc(widget.match.getMatchId())
-                        .collection('firstInning').doc(widget.match.firstBattingTeam).collection("BattingTeam").doc(
-                        selectedBatsmen2
-                    ).set({
-                      "runs":0,
-                      "balls":0,
-                      "noOf4s":0,
-                      "noOf6s":0,
-                      "name":selectedBatsmen2
+                      "name":selectedBatsmen2,
+                      "isBatting": true,
+                      "isOnStrike": false,
                     });
 
                     //bowlersRef
                     usersRef.doc(widget.user.uid)
                         .collection("createdMatches")
                         .doc(widget.match.getMatchId())
-                        .collection('firstInning').doc(widget.match.firstBattingTeam).collection("BowlingTeam").doc(
+                        .collection('firstInning').doc("BowlingTeam").collection("Players").doc(
                         selectedBowler
                     ).set({
                       "overs":0,
@@ -183,12 +178,25 @@ class _CustomDialogState extends State<CustomDialog> {
                       "maidans":0,
                       "runs":0,
                       "wickets":0,
-                      "name":selectedBowler
+                      "name":selectedBowler,
+                      "isBowling": true,
                     });
 
                     Navigator.pop(context);
-                    widget.scrollListAnimationFunction();
-                  },
+
+
+                    print("WWWWWWWWWWW: OVER COUNT ${widget.match.currentOver.getCurrentOverNo()}");
+
+                    final currentOver = widget.match.currentOver.getCurrentOverNo();
+
+                    widget.match.currentOver.setCurrentOverNo(currentOver+1);
+
+                    print("WWWWWWWWWWW: OVER COUNT ${widget.match.currentOver.getCurrentOverNo()}");
+
+                    ///animation of horizontal list view
+                    // widget.scrollListAnimationFunction();
+
+                    },
                 ),
               ],
             )

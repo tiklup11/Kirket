@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ class CounterPage extends StatefulWidget {
 
 class _CounterPageState extends State<CounterPage> {
 
+  int currentOverNo=0;
+
   final scoreSelectionAreaLength = 220;
   List<Container> balls;
   bool isFirstOverStarted = false;
@@ -35,7 +38,6 @@ class _CounterPageState extends State<CounterPage> {
   @override
   Widget build(BuildContext context) {
 
-
     balls = [
       ballWidget(),
       ballWidget(),
@@ -51,101 +53,123 @@ class _CounterPageState extends State<CounterPage> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           miniScoreCard(),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                'OVERS',
-              ),
+          // Align(
+          //   alignment: Alignment.centerLeft,
+          //   child: Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 10),
+          //     child: Text(
+          //       'OVERS',
+          //     ),
+          //   ),
+          // ),
+          //////////////
+          buildOversList(),
+          Container(
+            margin: EdgeInsets.only(top: 3,bottom: 6),
+            child: Text(
+              'OPTIONS FOR NEXT BALL',
+              style: TextStyle(fontWeight: FontWeight.w400),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              // shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder: (BuildContext context, int index) =>
-                  overCard(overNo: (index + 1).toString()),
-            ),
-          ),
-          Text(
-            'OPTIONS FOR NEXT BALL',
-          ),
-          widget.match.currentOver.getCurrentOverNo()==0?
-          startFirstOverBtn():
-          scoreSelectionWidget()
+          StreamBuilder<DocumentSnapshot>(
+            stream: usersRef.doc(widget.user.uid).collection('createdMatches').doc(widget.match.getMatchId()).snapshots(),
+            builder: (context,snapshot){
+              if(!snapshot.hasData){
+                return loadingDataContainer();
+              } else{
+                final matchData = snapshot.data.data();
+                final currentOver = matchData['currentOverNumber'];
+
+                if(currentOver==0){
+                  return startFirstOverBtn();
+                } else{
+                  return scoreSelectionWidget(playersName: "Pulkit");
+                }
+              }
+            },
+          )
+          // widget.match.currentOver.getCurrentOverNo()==0?
+          // startFirstOverBtn():
+          // scoreSelectionWidget()
         ],
       ),
     );
   }
 
+  buildOversList(){
 
-  ///next over selection
-  // nextOverPlayerSelectionWidget(){
-  //
-  //   final space = SizedBox(width: 10,);
-  //
-  //   return Container(
-  //     padding: EdgeInsets.only(left: 80,top: 20,bottom: 20),
-  //     width: double.infinity,
-  //     height: scoreSelectionAreaLength.toDouble(),
-  //     color: Colors.white,
-  //     child: Center(
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         // crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: [
-  //           Row(
-  //             // mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               Text("Select Bowler:"),
-  //               space,
-  //               // dropDownWidget(itemList: widget.match.team2List),
-  //             ],
-  //           ),
-  //           // space,
-  //           Row(
-  //             // mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               Text("Select Batsmen1:"),
-  //               space,
-  //               // dropDownWidget(itemList: widget.match.team2List),
-  //             ],
-  //           ),
-  //           // space,
-  //           Row(
-  //             // mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               Text("Select Batsmen2:"),
-  //               space,
-  //               // dropDownWidget(itemList: widget.match.team2List),
-  //             ],
-  //           ),
-  //         ],
-  //   ),
-  //     )
-  //   );
-  // }
+    int inningNo = widget.match.getInningNo();
+    int currentBallOfThisOver=0;
+    int currentOver;
 
+    return StreamBuilder<QuerySnapshot>(
+      stream: usersRef.doc(widget.user.uid).collection('createdMatches').doc(widget.match.getMatchId())
+          .collection('inning${inningNo}over').snapshots(),
+
+      builder: (context,snapshot){
+        if(!snapshot.hasData){
+
+          return CircularProgressIndicator();
+        }
+        else{
+
+          final oversData = snapshot.data.docs;
+
+          oversData.forEach((over) {
+              if(over.data()['overNo']==currentOverNo){
+                currentBallOfThisOver = over.data()['currentBall'];
+                currentOver=over.data()['overNo'];
+              }
+          });
+          return Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.match.getOverCount(),
+              itemBuilder: (BuildContext context, int index) =>
+                  overCard(overNo: (index + 1),currentBallNo: currentBallOfThisOver,currentOver: currentOver),
+            ),
+          );
+        }
+      },
+
+    );
+  }
+
+  ///dialog to choose next over players
   newOverPlayersSelectionDialog(){
     return showDialog(
       context: context,
       builder: (BuildContext context) => CustomDialog(
         match: widget.match,
         user: widget.user,
-        scrollListAnimationFunction: (){
-          if (_scrollController.hasClients && widget.match.currentOver!=1){
-            double offset = _scrollController.offset + 300;
-            _scrollController.animateTo(offset, duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
-            // _scrollController.jumpTo(300.0);
-          }
-        },
+
+        //TODO: animation of horizontal list view
+        //PROBLEM: first over me bhi animate hori h
+        // scrollListAnimationFunction: (){
+        //   if (_scrollController.hasClients && widget.match.currentOver!=1){
+        //     double offset = _scrollController.offset + 300;
+        //     _scrollController.animateTo(offset, duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+        //     // _scrollController.jumpTo(300.0);
+        //   }
+        // },
       ),
     );
   }
 
+  ///custom Circular Progess Indicator
+  loadingDataContainer(){
+    return Container(
+      width: double.infinity,
+      height: scoreSelectionAreaLength.toDouble(),
+      color: Colors.white,
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  ///only visible when starting first over to make UI intiative
   startFirstOverBtn(){
     return Container(
       width: double.infinity,
@@ -162,6 +186,207 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 
+  ///stream-builder making batsmen score card
+  playersScore() {
+
+    String batsmen1name = "----------";
+    int batsmen1Run = 0;
+    int batsmen1Balls =0;
+    int batsmen1Fours = 0;
+    int batsmen1Sixes = 0;
+    int batsmen1SR = 0;
+    try{
+      batsmen1SR = (batsmen1Run/batsmen1Sixes).roundToDouble().toInt();
+    } catch(e){
+      batsmen1SR = 0;
+    }
+
+    String batsmen2name = "----------";
+    int batsmen2Run = 0;
+    int batsmen2Balls =0;
+    int batsmen2Fours = 0;
+    int batsmen2Sixes = 0;
+    int batsmen2SR = 0;
+
+    try{
+      batsmen2SR = (batsmen1Run/batsmen1Sixes).roundToDouble().toInt();
+    } catch(e){
+      batsmen2SR = 0;
+    }
+
+    final TextStyle textStyle = TextStyle(color: Colors.black54);
+    return StreamBuilder<QuerySnapshot>(
+
+      stream: usersRef.doc(widget.user.uid).collection('createdMatches').doc(widget.match.getMatchId()).
+              collection('firstInning').doc("BattingTeam").collection('Players').
+              where('isBatting',isEqualTo: true,).snapshots(),
+      builder: (context,snapshot){
+
+        if(!snapshot.hasData){
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else{
+          final playersData = snapshot.data.docs;
+
+          playersData.forEach((element) {
+
+            if(element.data()['isOnStrike']){
+              batsmen1name = element.data()['name'];
+              batsmen1Run = element.data()['runs'];
+              batsmen1Fours = element.data()['noOf4s'];
+              batsmen1Sixes = element.data()['noOf6s'];
+              batsmen1Balls = element.data()['balls'];
+            } else{
+              batsmen2name = element.data()['name'];
+              batsmen2Run = element.data()['runs'];
+              batsmen2Fours = element.data()['noOf4s'];
+              batsmen2Sixes = element.data()['noOf6s'];
+              batsmen2Balls = element.data()['balls'];
+            }
+          });
+
+          return Container(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                        width: 120,
+                        child: Text(
+                          "Batsman",
+                          style: textStyle,
+                        )),
+                    Container(
+                        width: 30,
+                        child: Text(
+                          "R",
+                          style: textStyle,
+                        )),
+                    Container(
+                        width: 30,
+                        child: Text(
+                          "B",
+                          style: textStyle,
+                        )),
+                    Container(
+                        width: 30,
+                        child: Text(
+                          "4s",
+                          style: textStyle,
+                        )),
+                    Container(
+                        width: 30,
+                        child: Text(
+                          "6s",
+                          style: textStyle,
+                        )),
+                    Container(
+                        width: 30,
+                        child: Text(
+                          "SR",
+                          style: textStyle,
+                        )),
+                  ],
+                ),
+                SizedBox(height: 4,),
+
+                //Batsman's data
+                batsmanScoreRow(
+                    playerName: batsmen1name,
+                    runs: batsmen1Run.toString(),
+                    balls: batsmen1Balls.toString(),
+                    noOf4s: batsmen1Fours.toString(),
+                    noOf6s: batsmen1Sixes.toString(),
+                    SR: batsmen1SR.toString(),
+                ),
+                SizedBox(height: 4,),
+                batsmanScoreRow(
+                  playerName: batsmen2name,
+                  runs: batsmen2Run.toString(),
+                  balls: batsmen2Balls.toString(),
+                  noOf4s: batsmen2Fours.toString(),
+                  noOf6s: batsmen2Sixes.toString(),
+                  SR: batsmen2SR.toString(),
+                ),
+
+                //Line
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 6),
+                  color: Colors.black12,
+                  height: 2,
+                ),
+                SizedBox(height: 4,),
+                //Bowler's Data
+                bowlerStatsRow(
+                    runs: "R",
+                    playerName: "Bowler",
+                    economy: "ER",
+                    median: "M",
+                    overs: "O",
+                    wickets: "W",
+                    textStyle: textStyle),
+                SizedBox(height: 4,),
+                StreamBuilder<QuerySnapshot>(
+                  stream: usersRef.doc(widget.user.uid).collection('createdMatches').doc(widget.match.getMatchId()).
+                  collection('firstInning').doc("BowlingTeam").collection('Players').
+                  where('isBowling',isEqualTo: true,).snapshots(),
+                  builder: (context,snapshot){
+
+                    if(!snapshot.hasData){
+                      return CircularProgressIndicator();
+                    } else{
+
+                      final bowlingTeam = snapshot.data.docs;
+
+                      String bowlersName = "----------";
+                      int oversBowled = 0;
+                      int maidainOvers = 0;
+                      int runsGiven =0;
+                      int wicketsTaken = 0;
+                      int ER = 0;
+
+                      try{
+                        ER = (runsGiven/oversBowled).roundToDouble().toInt();
+                      } catch(e){
+                        ER = 0;
+                      }
+
+                      bowlingTeam.forEach((playerDoc) {
+
+                        bowlersName = playerDoc.data()['name'];
+                        oversBowled = playerDoc.data()['overs'];
+                        runsGiven = playerDoc.data()['runs'];
+                        wicketsTaken = playerDoc.data()['wickets'];
+                        maidainOvers = playerDoc.data()['maidans'];
+
+                      });
+
+                      return bowlerStatsRow(
+                          runs: runsGiven.toString(),
+                          playerName: bowlersName,
+                          economy: ER.toString(),
+                          median: maidainOvers.toString(),
+                          overs: oversBowled.toString(),
+                          wickets: wicketsTaken.toString(),
+                          textStyle: textStyle.copyWith(color: Colors.black));
+                    }
+                  },
+                ),
+
+              ],
+            ),
+          );
+        }
+
+      },
+
+    );
+  }
+
+  ///the function associated with run buttons,
+  ///this will be called when normal runs are scores.
   updateRuns({String playerName, int runs}){
 
     //update players runs in collection named after player inside TEAM>BATSMEN>PLAYERSNAME
@@ -170,6 +395,7 @@ class _CounterPageState extends State<CounterPage> {
 
   }
 
+  ///this is placed at the bottom, contains many run buttons
   scoreSelectionWidget({String playersName}){
 
     final double buttonWidth = 60;
@@ -290,17 +516,21 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 
-  overCard({String overNo}) {
-    // String overNo;
-    String bowlerName;
-    String batsman1Name;
-    String batsman2Name;
-
+  ///over container with 6balls
+  ///we will increase no of balls in specific cases
+  ///TODO: increase no of balls...in the lower section
+  overCard({int overNo,int currentBallNo,int currentOver})
+  //String bowlerName,String batsman1Name,String batsman2Name
+  {
+    if(overNo==currentOver) {
+      balls[currentBallNo] =
+          ballWidget(isCurrentBall: true, isThisCurrentOver: true);
+    }
     return Container(
       // padding: EdgeInsets.symmetric(horizontal: 10),
       margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6), color: Colors.white),
+          borderRadius: BorderRadius.circular(5), color: Colors.white),
       height: 60,
       // color: Colors.black26,
       child: Column(
@@ -313,17 +543,6 @@ class _CounterPageState extends State<CounterPage> {
             ),
             child: Text("OVER NO: $overNo"),
           ),
-          //Bowler Name
-          // bowlerWidget(),
-          //
-          // Row(
-          //   // mainAxisSize: MainAxisSize.max,
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   children: [
-          //     batsmanWidget(batsmanName: "Pulkit",isOnStrike: false),
-          //     batsmanWidget(batsmanName: "Rohit Sharma",isOnStrike: true),
-          //   ],
-          // ),
           Container(
             margin: EdgeInsets.symmetric(vertical: 4,horizontal: 4),
             child: Row(
@@ -335,6 +554,7 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 
+  ///not in use currently
   bowlerWidget() {
     return Container(
         decoration: BoxDecoration(
@@ -345,6 +565,7 @@ class _CounterPageState extends State<CounterPage> {
         child: Text("Bowler: Bumrah 🏐"));
   }
 
+  ///not in use currently
   batsmanWidget({String batsmanName, bool isOnStrike}){
     return Container(
         decoration: BoxDecoration(
@@ -359,15 +580,18 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 
-  ballWidget() {
+  ///circleBall widget placed inside Over container
+  ballWidget({bool isCurrentBall=false, bool isThisCurrentOver=false}) {
     return Container(
         margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: CircleAvatar(
           radius: 20,
-          backgroundColor: Colors.blue.shade100,
+          backgroundColor: isCurrentBall? Colors.blue.shade600:Colors.blue.shade100,
         ));
   }
 
+  ///toss result line at the top
+  ///TODO: might change its position
   tossLineWidget() {
     return Container(
         padding: EdgeInsets.only(left: 12, top: 12),
@@ -375,6 +599,7 @@ class _CounterPageState extends State<CounterPage> {
             "${widget.match.getTossWinner()} won the toss and choose to ${widget.match.getChoosedOption()}"));
   }
 
+  ///not in use currently
   oversContainer() {
     return ListView(
       shrinkWrap: true,
@@ -409,6 +634,7 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 
+  ///upper scorecard
   miniScoreCard() {
     return Column(
       children: [
@@ -418,41 +644,69 @@ class _CounterPageState extends State<CounterPage> {
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
           ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.match.getTossWinner().toUpperCase(),
-                        style: TextStyle(fontSize: 30),
-                      ),
-                      Text(
-                        "92-2  (45)",
-                        style: TextStyle(fontSize: 16),
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Text("CRR"),
-                      Text("5.83"),
-                    ],
-                  ),
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 6),
-                color: Colors.black12,
-                height: 2,
-              ),
-              playersScore(),
-            ],
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: usersRef.doc(widget.user.uid).collection('createdMatches').doc(widget.match.getMatchId()).snapshots(),
+            builder: (context,snapshot){
+
+              if(!snapshot.hasData){
+                return CircularProgressIndicator();
+              }
+              else{
+
+                final inningData = snapshot.data.data();
+
+                final totalRuns = inningData['totalRuns'];
+                final currentOverNumber = inningData['currentOverNumber'];
+                currentOverNo = currentOverNumber;
+                final currentBattingTeam =inningData['currentBattingTeam'];
+                final wicketsDownOfInning1 = inningData['wicketsDownOfInning1'];
+
+                double CRR = 0;
+
+                if(currentOverNumber!=0){
+                  CRR=(totalRuns/currentOverNumber);
+                }
+
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              currentBattingTeam.toString().toUpperCase(),
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            Text(
+                              "$totalRuns-$wicketsDownOfInning1 ($currentOverNumber)",
+                              style: TextStyle(fontSize: 16),
+                            )
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text("CRR"),
+                            Text(CRR.toStringAsFixed(2)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 6),
+                      color: Colors.black12,
+                      height: 2,
+                    ),
+                    playersScore(),
+                  ],
+                );
+              }
+
+            },
+
           ),
         ),
       ],
@@ -460,101 +714,6 @@ class _CounterPageState extends State<CounterPage> {
   }
 
   final TextStyle textStyle = TextStyle(color: Colors.black);
-
-  playersScore() {
-    final TextStyle textStyle = TextStyle(color: Colors.black54);
-    return Container(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                  width: 120,
-                  child: Text(
-                    "Batsman",
-                    style: textStyle,
-                  )),
-              Container(
-                  width: 30,
-                  child: Text(
-                    "R",
-                    style: textStyle,
-                  )),
-              Container(
-                  width: 30,
-                  child: Text(
-                    "B",
-                    style: textStyle,
-                  )),
-              Container(
-                  width: 30,
-                  child: Text(
-                    "4s",
-                    style: textStyle,
-                  )),
-              Container(
-                  width: 30,
-                  child: Text(
-                    "6s",
-                    style: textStyle,
-                  )),
-              Container(
-                  width: 30,
-                  child: Text(
-                    "SR",
-                    style: textStyle,
-                  )),
-            ],
-          ),
-          SizedBox(height: 4,),
-
-          //Batsman's data
-          batsmanScoreRow(
-              playerName: "Pulkit",
-              runs: "100",
-              balls: "35",
-              noOf4s: "7",
-              noOf6s: "11",
-              SR: "290"),
-          SizedBox(height: 4,),
-          batsmanScoreRow(
-              playerName: "Rohit Sharma*",
-              runs: "99",
-              balls: "35",
-              noOf4s: "4",
-              noOf6s: "11",
-              SR: "220"),
-
-          //Line
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 6),
-            color: Colors.black12,
-            height: 2,
-          ),
-          SizedBox(height: 4,),
-          //Bowler's Data
-          bowlerStatsRow(
-              runs: "R",
-              playerName: "Bowler",
-              economy: "ER",
-              median: "M",
-              overs: "O",
-              wickets: "W",
-              textStyle: textStyle),
-          SizedBox(height: 4,),
-          bowlerStatsRow(
-              runs: "34",
-              playerName: "Malinga*",
-              economy: "7",
-              median: "0",
-              overs: "4",
-              wickets: "1",
-              textStyle: textStyle.copyWith(color: Colors.black))
-        ],
-      ),
-    );
-  }
 
   batsmanScoreRow(
       {String playerName,

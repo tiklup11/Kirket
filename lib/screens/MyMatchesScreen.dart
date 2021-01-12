@@ -59,6 +59,24 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
               final isMatchStarted = matchData.data()['isMatchStarted'];
               final currentOverNumber = matchData.data()['currentOverNumber'];
 
+              final firstBattingTeam = matchData.data()['firstBattingTeam'];
+              final firstBowlingTeam = matchData.data()['firstBowlingTeam'];
+              final secondBattingTeam = matchData.data()['secondBattingTeam'];
+              final secondBowlingTeam = matchData.data()['secondBowlingTeam'];
+
+              final currentBattingTeam = matchData.data()['currentBattingTeam'];
+
+              match.firstBattingTeam=firstBattingTeam;
+              match.firstBowlingTeam=firstBowlingTeam;
+              match.secondBattingTeam=secondBattingTeam;
+              match.secondBowlingTeam=secondBowlingTeam;
+
+              if(firstBattingTeam!=null && firstBowlingTeam!=null && secondBattingTeam!=null && secondBowlingTeam!=null)
+              {
+                match.setFirstInnings();
+              }
+
+
               if(matchData.data()['teamAPlayers'].cast<String>() != null){
                 final teamAPlayers = matchData.data()['teamAPlayers'].cast<String>();
                 final teamBPlayers = matchData.data()['teamBPlayers'].cast<String>();
