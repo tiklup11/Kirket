@@ -132,12 +132,17 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
     });
 
+    ///making everyOver doc inside Overs COllections inside first innings collections
     for(int i=0;i<newMatch.getOverCount();i++){
+
+      var completeOverData = {"1":null,"2":null,"3":null,"4":null,"5":null,"6":null};
+
       usersRef.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning1overs')
           .doc("over${i+1}").set({
 
         "overNo": i+1,
-        "currentBall": 0,
+        "currentBall": 1,
+        "fullOverData":completeOverData
 
       });
 
@@ -145,10 +150,30 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
           .doc("over${i+1}").set({
 
         "overNo": i+1,
-        "currentBall": 0,
+        "currentBall": 1,
+        "fullOverData":completeOverData
 
       });
     }
+
+    ///matchDoc > FirstInningCollection > scoreBoardDataDoc >
+    usersRef.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
+    .collection('FirstInning').doc('scoreBoardData').set({
+      "ballOfTheOver":0,
+      "currentOverNo":0,
+      "totalRuns":0,
+      "wicketsDown":0
+    });
+
+    usersRef.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
+        .collection('SecondInning').doc('scoreBoardData').set({
+      "ballOfTheOver":0,
+      "currentOverNo":0,
+      "totalRuns":0,
+      "wicketsDown":0,
+    });
+
+
   }
 
   @override

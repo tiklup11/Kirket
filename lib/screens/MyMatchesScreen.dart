@@ -77,7 +77,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
               }
 
 
-              if(matchData.data()['teamAPlayers'].cast<String>() != null){
+              if(matchData.data()['teamAPlayers'] != null){
                 final teamAPlayers = matchData.data()['teamAPlayers'].cast<String>();
                 final teamBPlayers = matchData.data()['teamBPlayers'].cast<String>();
 

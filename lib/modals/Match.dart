@@ -6,7 +6,6 @@ import 'package:umiperer/modals/CricketOver.dart';
 class CricketMatch{
 
   CricketMatch({@required this.matchStatus,
-
   });
 
   String _team1Name;
@@ -45,6 +44,7 @@ class CricketMatch{
       return secondBattingTeam;
     }
   }
+
 
   setFirstInnings() {
     if ( ((getTossWinner() == getTeam1Name()) && (getChoosedOption() == "Bat")))

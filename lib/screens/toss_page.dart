@@ -241,6 +241,18 @@ class _TossScreenState extends State<TossScreen> {
         "currentBattingTeam": widget.match.getCurrentBattingTeam(),
       });
 
+      ///matchDoc > FirstInningCollection > scoreBoardDataDoc >
+      usersRef.doc(widget.user.uid).collection('createdMatches').doc(widget.match.getMatchId())
+          .collection('FirstInning').doc('scoreBoardData').update({
+        "battingTeam": widget.match.firstBattingTeam
+      });
+      usersRef.doc(widget.user.uid).collection('createdMatches').doc(widget.match.getMatchId())
+          .collection('SecondInning').doc('scoreBoardData').update({
+        "battingTeam": widget.match.secondBattingTeam
+      });
+
+      uploadPlayersData();
+
       // buildPlayersName();
       Navigator.pop(context);
       //TODO: navigate to counterPage
@@ -250,6 +262,152 @@ class _TossScreenState extends State<TossScreen> {
 
     }
 
+  }
+
+  uploadPlayersData(){
+
+    for(int i=0;i<widget.match.getPlayerCount();i++){
+
+      if(widget.match.firstBattingTeam==widget.match.getTeam1Name()){
+
+        usersRef.doc(widget.user.uid)
+            .collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('FirstInning')
+            .doc("BattingTeam")
+            .collection('Players')
+            .doc(widget.match.team1List[i]).set({
+          "runs":0,
+          "balls":0,
+          "noOf4s":0,
+          "noOf6s":0,
+          "name":widget.match.team1List[i],
+          "isBatting": false,
+          "isOnStrike": false,
+        });
+
+        usersRef.doc(widget.user.uid)
+            .collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('FirstInning')
+            .doc("BowlingTeam")
+            .collection("Players").doc(
+            widget.match.team2List[i]
+        ).set({
+          "overs":0,
+          "ballOfTheOver":0,
+          "maidans":0,
+          "runs":0,
+          "wickets":0,
+          "name":widget.match.team2List[i],
+          "isBowling": true,
+        });
+
+        usersRef.doc(widget.user.uid)
+            .collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('SecondInning')
+            .doc("BattingTeam")
+            .collection('Players')
+            .doc(widget.match.team2List[i]).set({
+          "runs":0,
+          "balls":0,
+          "noOf4s":0,
+          "noOf6s":0,
+          "name":widget.match.team2List[i],
+          "isBatting": false,
+          "isOnStrike": false,
+        });
+
+        usersRef.doc(widget.user.uid)
+            .collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('SecondInning')
+            .doc("BowlingTeam")
+            .collection("Players").doc(
+            widget.match.team1List[i]
+        ).set({
+          "overs":0,
+          "ballOfTheOver":0,
+          "maidans":0,
+          "runs":0,
+          "wickets":0,
+          "name":widget.match.team1List[i],
+          "isBowling": true,
+        });
+
+      }
+      else{
+
+        usersRef.doc(widget.user.uid)
+            .collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('FirstInning')
+            .doc("BattingTeam")
+            .collection('Players')
+            .doc(widget.match.team2List[i]).set({
+          "runs":0,
+          "balls":0,
+          "noOf4s":0,
+          "noOf6s":0,
+          "name":widget.match.team2List[i],
+          "isBatting": false,
+          "isOnStrike": false,
+        });
+
+        usersRef.doc(widget.user.uid)
+            .collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('FirstInning')
+            .doc("BowlingTeam")
+            .collection("Players").doc(
+            widget.match.team1List[i]
+        ).set({
+          "overs":0,
+          "ballOfTheOver":0,
+          "maidans":0,
+          "runs":0,
+          "wickets":0,
+          "name":widget.match.team1List[i],
+          "isBowling": true,
+        });
+
+        usersRef.doc(widget.user.uid)
+            .collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('SecondInning')
+            .doc("BattingTeam")
+            .collection('Players')
+            .doc(widget.match.team1List[i]).set({
+          "runs":0,
+          "balls":0,
+          "noOf4s":0,
+          "noOf6s":0,
+          "name":widget.match.team1List[i],
+          "isBatting": false,
+          "isOnStrike": false,
+        });
+
+        usersRef.doc(widget.user.uid)
+            .collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('SecondInning')
+            .doc("BowlingTeam")
+            .collection("Players").doc(
+            widget.match.team2List[i]
+        ).set({
+          "overs":0,
+          "ballOfTheOver":0,
+          "maidans":0,
+          "runs":0,
+          "wickets":0,
+          "name":widget.match.team2List[i],
+          "isBowling": true,
+        });
+
+      }
+
+    }
   }
 
 }

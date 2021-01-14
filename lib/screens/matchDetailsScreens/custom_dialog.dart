@@ -21,6 +21,10 @@ class CustomDialog extends StatefulWidget {
 
 class _CustomDialogState extends State<CustomDialog> {
 
+  int currentOverNo;
+  int inningNumber;
+  bool isLoadingData = true;
+
   List<String> bowlingTeamPlayers = ["Select"];
   List<String> battingTeamPlayers = ["Select"];
 
@@ -45,10 +49,33 @@ class _CustomDialogState extends State<CustomDialog> {
     }
   }
 
+  getDataFromCloud() async{
+    final matchRef = await usersRef.doc(widget.user.uid)
+        .collection('createdMatches')
+        .doc(widget.match.getMatchId())
+        .collection('FirstInning')
+        .doc("scoreBoardData")
+        .get();
+    currentOverNo = matchRef.data()['currentOverNo'];
+    print("FFFFFFFFFFFFFFF: $currentOverNo");
+
+    final mRef = await usersRef.doc(widget.user.uid)
+        .collection('createdMatches')
+        .doc(widget.match.getMatchId()).get();
+
+    inningNumber = mRef.data()['inningNumber'];
+
+    setState(() {
+      isLoadingData=false;
+    });
+
+  }
+
     @override
     void initState() {
       // TODO: implement initState
       super.initState();
+      getDataFromCloud();
       putPlayersInList();
     }
 
@@ -60,7 +87,10 @@ class _CustomDialogState extends State<CustomDialog> {
         ),
         elevation: 0.0,
         backgroundColor: Colors.transparent,
-        child: dialogContent(context),
+        child:
+        isLoadingData?
+        CircularProgressIndicator():
+        dialogContent(context),
       );
     }
 
@@ -136,54 +166,148 @@ class _CustomDialogState extends State<CustomDialog> {
                           "currentOver": widget.match.currentOver.getCurrentOverNo(),
                         });
 
+                    ///increasing over no
+                    ///
+                    usersRef.doc(widget.user.uid)
+                        .collection("createdMatches")
+                        .doc(widget.match.getMatchId()).collection('FirstInning')
+                        .doc("scoreBoardData").update({
+
+                      "currentOverNo": FieldValue.increment(1)
+
+                    });
+
                     //newCollection in the name of team of 1st Inning
-                    usersRef.doc(widget.user.uid)
-                        .collection("createdMatches")
-                        .doc(widget.match.getMatchId())
-                        .collection('firstInning').doc("BattingTeam").collection('Players').doc(selectedBatsmen1).set({
-                      "runs":0,
-                      "balls":0,
-                      "noOf4s":0,
-                      "noOf6s":0,
-                      "name":selectedBatsmen1,
-                      "isBatting": true,
-                      "isOnStrike": true,
-                    });
+                    //TODO: set this data in some early place, and update() here
+                    if(widget.match.getInningNo()==1){
 
-                    //playerCollection
-                    usersRef.doc(widget.user.uid)
-                        .collection("createdMatches")
-                        .doc(widget.match.getMatchId())
-                        .collection('firstInning').doc("BattingTeam").collection("Players").doc(
-                      selectedBatsmen2
-                    ).set({
-                      "runs":0,
-                      "balls":0,
-                      "noOf4s":0,
-                      "noOf6s":0,
-                      "name":selectedBatsmen2,
-                      "isBatting": true,
-                      "isOnStrike": false,
-                    });
+                      usersRef.doc(widget.user.uid)
+                          .collection("createdMatches")
+                          .doc(widget.match.getMatchId())
+                          .collection('FirstInning')
+                          .doc("BattingTeam")
+                          .collection('Players')
+                          .doc(selectedBatsmen1).update({
+                        "runs":0,
+                        "balls":0,
+                        "noOf4s":0,
+                        "noOf6s":0,
+                        "name":selectedBatsmen1,
+                        "isBatting": true,
+                        "isOnStrike": true,
+                      });
 
-                    //bowlersRef
-                    usersRef.doc(widget.user.uid)
-                        .collection("createdMatches")
-                        .doc(widget.match.getMatchId())
-                        .collection('firstInning').doc("BowlingTeam").collection("Players").doc(
-                        selectedBowler
-                    ).set({
-                      "overs":0,
-                      "ballOfTheOver":0,
-                      "maidans":0,
-                      "runs":0,
-                      "wickets":0,
-                      "name":selectedBowler,
-                      "isBowling": true,
-                    });
+                      //playerCollection
+                      usersRef.doc(widget.user.uid)
+                          .collection("createdMatches")
+                          .doc(widget.match.getMatchId())
+                          .collection('FirstInning')
+                          .doc("BattingTeam")
+                          .collection("Players")
+                          .doc(
+                          selectedBatsmen2
+                      ).update({
+                        "runs":0,
+                        "balls":0,
+                        "noOf4s":0,
+                        "noOf6s":0,
+                        "name":selectedBatsmen2,
+                        "isBatting": true,
+                        "isOnStrike": false,
+                      });
+
+                      //bowlersRef
+                      usersRef.doc(widget.user.uid)
+                          .collection("createdMatches")
+                          .doc(widget.match.getMatchId())
+                          .collection('FirstInning')
+                          .doc("BowlingTeam")
+                          .collection("Players").doc(
+                          selectedBowler
+                      ).update({
+                        "overs":0,
+                        "ballOfTheOver":0,
+                        "maidans":0,
+                        "runs":0,
+                        "wickets":0,
+                        "name":selectedBowler,
+                        "isBowling": true,
+                      });
+                    } else{
+
+                      usersRef.doc(widget.user.uid)
+                          .collection("createdMatches")
+                          .doc(widget.match.getMatchId())
+                          .collection('SecondInning')
+                          .doc("BattingTeam")
+                          .collection('Players')
+                          .doc(selectedBatsmen1).update({
+                        "runs":0,
+                        "balls":0,
+                        "noOf4s":0,
+                        "noOf6s":0,
+                        "name":selectedBatsmen1,
+                        "isBatting": true,
+                        "isOnStrike": true,
+                      });
+
+                      //playerCollection
+                      usersRef.doc(widget.user.uid)
+                          .collection("createdMatches")
+                          .doc(widget.match.getMatchId())
+                          .collection('SecondInning')
+                          .doc("BattingTeam")
+                          .collection("Players")
+                          .doc(
+                          selectedBatsmen2
+                      ).update({
+                        "runs":0,
+                        "balls":0,
+                        "noOf4s":0,
+                        "noOf6s":0,
+                        "name":selectedBatsmen2,
+                        "isBatting": true,
+                        "isOnStrike": false,
+                      });
+
+                      //bowlersRef
+                      usersRef.doc(widget.user.uid)
+                          .collection("createdMatches")
+                          .doc(widget.match.getMatchId())
+                          .collection('SecondInning')
+                          .doc("BowlingTeam")
+                          .collection("Players").doc(
+                          selectedBowler
+                      ).update({
+                        "overs":0,
+                        "ballOfTheOver":0,
+                        "maidans":0,
+                        "runs":0,
+                        "wickets":0,
+                        "name":selectedBowler,
+                        "isBowling": true,
+                      });
+                    }
+
+                    ///updating over details in OVER collection
+                    if(widget.match.getInningNo()==1){
+
+                      // usersRef.doc(widget.user.uid)
+                      //     .collection("createdMatches")
+                      //     .doc(widget.match.getMatchId())
+                      //     .collection('inning1overs')
+                      // .doc("over${widget.match.currentOver.getCurrentOverNo()}")
+                      // .update({
+                      //
+                      // });
+
+                    }
+
+                    widget.match.currentBatsmen1=selectedBatsmen1;
+                    widget.match.currentBatsmen2=selectedBatsmen2;
+                    widget.match.currentBowler=selectedBowler;
 
                     Navigator.pop(context);
-
 
                     print("WWWWWWWWWWW: OVER COUNT ${widget.match.currentOver.getCurrentOverNo()}");
 
@@ -204,6 +328,7 @@ class _CustomDialogState extends State<CustomDialog> {
         ),
       );
     }
+
 
     dropDownWidgetForBowler({List<String> itemList}) {
       return DropdownButton<String>(
