@@ -300,7 +300,7 @@ class _TossScreenState extends State<TossScreen> {
           "runs":0,
           "wickets":0,
           "name":widget.match.team2List[i],
-          "isBowling": true,
+          "isBowling": false,
         });
 
         usersRef.doc(widget.user.uid)
@@ -333,7 +333,7 @@ class _TossScreenState extends State<TossScreen> {
           "runs":0,
           "wickets":0,
           "name":widget.match.team1List[i],
-          "isBowling": true,
+          "isBowling": false,
         });
 
       }
@@ -369,7 +369,7 @@ class _TossScreenState extends State<TossScreen> {
           "runs":0,
           "wickets":0,
           "name":widget.match.team1List[i],
-          "isBowling": true,
+          "isBowling": false,
         });
 
         usersRef.doc(widget.user.uid)
@@ -402,7 +402,7 @@ class _TossScreenState extends State<TossScreen> {
           "runs":0,
           "wickets":0,
           "name":widget.match.team2List[i],
-          "isBowling": true,
+          "isBowling": false,
         });
 
       }

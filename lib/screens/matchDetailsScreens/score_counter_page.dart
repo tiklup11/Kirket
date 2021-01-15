@@ -21,6 +21,8 @@ class _CounterPageState extends State<CounterPage> {
   DataStreams dataStreams;
   final scoreSelectionAreaLength = 220;
 
+  int inningNumber;
+
   bool isFirstOverStarted = false;
   String _chosenValue;
   int currentOverNo;
@@ -29,6 +31,13 @@ class _CounterPageState extends State<CounterPage> {
   ScrollController _scrollController;
 
   getDataFromCloud() async {
+
+    final mRef = await usersRef.doc(widget.user.uid)
+        .collection('createdMatches')
+        .doc(widget.match.getMatchId()).get();
+
+    inningNumber = mRef.data()['inningNumber'];
+
     final matchRef = await usersRef
         .doc(widget.user.uid)
         .collection('createdMatches')
@@ -36,6 +45,7 @@ class _CounterPageState extends State<CounterPage> {
         .collection('FirstInning')
         .doc("scoreBoardData")
         .get();
+
     currentOverNo = matchRef.data()['currentOverNo'];
     print("FFFFFFFFFFFFFFF: $currentOverNo");
 
@@ -572,7 +582,7 @@ class _CounterPageState extends State<CounterPage> {
   overCard({int overNo, int currentBallNo, int currentOver})
   //String bowlerName,String batsman1Name,String batsman2Name
   {
-    List<Widget> balls = [
+    List<Widget> zeroOverBalls = [
       ballWidget(),
       ballWidget(),
       ballWidget(),
@@ -581,10 +591,6 @@ class _CounterPageState extends State<CounterPage> {
       ballWidget(),
     ];
 
-    if (currentOver == overNo) {
-      balls[currentBallNo] =
-          ballWidget(isThisCurrentOver: true, isCurrentBall: true);
-    }
     return Container(
       // padding: EdgeInsets.symmetric(horizontal: 10),
       margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
@@ -605,8 +611,62 @@ class _CounterPageState extends State<CounterPage> {
           ),
           Container(
             margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-            child: Row(
-              children: balls,
+            child:
+            currentOverNo==0?
+              Row(
+              children: zeroOverBalls):
+            StreamBuilder<DocumentSnapshot>(
+              stream: dataStreams.getFullOverDataStream(inningNo: inningNumber,overNumber: overNo),
+              builder: (context,snapshot){
+                if(!snapshot.hasData){
+                  return CircularProgressIndicator();
+                } else {
+                  // List<Widget> balls;
+
+                  final overData = snapshot.data.data();
+
+                  List<Widget> balls = [
+                    ballWidget(),
+                    ballWidget(),
+                    ballWidget(),
+                    ballWidget(),
+                    ballWidget(),
+                    ballWidget(),
+                  ];
+
+                  Map<String,dynamic> fullOverData = overData['fullOverData'];
+                  print("MAPPPPPPPPPPPPPPPPP fullOverData: $fullOverData");
+                  final isThisCurrentOver = overData["isThisCurrentOver"];
+                  final currentBallNo=overData['currentBall'];
+
+                  fullOverData.forEach((key, value){
+
+                            // print("OOOOOOOOOOOOOOOOOOOOOO: KEY $key VALUE $value");
+
+                    if(key==currentBallNo){
+                      if(value!=null) {
+                        balls[int.parse(key)-1] = ballWidget(isCurrentBall: true,
+                            runScoredOnThisBall: value);
+                      } else{
+                        balls[int.parse(key)-1] = ballWidget(isCurrentBall: true,
+                            runScoredOnThisBall:null);
+                      }
+                    }
+                    if(value!=null) {
+                      balls[int.parse(key)-1] = ballWidget(runScoredOnThisBall: value);
+                    } else{
+                      balls[int.parse(key)-1] = ballWidget(
+                          runScoredOnThisBall: null);
+                    }
+
+                  });
+
+                  return Row(
+                      children: balls);
+                }
+
+              },
+
             ),
           ),
         ],
@@ -617,7 +677,8 @@ class _CounterPageState extends State<CounterPage> {
   ///circleBall widget placed inside Over container
   ballWidget(
       {bool isCurrentBall = false,
-      bool isThisCurrentOver = false,}) {
+        int runScoredOnThisBall
+      }) {
 
     if(currentOverNo==0){
       return Container(
@@ -629,44 +690,28 @@ class _CounterPageState extends State<CounterPage> {
               style: TextStyle(color: Colors.black),
             ),
             radius: 20,
-            backgroundColor: isCurrentBall && isThisCurrentOver
+            backgroundColor: isCurrentBall
                 ? Colors.blue.shade300
                 : Colors.blue.shade50,
           ));
     }
-    return StreamBuilder<DocumentSnapshot>(
-      stream: dataStreams.getFullOverDataStream(overNumber: currentOverNo),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return CircularProgressIndicator();
-        } else {
-
-          final overData = snapshot.data.data();
-          final currentBall = overData['currentBall'];
-          final thatBallData = overData["fullOverData"][currentBall];
-          print("XXXXXXXXXXXXXXXX: thatBallData: $thatBallData");
-
-
-          return Container(
-              margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-              child: CircleAvatar(
-                child: thatBallData == null
-                    ? Text(
-                        "",
-                        style: TextStyle(color: Colors.black),
-                      )
-                    : Text(
-                  thatBallData.toString(),
-                        style: TextStyle(color: Colors.black),
-                      ),
-                radius: 20,
-                backgroundColor: isCurrentBall && isThisCurrentOver
-                    ? Colors.blue.shade300
-                    : Colors.blue.shade50,
-              ));
-        }
-      },
-    );
+    return Container(
+        margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: CircleAvatar(
+          child: runScoredOnThisBall == null
+              ? Text(
+            "",
+            style: TextStyle(color: Colors.black),
+          )
+              : Text(
+            runScoredOnThisBall.toString(),
+            style: TextStyle(color: Colors.black),
+          ),
+          radius: 20,
+          backgroundColor: isCurrentBall
+              ? Colors.blue.shade300
+              : Colors.blue.shade50,
+        ));
   }
 
   ///toss result line at the top

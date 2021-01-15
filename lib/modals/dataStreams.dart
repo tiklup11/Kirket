@@ -65,25 +65,17 @@ class DataStreams{
   }
 
   ///getting particular over data
-  Stream<DocumentSnapshot> getFullOverDataStream({int overNumber}){
-    if(match.getInningNo()==1){
+  Stream<DocumentSnapshot> getFullOverDataStream({int inningNo,int overNumber}){
+
       Stream<DocumentSnapshot> getOversData1 = userRef.doc(user.uid)
           .collection('createdMatches')
           .doc(match.getMatchId())
-          .collection('inning1overs')
+          .collection('inning${inningNo}overs')
           .doc("over$overNumber")
           .snapshots();
       return getOversData1;
-    }
-    else{
-      Stream<DocumentSnapshot> getOversData2 = userRef.doc(user.uid).
-      collection('createdMatches')
-          .doc(match.getMatchId())
-          .collection('inning2overs')
-          .doc("over$overNumber")
-          .snapshots();
-      return getOversData2;
-    }
+
+
   }
 
   ///getting particularBatsmenData
@@ -141,20 +133,16 @@ class DataStreams{
     }
   }
 
+  //change to something else
+  Stream<DocumentSnapshot> thatOverDocsStream({int inningNumber, int overNumber}){
 
+      final allOversDocStream =  userRef.doc(user.uid)
+          .collection('createdMatches')
+          .doc(match.getMatchId())
+          .collection('inning{$inningNumber}overs')
+          .doc("over${overNumber}")
+          .snapshots();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      return allOversDocStream;
+  }
 }
