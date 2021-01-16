@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/dataStreams.dart';
+import 'package:umiperer/modals/runUpdater.dart';
 import 'package:umiperer/screens/matchDetailsScreens/custom_dialog.dart';
 import 'package:umiperer/widgets/over_card.dart';
 
@@ -19,14 +20,18 @@ class CounterPage extends StatefulWidget {
 
 class _CounterPageState extends State<CounterPage> {
   DataStreams dataStreams;
+  RunUpdater runUpdater;
   final scoreSelectionAreaLength = 220;
 
   int inningNumber;
-
+  int currentBallNo;
   bool isFirstOverStarted = false;
   String _chosenValue;
-  int currentOverNo;
+  int globalCurrentOverNo;
   bool isLoadingData = true;
+  String currentBatsmen1;
+  String currentBatsmen2;
+  String currentBowler;
 
   ScrollController _scrollController;
 
@@ -46,8 +51,10 @@ class _CounterPageState extends State<CounterPage> {
         .doc("scoreBoardData")
         .get();
 
-    currentOverNo = matchRef.data()['currentOverNo'];
-    print("FFFFFFFFFFFFFFF: $currentOverNo");
+    globalCurrentOverNo = matchRef.data()['currentOverNo'];
+    currentBallNo= matchRef.data()['ballOfTheOver'];
+    print("FFFFFFFFFFFFFFF  CURRENT-OVER-NO: $globalCurrentOverNo");
+    print("FFFFFFFFFFFFFFF  CURRENT-BALL-NO: $currentBallNo");
 
     setState(() {
       isLoadingData = false;
@@ -61,7 +68,10 @@ class _CounterPageState extends State<CounterPage> {
     getDataFromCloud();
     _chosenValue = widget.match.team2List[0];
     _scrollController = ScrollController(keepScrollOffset: true);
-    dataStreams = DataStreams(user: widget.user, match: widget.match);
+    dataStreams = DataStreams(userUID: widget.user.uid, matchId: widget.match.getMatchId());
+    runUpdater =RunUpdater(userUID: widget.user.uid,matchId: widget.match.getMatchId());
+
+    print("YEEEEESSS, INIT METHOD CALLED _____________________________________");
   }
 
   @override
@@ -110,7 +120,12 @@ class _CounterPageState extends State<CounterPage> {
                       if (currentOver == 0) {
                         return startFirstOverBtn();
                       } else {
-                        return scoreSelectionWidget(playersName: "Pulkit");
+                        return scoreSelectionWidget(
+                          playersName: "Pulkit",
+                          inningNo: inningNumber,
+                          ballNo: currentBallNo,
+                          overNumber: globalCurrentOverNo
+                        );
                       }
                     }
                   },
@@ -130,17 +145,16 @@ class _CounterPageState extends State<CounterPage> {
     print('WWWWWWWWWWWWWWWWWW::: inning${inningNo}over');
 
     return StreamBuilder<DocumentSnapshot>(
-      stream: dataStreams.getCurrentInningScoreBoardDataStream(),
+      stream: dataStreams.getCurrentInningScoreBoardDataStream(inningNo: inningNumber),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
         } else {
           final overData = snapshot.data;
-          currentBallOfThisOver = overData.data()['ballOfTheOver'];
-          print(
-              "PPPPPPPPPPPPPPPPPPPPPPPP_BALL-OF-THIS-OVER: $currentBallOfThisOver");
-          currentOverNo = overData.data()['currentOverNo'];
-          print("PPPPPPPPPPPPPPPPPPPPPPPP_CURRENT-OVER-NO: $currentOverNo");
+          // currentBallOfThisOver = overData.data()['ballOfTheOver'];
+
+          globalCurrentOverNo = overData.data()['currentOverNo'];
+          print("PPPPPPPPPPPPPPPPPPPPPPPP_CURRENT-OVER-NO: $globalCurrentOverNo");
 
           return Expanded(
             child: ListView.builder(
@@ -149,8 +163,7 @@ class _CounterPageState extends State<CounterPage> {
               itemCount: widget.match.getOverCount(),
               itemBuilder: (BuildContext context, int index) => overCard(
                   overNo: (index + 1),
-                  currentBallNo: currentBallOfThisOver,
-                  currentOver: currentOverNo),
+                  currentOver: globalCurrentOverNo),
             ),
           );
         }
@@ -434,7 +447,7 @@ class _CounterPageState extends State<CounterPage> {
   }
 
   ///this is placed at the bottom, contains many run buttons
-  scoreSelectionWidget({String playersName}) {
+  scoreSelectionWidget({String playersName,int overNumber,int ballNo,int inningNo}) {
     final double buttonWidth = 60;
     final btnColor = Colors.black12;
     final spaceBtwn = SizedBox(
@@ -444,134 +457,172 @@ class _CounterPageState extends State<CounterPage> {
     return Container(
       height: scoreSelectionAreaLength.toDouble(),
       color: Colors.white,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ///row one [0,1,2,3,4]
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    onPressed: () {
-                      updateRuns(playerName: "RAJU", runs: 0);
-                    },
-                    child: Text("0")),
-                spaceBtwn,
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 1);
-                    },
-                    child: Text("1")),
-                spaceBtwn,
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 2);
-                    },
-                    child: Text("2")),
-                spaceBtwn,
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 3);
-                    },
-                    child: Text("3")),
-                spaceBtwn,
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 4);
-                    },
-                    child: Text("4")),
-              ],
-            ),
+      child: StreamBuilder<DocumentSnapshot>(
+        stream: dataStreams.getGeneralMatchDataStream(),
+        builder: (context, snapshot) {
 
-            ///row 2 [6,Wide,LB,Out,NB]
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 6);
-                    },
-                    child: Text("6")),
-                spaceBtwn,
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 0);
-                    },
-                    child: Text("Wide")),
-                spaceBtwn,
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    //TODO: legBye runs need to updated [open new run set]
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 0);
-                    },
-                    child: Text("LB")),
-                spaceBtwn,
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    //TODO: no-ball -- open new no-ball set
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 1);
-                    },
-                    child: Text("NB")),
-                spaceBtwn,
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    //TODO: out btn clicked
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 0);
-                    },
-                    child: Text("Out")),
-              ],
-            ),
+          if(!snapshot.hasData){
+            return CircularProgressIndicator();
+          } else{
 
-            ///row 3 [over throw, overEnd,]
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    //TODO: over throw
-                    onPressed: () {
-                      updateRuns(playerName: playersName, runs: 0);
-                    },
-                    child: Text("Over Throw")),
-                spaceBtwn,
-                FlatButton(
-                    color: btnColor,
-                    minWidth: buttonWidth,
-                    //TODO: start new over
-                    onPressed: () {
-                      newOverPlayersSelectionDialog();
+            final matchData=snapshot.data.data();
+            final currentOver= matchData['currentOver'];
+            final currentBallNo=matchData['currentBallNo'];
+            final currentBatsmen1=matchData['currentBatsmen1'];
+            final currentBatsmen2=matchData['currentBatsmen2'];
+            final currentBowler=matchData['currentBowler'];
+            final inningNo=matchData['inningNumber'];
 
-                      // updateRuns(playerName: playersName, runs: 0);
-                    },
-                    child: Text("Start new over")),
-              ],
-            ),
-          ],
-        ),
+
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ///row one [0,1,2,3,4]
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          onPressed: () {
+                            // updateRuns(playerName: "RAJU", runs: 0);
+
+                            runUpdater.updateRun(inningNo: inningNo,overNo: currentOver,
+                              ballNumber: currentBallNo,
+                              batmenName: currentBatsmen1,
+                              bowlerName: currentBowler,
+                              isNormalRun: true,
+                              runScored: 0
+                            );
+
+                          },
+                          child: Text("0")),
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          onPressed: () {
+                            // updateRuns(playerName: playersName, runs: 1);
+                            runUpdater.updateRun(inningNo: inningNo,overNo: currentOver,
+                                ballNumber: currentBallNo,
+                                batmenName: currentBatsmen1,
+                                bowlerName: currentBowler,
+                                isNormalRun: true,
+                                runScored: 1
+                            );
+                          },
+                          child: Text("1")),
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          onPressed: () {
+                            updateRuns(playerName: playersName, runs: 2);
+                          },
+                          child: Text("2")),
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          onPressed: () {
+                            updateRuns(playerName: playersName, runs: 3);
+                          },
+                          child: Text("3")),
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          onPressed: () {
+                            updateRuns(playerName: playersName, runs: 4);
+                          },
+                          child: Text("4")),
+                    ],
+                  ),
+
+                  ///row 2 [6,Wide,LB,Out,NB]
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          onPressed: () {
+                            updateRuns(playerName: playersName, runs: 6);
+                          },
+                          child: Text("6")),
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          onPressed: () {
+                            updateRuns(playerName: playersName, runs: 0);
+                          },
+                          child: Text("Wide")),
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          //TODO: legBye runs need to updated [open new run set]
+                          onPressed: () {
+                            updateRuns(playerName: playersName, runs: 0);
+                          },
+                          child: Text("LB")),
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          //TODO: no-ball -- open new no-ball set
+                          onPressed: () {
+                            updateRuns(playerName: playersName, runs: 1);
+                          },
+                          child: Text("NB")),
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          //TODO: out btn clicked
+                          onPressed: () {
+                            updateRuns(playerName: playersName, runs: 0);
+                          },
+                          child: Text("Out")),
+                    ],
+                  ),
+
+                  ///row 3 [over throw, overEnd,]
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          //TODO: over throw
+                          onPressed: () {
+                            updateRuns(playerName: playersName, runs: 0);
+                          },
+                          child: Text("Over Throw")),
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          //TODO: start new over
+                          onPressed: () {
+                            newOverPlayersSelectionDialog();
+
+                            // updateRuns(playerName: playersName, runs: 0);
+                          },
+                          child: Text("Start new over")),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }
+
+
+        }
       ),
     );
   }
@@ -612,7 +663,7 @@ class _CounterPageState extends State<CounterPage> {
           Container(
             margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
             child:
-            currentOverNo==0?
+            globalCurrentOverNo==0?
               Row(
               children: zeroOverBalls):
             StreamBuilder<DocumentSnapshot>(
@@ -638,33 +689,31 @@ class _CounterPageState extends State<CounterPage> {
                   print("MAPPPPPPPPPPPPPPPPP fullOverData: $fullOverData");
                   final isThisCurrentOver = overData["isThisCurrentOver"];
                   final currentBallNo=overData['currentBall'];
+                  // final currentOverNo=overData['overNo'];
+                  print("CurrentBallNo::::::::::::::$currentBallNo");
 
+                  //decoding the map
                   fullOverData.forEach((key, value){
 
-                            // print("OOOOOOOOOOOOOOOOOOOOOO: KEY $key VALUE $value");
-
-                    if(key==currentBallNo){
-                      if(value!=null) {
-                        balls[int.parse(key)-1] = ballWidget(isCurrentBall: true,
-                            runScoredOnThisBall: value);
-                      } else{
-                        balls[int.parse(key)-1] = ballWidget(isCurrentBall: true,
-                            runScoredOnThisBall:null);
-                      }
-                    }
                     if(value!=null) {
-                      balls[int.parse(key)-1] = ballWidget(runScoredOnThisBall: value);
+                      balls[int.parse(key)-1] = ballWidget(
+                          runScoredOnThisBall: value,
+                          cardOverNo: overNo,
+                          currentOverNumber: globalCurrentOverNo,
+                          key: int.parse(key),
+                          currentBallNo:currentBallNo);
                     } else{
                       balls[int.parse(key)-1] = ballWidget(
-                          runScoredOnThisBall: null);
+                          runScoredOnThisBall: null,
+                          currentOverNumber: globalCurrentOverNo,
+                          cardOverNo: overNo,
+                          key: int.parse(key),
+                          currentBallNo:currentBallNo);
                     }
-
                   });
-
                   return Row(
                       children: balls);
                 }
-
               },
 
             ),
@@ -676,11 +725,22 @@ class _CounterPageState extends State<CounterPage> {
 
   ///circleBall widget placed inside Over container
   ballWidget(
-      {bool isCurrentBall = false,
-        int runScoredOnThisBall
+      {
+        int runScoredOnThisBall,
+        int currentOverNumber,
+        int cardOverNo,
+        int key,
+        int currentBallNo
       }) {
 
-    if(currentOverNo==0){
+    bool isCurrentBall = false;
+    if(currentBallNo==key && currentOverNumber==cardOverNo){
+      isCurrentBall=true;
+    }
+
+    print( "and runsScored=$runScoredOnThisBall");
+
+    if(globalCurrentOverNo==0){
       return Container(
           margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           child: CircleAvatar(
@@ -691,7 +751,7 @@ class _CounterPageState extends State<CounterPage> {
             ),
             radius: 20,
             backgroundColor: isCurrentBall
-                ? Colors.blue.shade300
+                ? Colors.black54
                 : Colors.blue.shade50,
           ));
     }
@@ -709,7 +769,7 @@ class _CounterPageState extends State<CounterPage> {
           ),
           radius: 20,
           backgroundColor: isCurrentBall
-              ? Colors.blue.shade300
+              ? Colors.black54
               : Colors.blue.shade50,
         ));
   }
@@ -736,7 +796,7 @@ class _CounterPageState extends State<CounterPage> {
             borderRadius: BorderRadius.circular(4),
           ),
           child: StreamBuilder<DocumentSnapshot>(
-            stream: dataStreams.getCurrentInningScoreBoardDataStream(),
+            stream: dataStreams.getCurrentInningScoreBoardDataStream(inningNo: inningNumber),
             // stream: usersRef.doc(widget.user.uid).collection('createdMatches').doc(widget.match.getMatchId()).snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {

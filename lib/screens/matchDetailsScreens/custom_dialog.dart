@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:umiperer/modals/dataStreams.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -21,83 +22,21 @@ class CustomDialog extends StatefulWidget {
 
 class _CustomDialogState extends State<CustomDialog> {
 
-  int currentOverNo;
-  int inningNumber;
-  bool isLoadingData = true;
-
-  List<String> bowlingTeamPlayers = ["Select"];
-  List<String> battingTeamPlayers = ["Select"];
+  bool isLoadingData = false;
+  DataStreams _dataStreams;
+  int globalInningNo;
 
   String selectedBowler = "Select";
   String selectedBatsmen1 = "Select";
   String selectedBatsmen2 = "Select";
 
-  putPlayersInList() {
-    for (int i = 0; i < widget.match.getPlayerCount(); i++) {
-
-      if(inningNumber==1){
-
-        print("WWWWWWWWWWWWWWW: ${widget.match.firstBattingTeam}");
-        //for first inning
-        battingTeamPlayers.add(widget.match.getTeamListByTeamName(widget.match.firstBattingTeam)[i]);
-        bowlingTeamPlayers.add(widget.match.getTeamListByTeamName(widget.match.firstBowlingTeam)[i]);
-      } else{
-        //this is for second inning
-        battingTeamPlayers.add(widget.match.getTeamListByTeamName(widget.match.secondBattingTeam)[i]);
-        bowlingTeamPlayers.add(widget.match.getTeamListByTeamName(widget.match.secondBowlingTeam)[i]);
-      }
-    }
-  }
-
-  getDataFromCloud() async{
-    final mRef = await usersRef.doc(widget.user.uid)
-        .collection('createdMatches')
-        .doc(widget.match.getMatchId()).get();
-
-    inningNumber = mRef.data()['inningNumber'];
-
-    if(mRef.data()['currentBatsmen1'] != null){
-      selectedBatsmen1 = mRef.data()['currentBatsmen1'];
-    }
-    if(mRef.data()['currentBatsmen2'] != null){
-    selectedBatsmen2 = mRef.data()['currentBatsmen2'];
-    }
-    if(mRef.data()['currentBowler'] != null){
-      selectedBowler = mRef.data()['currentBowler'];
-    }
-
-    if(inningNumber==1) {
-      final matchRef = await usersRef.doc(widget.user.uid)
-          .collection('createdMatches')
-          .doc(widget.match.getMatchId())
-          .collection('FirstInning')
-          .doc("scoreBoardData")
-          .get();
-      currentOverNo = matchRef.data()['currentOverNo'];
-      print("FFFFFFFFFFFFFFF: $currentOverNo");
-    } else{
-      final matchRef = await usersRef.doc(widget.user.uid)
-          .collection('createdMatches')
-          .doc(widget.match.getMatchId())
-          .collection('SecondInning')
-          .doc("scoreBoardData")
-          .get();
-      currentOverNo = matchRef.data()['currentOverNo'];
-      print("FFFFFFFFFFFFFFF: $currentOverNo");
-    }
-
-
-    setState(() {
-      isLoadingData=false;
-    });
-  }
-
     @override
     void initState() {
       // TODO: implement initState
       super.initState();
-      getDataFromCloud();
-      putPlayersInList();
+      _dataStreams=DataStreams(matchId: widget.match.getMatchId(),userUID: widget.user.uid);
+      print("initState called");
+
     }
 
     @override
@@ -110,87 +49,156 @@ class _CustomDialogState extends State<CustomDialog> {
         backgroundColor: Colors.transparent,
         child:
         isLoadingData?
-        CircularProgressIndicator():
-        dialogContent(context),
+        Container(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            height: 350,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white),
+            child: Center(child: CircularProgressIndicator())):
+          dialogContent(context)
       );
     }
 
     final space = SizedBox(width: 10,);
 
-    Container dialogContent(BuildContext context) {
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        height: 350,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.white
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text("SELECT FOR NEW OVER",
-                style: TextStyle(fontWeight: FontWeight.bold,),),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Select Bowler:"),
-                // space,
-                dropDownWidgetForBowler(itemList: bowlingTeamPlayers),
-                // dropDownWidget(itemList: widget.match.team2List),
-              ],
-            ),
-            // space,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Select Batsmen1:"),
-                dropDownWidgetForBatsmen1(itemList: battingTeamPlayers),
-                // dropDownWidget(itemList: widget.match.team2List),
-              ],
-            ),
-            // space,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Select Batsmen2:"),
-                // space,
-                dropDownWidgetForBatsmen2(itemList: battingTeamPlayers),
-                // dropDownWidget(itemList: widget.match.team2List),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Cancel"),
-                ),
-                FlatButton(
-                  color: Colors.blue.shade500,
-                  child: Text("Start Over"),
-                  onPressed: () {
-                    onStartOverBtnPressed();
-                    },
-                ),
-              ],
-            )
-          ],
-        ),
+    Widget dialogContent(BuildContext context) {
+      return StreamBuilder<DocumentSnapshot>(
+        stream: _dataStreams.getGeneralMatchDataStream(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData){
+            return CircularProgressIndicator();
+          }
+          else{
+            final matchData=snapshot.data.data();
+
+            List<String> teamAPlayers = matchData['teamAPlayers'].cast<String>();
+            List<String> teamBPlayers = matchData['teamBPlayers'].cast<String>();
+
+            final firstBattingTeam = matchData["firstBattingTeam"];
+            final secondBattingTeam = matchData["secondBattingTeam"];
+            final globalInningNo = matchData['inningNumber'];
+
+            List<String> bowlingTeamPlayers = ["Select"];
+            List<String> battingTeamPlayers = ["Select"];
+
+            if(globalInningNo==1){
+              if (firstBattingTeam == widget.match.getTeam1Name()) {
+                teamAPlayers.forEach((playerName) {
+                  battingTeamPlayers.add(playerName);
+                });
+                teamBPlayers.forEach((playerName) {
+                  bowlingTeamPlayers.add(playerName);
+                });
+              } else {
+                teamAPlayers.forEach((playerName) {
+                  bowlingTeamPlayers.add(playerName);
+                });
+                teamBPlayers.forEach((playerName) {
+                  battingTeamPlayers.add(playerName);
+                });
+              }
+            } else{
+              if (secondBattingTeam == widget.match.getTeam2Name()) {
+                teamBPlayers.forEach((playerName) {
+                  battingTeamPlayers.add(playerName);
+                });
+                teamAPlayers.forEach((playerName) {
+                  bowlingTeamPlayers.add(playerName);
+                });
+              } else {
+                teamBPlayers.forEach((playerName) {
+                  bowlingTeamPlayers.add(playerName);
+                });
+                teamAPlayers.forEach((playerName) {
+                  battingTeamPlayers.add(playerName);
+                });
+              }
+
+            }
+
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              height: 350,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text("SELECT FOR NEW OVER",
+                      style: TextStyle(fontWeight: FontWeight.bold,),),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Select Bowler:"),
+                      // space,
+                      dropDownWidgetForBowler(itemList: bowlingTeamPlayers),
+                      // dropDownWidget(itemList: widget.match.team2List),
+                    ],
+                  ),
+                  // space,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Select Batsmen1:"),
+                      dropDownWidgetForBatsmen1(itemList: battingTeamPlayers),
+                      // dropDownWidget(itemList: widget.match.team2List),
+                    ],
+                  ),
+                  // space,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Select Batsmen2:"),
+                      // space,
+                      dropDownWidgetForBatsmen2(itemList: battingTeamPlayers),
+                      // dropDownWidget(itemList: widget.match.team2List),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel"),
+                      ),
+                      FlatButton(
+                        color: Colors.blue.shade500,
+                        child: Text("Start Over"),
+                        onPressed: () {
+                          onStartOverBtnPressed();
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          }
+
+        }
       );
     }
 
-    onStartOverBtnPressed(){
+    onStartOverBtnPressed() async{
+
+      setState(() {
+        isLoadingData=true;
+      });
+
       //TODO: 1. increase OverNo on cloud and all players data // 2.set essentials on class
 
       //matchDoc > FirstInning OR SecondInning Collection > ScoreboardData > updatingTheField
       updatingTheOverCountInScoreBoardOnCloud();
 
-      usersRef.doc(widget.user.uid)
+      await usersRef.doc(widget.user.uid)
           .collection("createdMatches")
           .doc(widget.match.getMatchId())
           .update(
@@ -205,9 +213,11 @@ class _CustomDialogState extends State<CustomDialog> {
 
       ///here when Batsmen and bowlers are selected,
       ///their data is updating on cloud based on InningNo.
-      if(inningNumber==1){
+      if(globalInningNo==1){
 
-        usersRef.doc(widget.user.uid)
+        print("INNING NO-- $globalInningNo || SELECTED-BATSMEN-- $selectedBatsmen1 || USER-ID ${widget.user.uid} || MATCH-ID ${widget.match.getMatchId()}");
+
+        await usersRef.doc(widget.user.uid)
             .collection("createdMatches")
             .doc(widget.match.getMatchId())
             .collection('FirstInning')
@@ -216,10 +226,11 @@ class _CustomDialogState extends State<CustomDialog> {
             .doc(selectedBatsmen1).update({
           "isBatting": true,
           "isOnStrike": true,
+          // "balls": FieldValue.increment(1),
         });
 
         //playerCollection
-        usersRef.doc(widget.user.uid)
+        await usersRef.doc(widget.user.uid)
             .collection("createdMatches")
             .doc(widget.match.getMatchId())
             .collection('FirstInning')
@@ -228,12 +239,13 @@ class _CustomDialogState extends State<CustomDialog> {
             .doc(
             selectedBatsmen2
         ).update({
+          // "balls": FieldValue.increment(1),
           "isBatting": true,
           "isOnStrike": false,
         });
 
         //bowlersRef
-        usersRef.doc(widget.user.uid)
+        await usersRef.doc(widget.user.uid)
             .collection("createdMatches")
             .doc(widget.match.getMatchId())
             .collection('FirstInning')
@@ -246,7 +258,7 @@ class _CustomDialogState extends State<CustomDialog> {
 
       } else{
 
-        usersRef.doc(widget.user.uid)
+        await usersRef.doc(widget.user.uid)
             .collection("createdMatches")
             .doc(widget.match.getMatchId())
             .collection('SecondInning')
@@ -254,12 +266,13 @@ class _CustomDialogState extends State<CustomDialog> {
             .collection('Players')
             .doc(selectedBatsmen1).update({
 
+
           "isBatting": true,
           "isOnStrike": true,
         });
 
         //playerCollection
-        usersRef.doc(widget.user.uid)
+        await usersRef.doc(widget.user.uid)
             .collection("createdMatches")
             .doc(widget.match.getMatchId())
             .collection('SecondInning')
@@ -268,13 +281,12 @@ class _CustomDialogState extends State<CustomDialog> {
             .doc(
             selectedBatsmen2
         ).update({
-
           "isBatting": true,
           "isOnStrike": false,
         });
 
         //bowlersRef
-        usersRef.doc(widget.user.uid)
+        await usersRef.doc(widget.user.uid)
             .collection("createdMatches")
             .doc(widget.match.getMatchId())
             .collection('SecondInning')
@@ -282,44 +294,21 @@ class _CustomDialogState extends State<CustomDialog> {
             .collection("Players").doc(
             selectedBowler
         ).update({
-
           "isBowling": true,
         });
 
-
-
       }
-
-
-      widget.match.currentBatsmen1=selectedBatsmen1;
-      widget.match.currentBatsmen2=selectedBatsmen2;
-      widget.match.currentBowler=selectedBowler;
-
       Navigator.pop(context);
-
-      setState(() {
-
-      });
-
-      print("WWWWWWWWWWW: OVER COUNT ${widget.match.currentOver.getCurrentOverNo()}");
-
-      final currentOver = widget.match.currentOver.getCurrentOverNo();
-
-      widget.match.currentOver.setCurrentOverNo(currentOver+1);
-
-      print("WWWWWWWWWWW: OVER COUNT ${widget.match.currentOver.getCurrentOverNo()}");
-
       ///animation of horizontal list view
       // widget.scrollListAnimationFunction();
 
-
     }
 
-    void updatingTheOverCountInScoreBoardOnCloud(){
-      if(inningNumber==1){
+    void updatingTheOverCountInScoreBoardOnCloud() async{
+      if(globalInningNo==1){
         ///increasing over no
         ///
-        usersRef.doc(widget.user.uid)
+        await usersRef.doc(widget.user.uid)
             .collection("createdMatches")
             .doc(widget.match.getMatchId()).collection('FirstInning')
             .doc("scoreBoardData").update({
@@ -329,7 +318,7 @@ class _CustomDialogState extends State<CustomDialog> {
 
       } else{
         ///increasing over no
-        usersRef.doc(widget.user.uid)
+        await usersRef.doc(widget.user.uid)
             .collection("createdMatches")
             .doc(widget.match.getMatchId()).collection('SecondInning')
             .doc("scoreBoardData").update({
@@ -338,11 +327,10 @@ class _CustomDialogState extends State<CustomDialog> {
       }
 
       ///setting isCurrentOverToTrue
-      usersRef.doc(widget.user.uid)
+      await usersRef.doc(widget.user.uid)
           .collection("createdMatches")
-          .doc(widget.match.getMatchId()).collection('inning${inningNumber}overs')
-          .doc("over${currentOverNo+1}").update({
-
+          .doc(widget.match.getMatchId()).collection('inning${globalInningNo}overs')
+          .doc("over${globalInningNo+1}").update({
         "isThisCurrentOver":true
 
           });

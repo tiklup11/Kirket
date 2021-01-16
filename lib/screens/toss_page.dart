@@ -266,6 +266,37 @@ class _TossScreenState extends State<TossScreen> {
 
   uploadPlayersData(){
 
+    usersRef.doc(widget.user.uid)
+        .collection("createdMatches")
+        .doc(widget.match.getMatchId())
+        .collection('FirstInning')
+        .doc("BattingTeam").set({
+      "PlayerCount":widget.match.getPlayerCount()
+    });
+
+    usersRef.doc(widget.user.uid)
+        .collection("createdMatches")
+        .doc(widget.match.getMatchId())
+        .collection('SecondInning')
+        .doc("BattingTeam").set({
+      "PlayerCount":widget.match.getPlayerCount()
+    });
+
+    usersRef.doc(widget.user.uid)
+        .collection("createdMatches")
+        .doc(widget.match.getMatchId())
+        .collection('SecondInning')
+        .doc("BowlingTeam").set({
+      "PlayerCount":widget.match.getPlayerCount()
+    });
+    usersRef.doc(widget.user.uid)
+        .collection("createdMatches")
+        .doc(widget.match.getMatchId())
+        .collection('FirstInning')
+        .doc("BowlingTeam").set({
+      "PlayerCount":widget.match.getPlayerCount()
+    });
+
     for(int i=0;i<widget.match.getPlayerCount();i++){
 
       if(widget.match.firstBattingTeam==widget.match.getTeam1Name()){
