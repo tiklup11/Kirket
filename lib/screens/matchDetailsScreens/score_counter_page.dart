@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/dataStreams.dart';
@@ -78,64 +77,66 @@ class _CounterPageState extends State<CounterPage> {
   Widget build(BuildContext context) {
     print("EEEEEEEEEEEEEEE: ${widget.match.currentBatsmen1}");
 
-    return isLoadingData
-        ? CircularProgressIndicator()
-        : Container(
-            color: Colors.black12,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                miniScoreCard(),
-                // Align(
-                //   alignment: Alignment.centerLeft,
-                //   child: Padding(
-                //     padding: EdgeInsets.symmetric(horizontal: 10),
-                //     child: Text(
-                //       'OVERS',
-                //     ),
-                //   ),
-                // ),
-                //////////////
-                buildOversList(),
-                Container(
-                  margin: EdgeInsets.only(top: 3, bottom: 6),
-                  child: Text(
-                    'OPTIONS FOR NEXT BALL',
-                    style: TextStyle(fontWeight: FontWeight.w400),
-                  ),
-                ),
-                StreamBuilder<DocumentSnapshot>(
-                  stream: usersRef
-                      .doc(widget.user.uid)
-                      .collection('createdMatches')
-                      .doc(widget.match.getMatchId())
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return loadingDataContainer();
-                    } else {
-                      final matchData = snapshot.data.data();
-                      final currentOver = matchData['currentOverNumber'];
+    return
+         FutureBuilder(
+           future: usersRef.doc(widget.user.uid)
+               .collection('createdMatches')
+               .doc(widget.match.getMatchId()).get(),
+           builder:(context,snapshot){
+             if(snapshot.connectionState==ConnectionState.done){
+               return Container(
+                 color: Colors.black12,
+                 child: Column(
+                   mainAxisSize: MainAxisSize.min,
+                   children: <Widget>[
+                     miniScoreCard(),
+                     buildOversList(),
+                     Container(
+                       margin: EdgeInsets.only(top: 3, bottom: 6),
+                       child: Text(
+                         'OPTIONS FOR NEXT BALL',
+                         style: TextStyle(fontWeight: FontWeight.w400),
+                       ),
+                     ),
+                     StreamBuilder<DocumentSnapshot>(
+                       stream: usersRef
+                           .doc(widget.user.uid)
+                           .collection('createdMatches')
+                           .doc(widget.match.getMatchId())
+                           .snapshots(),
+                       builder: (context, snapshot) {
+                         if (!snapshot.hasData) {
+                           return loadingDataContainer();
+                         } else {
+                           final matchData = snapshot.data.data();
+                           final currentOver = matchData['currentOverNumber'];
 
-                      if (currentOver == 0) {
-                        return startFirstOverBtn();
-                      } else {
-                        return scoreSelectionWidget(
-                          playersName: "Pulkit",
-                          inningNo: inningNumber,
-                          ballNo: currentBallNo,
-                          overNumber: globalCurrentOverNo
-                        );
-                      }
-                    }
-                  },
-                )
-                // widget.match.currentOver.getCurrentOverNo()==0?
-                // startFirstOverBtn():
-                // scoreSelectionWidget()
-              ],
-            ),
-          );
+                           if (currentOver == 0) {
+                             return startFirstOverBtn();
+                           } else {
+                             return scoreSelectionWidget(
+                                 playersName: "Pulkit",
+                                 inningNo: inningNumber,
+                                 ballNo: currentBallNo,
+                                 overNumber: globalCurrentOverNo
+                             );
+                           }
+                         }
+                       },
+                     )
+                     // widget.match.currentOver.getCurrentOverNo()==0?
+                     // startFirstOverBtn():
+                     // scoreSelectionWidget()
+                   ],
+                 ),
+               );
+             }else{
+               return CircularProgressIndicator();
+             }
+
+           }
+           ,
+         );
   }
 
   buildOversList() {
@@ -249,192 +250,106 @@ class _CounterPageState extends State<CounterPage> {
     }
 
     final TextStyle textStyle = TextStyle(color: Colors.black54);
-    return StreamBuilder<QuerySnapshot>(
-      stream: usersRef
-          .doc(widget.user.uid)
-          .collection('createdMatches')
-          .doc(widget.match.getMatchId())
-          .collection('FirstInning')
-          .doc("BattingTeam")
-          .collection('Players')
-          .where(
-            'isBatting',
-            isEqualTo: true,
-          )
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          final playersData = snapshot.data.docs;
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                  width: 120,
+                  child: Text(
+                    "Batsman",
+                    style: textStyle,
+                  )),
+              Container(
+                  width: 30,
+                  child: Text(
+                    "R",
+                    style: textStyle,
+                  )),
+              Container(
+                  width: 30,
+                  child: Text(
+                    "B",
+                    style: textStyle,
+                  )),
+              Container(
+                  width: 30,
+                  child: Text(
+                    "4s",
+                    style: textStyle,
+                  )),
+              Container(
+                  width: 30,
+                  child: Text(
+                    "6s",
+                    style: textStyle,
+                  )),
+              Container(
+                  width: 30,
+                  child: Text(
+                    "SR",
+                    style: textStyle,
+                  )),
+            ],
+          ),
+          SizedBox(
+            height: 4,
+          ),
 
-          playersData.forEach((element) {
+          //Batsman's data
+          batsmanScoreRow(
+            playerName: batsmen1name,
+            runs: batsmen1Run.toString(),
+            balls: batsmen1Balls.toString(),
+            noOf4s: batsmen1Fours.toString(),
+            noOf6s: batsmen1Sixes.toString(),
+            SR: batsmen1SR.toString(),
+          ),
+          SizedBox(
+            height: 4,
+          ),
+          batsmanScoreRow(
+            playerName: batsmen2name,
+            runs: batsmen2Run.toString(),
+            balls: batsmen2Balls.toString(),
+            noOf4s: batsmen2Fours.toString(),
+            noOf6s: batsmen2Sixes.toString(),
+            SR: batsmen2SR.toString(),
+          ),
 
-            print("TTTTTTTTTTTTTTTTT: IS-ON-STRIKE ${element.data()['isOnStrike']}");
-
-            if (element.data()['isOnStrike']) {
-              batsmen1name = element.data()['name'];
-              batsmen1Run = element.data()['runs'];
-              batsmen1Fours = element.data()['noOf4s'];
-              batsmen1Sixes = element.data()['noOf6s'];
-              batsmen1Balls = element.data()['balls'];
-            } else {
-              batsmen2name = element.data()['name'];
-              batsmen2Run = element.data()['runs'];
-              batsmen2Fours = element.data()['noOf4s'];
-              batsmen2Sixes = element.data()['noOf6s'];
-              batsmen2Balls = element.data()['balls'];
-            }
-          });
-
-          return Container(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                        width: 120,
-                        child: Text(
-                          "Batsman",
-                          style: textStyle,
-                        )),
-                    Container(
-                        width: 30,
-                        child: Text(
-                          "R",
-                          style: textStyle,
-                        )),
-                    Container(
-                        width: 30,
-                        child: Text(
-                          "B",
-                          style: textStyle,
-                        )),
-                    Container(
-                        width: 30,
-                        child: Text(
-                          "4s",
-                          style: textStyle,
-                        )),
-                    Container(
-                        width: 30,
-                        child: Text(
-                          "6s",
-                          style: textStyle,
-                        )),
-                    Container(
-                        width: 30,
-                        child: Text(
-                          "SR",
-                          style: textStyle,
-                        )),
-                  ],
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-
-                //Batsman's data
-                batsmanScoreRow(
-                  playerName: batsmen1name,
-                  runs: batsmen1Run.toString(),
-                  balls: batsmen1Balls.toString(),
-                  noOf4s: batsmen1Fours.toString(),
-                  noOf6s: batsmen1Sixes.toString(),
-                  SR: batsmen1SR.toString(),
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                batsmanScoreRow(
-                  playerName: batsmen2name,
-                  runs: batsmen2Run.toString(),
-                  balls: batsmen2Balls.toString(),
-                  noOf4s: batsmen2Fours.toString(),
-                  noOf6s: batsmen2Sixes.toString(),
-                  SR: batsmen2SR.toString(),
-                ),
-
-                //Line
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 6),
-                  color: Colors.black12,
-                  height: 2,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                //Bowler's Data
-                bowlerStatsRow(
-                    runs: "R",
-                    playerName: "Bowler",
-                    economy: "ER",
-                    median: "M",
-                    overs: "O",
-                    wickets: "W",
-                    textStyle: textStyle),
-                SizedBox(
-                  height: 4,
-                ),
-                StreamBuilder<QuerySnapshot>(
-                  stream: usersRef
-                      .doc(widget.user.uid)
-                      .collection('createdMatches')
-                      .doc(widget.match.getMatchId())
-                      .collection('FirstInning')
-                      .doc("BowlingTeam")
-                      .collection('Players')
-                      .where(
-                        'isBowling',
-                        isEqualTo: true,
-                      )
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return CircularProgressIndicator();
-                    } else {
-                      final bowlingTeam = snapshot.data.docs;
-
-                      String bowlersName = "----------";
-                      int oversBowled = 0;
-                      int maidainOvers = 0;
-                      int runsGiven = 0;
-                      int wicketsTaken = 0;
-                      int ER = 0;
-
-                      try {
-                        ER = (runsGiven / oversBowled).roundToDouble().toInt();
-                      } catch (e) {
-                        ER = 0;
-                      }
-
-                      bowlingTeam.forEach((playerDoc) {
-                        bowlersName = playerDoc.data()['name'];
-                        oversBowled = playerDoc.data()['overs'];
-                        runsGiven = playerDoc.data()['runs'];
-                        wicketsTaken = playerDoc.data()['wickets'];
-                        maidainOvers = playerDoc.data()['maidans'];
-                      });
-
-                      return bowlerStatsRow(
-                          runs: runsGiven.toString(),
-                          playerName: bowlersName,
-                          economy: ER.toString(),
-                          median: maidainOvers.toString(),
-                          overs: oversBowled.toString(),
-                          wickets: wicketsTaken.toString(),
-                          textStyle: textStyle.copyWith(color: Colors.black));
-                    }
-                  },
-                ),
-              ],
-            ),
-          );
-        }
-      },
+          //Line
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 6),
+            color: Colors.black12,
+            height: 2,
+          ),
+          SizedBox(
+            height: 4,
+          ),
+          //Bowler's Data
+          bowlerStatsRow(
+              runs: "R",
+              playerName: "Bowler",
+              economy: "ER",
+              median: "M",
+              overs: "O",
+              wickets: "W",
+              textStyle: textStyle),
+          SizedBox(
+            height: 4,
+          ),
+      bowlerStatsRow(
+          runs: "run",
+          playerName: "bowlersName",
+          economy: "4.04",
+          median: "4",
+          overs: "44",
+          wickets: "4",
+          textStyle: textStyle.copyWith(color: Colors.black)),
+        ],
+      ),
     );
   }
 
@@ -795,63 +710,39 @@ class _CounterPageState extends State<CounterPage> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(4),
           ),
-          child: StreamBuilder<DocumentSnapshot>(
-            stream: dataStreams.getCurrentInningScoreBoardDataStream(inningNo: inningNumber),
-            // stream: usersRef.doc(widget.user.uid).collection('createdMatches').doc(widget.match.getMatchId()).snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return CircularProgressIndicator();
-              } else {
-                final scoreBoardData = snapshot.data.data();
-                final totalRuns = scoreBoardData['totalRuns'];
-                final currentOverNumber = scoreBoardData['currentOverNo'];
-                // currentOverNo = currentOverNumber;
-                final currentBattingTeam = scoreBoardData['battingTeam'];
-                final wicketsDownOfInning1 = scoreBoardData['wicketsDown'];
-                final ballOfTheOver = scoreBoardData['ballOfTheOver'];
-
-                double CRR = 0;
-
-                if (currentOverNumber != 0) {
-                  CRR = (totalRuns / currentOverNumber);
-                }
-
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              currentBattingTeam.toString().toUpperCase(),
-                              style: TextStyle(fontSize: 24),
-                            ),
-                            Text(
-                              "$totalRuns-$wicketsDownOfInning1 ($currentOverNumber.$ballOfTheOver)",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text("CRR"),
-                            Text(CRR.toStringAsFixed(2)),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 6),
-                      color: Colors.black12,
-                      height: 2,
-                    ),
-                    playersScore(),
-                  ],
-                );
-              }
-            },
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "currentBattingTeam",
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      Text(
+                        "404",
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text("CRR"),
+                      Text("404"),
+                    ],
+                  ),
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 6),
+                color: Colors.black12,
+                height: 2,
+              ),
+              playersScore(),
+            ],
           ),
         ),
       ],

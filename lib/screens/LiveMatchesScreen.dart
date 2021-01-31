@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:umiperer/widgets/match_card_view.dart';
 
 class LiveMatchesScreen extends StatelessWidget {
   @override

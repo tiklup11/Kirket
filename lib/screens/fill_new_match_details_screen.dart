@@ -19,8 +19,6 @@ class FillNewMatchDetailsPage extends StatelessWidget {
   }
 }
 
-
-
 class MatchDetailsForm extends StatefulWidget {
   MatchDetailsForm({this.user});
   final User user;
@@ -67,7 +65,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       // showInSnackBar("Match Created");
 
       print('exiting handling sub');
-      buildPlayersName();
+      //buildPlayersName();
     } else {
       showInSnackBar(
         "Please fill all details",
@@ -78,30 +76,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
   generateIdForMatch(){
     final String matchId = uuid.v1();
     newMatch.setMatchId(matchId);
-  }
-
-  List<String> teamAPlayers = [];
-
-  List<String> teamBPlayers = [];
-
-  buildPlayersName(){
-
-    for(int i=0;i<newMatch.getPlayerCount();i++){
-
-      teamAPlayers.add("${newMatch.getTeam1Name()} Player_${i+1}");
-
-      teamBPlayers.add("${newMatch.getTeam2Name()} Player_${i+1}");
-    }
-
-    newMatch.team1List=teamAPlayers;
-    newMatch.team2List=teamBPlayers;
-
-    //uploadPlayersList
-    usersRef.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId()).update(
-        {
-          "teamAPlayers":teamAPlayers,
-          "teamBPlayers":teamBPlayers
-        });
   }
 
   uploadMatchDataToCloud(){
@@ -174,7 +148,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       "totalRuns":0,
       "wicketsDown":0,
     });
-
 
   }
 

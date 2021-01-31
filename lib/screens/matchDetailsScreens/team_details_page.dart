@@ -15,28 +15,13 @@ class _TeamDetailsState extends State<TeamDetails> {
   bool isListACollapsed = true;
   bool isListBCollapsed = true;
 
-  List<Widget> teamAPlayers = [];
 
-  List<Widget> teamBPlayers = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    buildPlayersName();
-  }
 
-  buildPlayersName(){
-    for(int i=0;i<widget.match.getPlayerCount();i++){
-
-      teamAPlayers.add(Container(
-          margin: EdgeInsets.symmetric(vertical: 4),
-          child: Text(widget.match.team1List[i]),),);
-
-      teamBPlayers.add(Container(
-          margin: EdgeInsets.symmetric(vertical: 4),
-          child: Text(widget.match.team2List[i]),),);
-    }
   }
 
   @override
@@ -47,73 +32,6 @@ class _TeamDetailsState extends State<TeamDetails> {
       child: ListView(
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            margin: EdgeInsets.only(top: 22,bottom: 2),
-            padding: EdgeInsets.only(left: 16, top: 4),
-            child: Text(
-              "SQUADS",
-            ),
-          ),
-          FlatButton(
-            color: Colors.white,
-            onPressed: () {
-              setState(
-                () {
-                  isListACollapsed = (!isListACollapsed);
-                },
-              );
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Team ${widget.match.getTeam1Name()}'),
-                isListACollapsed
-                    ? Icon(Icons.keyboard_arrow_up_sharp)
-                    : Icon(Icons.keyboard_arrow_down_sharp)
-              ],
-            ),
-          ),
-          isListACollapsed
-              ? Container()
-              : Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(left: 16, top: 10, bottom: 10),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    // shrinkWrap: true,
-                    children: teamAPlayers,
-                  ),
-              ),
-
-          //for team B
-          FlatButton(
-            color: Colors.white,
-            onPressed: () {
-              setState(() {
-                isListBCollapsed = (!isListBCollapsed);
-              });
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Team ${widget.match.getTeam2Name()}'),
-                isListBCollapsed
-                    ? Icon(Icons.keyboard_arrow_up_sharp)
-                    : Icon(Icons.keyboard_arrow_down_sharp)
-              ],
-            ),
-          ),
-          isListBCollapsed
-              ? Container()
-              : Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.only(left: 16, top: 10, bottom: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: teamBPlayers,
-                  ),
-                ),
-
           //matchINFO
           Container(
             margin: EdgeInsets.only(top: 22,bottom: 2),

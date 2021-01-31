@@ -146,4 +146,22 @@ class DataStreams{
 
       return allOversDocStream;
   }
+
+
+  Stream<QuerySnapshot> batsmenData({int inningNumber}){
+    final inningBattingData =  userRef.doc(userUID)
+        .collection('createdMatches')
+        .doc(matchId)
+        .collection('${inningNumber}InningBattingData').snapshots();
+    return inningBattingData;
+  }
+
+  Stream<QuerySnapshot> bowlersData({int inningNumber}){
+    final inningBattingData =  userRef.doc(userUID)
+        .collection('createdMatches')
+        .doc(matchId)
+        .collection('${inningNumber}InningBowlingData').snapshots();
+
+    return inningBattingData;
+  }
 }

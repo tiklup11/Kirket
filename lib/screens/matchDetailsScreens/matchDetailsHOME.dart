@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/screens/matchDetailsScreens/score_counter_page.dart';
+import 'package:umiperer/screens/matchDetailsScreens/score_counting_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -19,7 +19,7 @@ class MatchDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tabs = [
-      "Teams",
+      "Details",
       "Counting",
       "ScoreCard",
       // "Overs"
@@ -27,13 +27,13 @@ class MatchDetails extends StatelessWidget {
 
     final tabBarView = [
       TeamDetails(match: match,),
-      CounterPage(match: match,user: user,),
+      ScoreCountingPage(user: user,match: match,),
       ScoreCard(),
       // Overs(),
     ];
 
     return DefaultTabController(
-      initialIndex: 1,
+      initialIndex: 0,
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
@@ -119,5 +119,7 @@ class MatchDetails extends StatelessWidget {
   Widget ScoreCard(){
     return Container();
   }
+
+
 
 }
