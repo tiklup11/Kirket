@@ -6,7 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
-
+///
+/// NOT IN USE
+///
 class CustomDialog extends StatefulWidget {
 
   CustomDialog({this.match,this.user});

@@ -7,6 +7,7 @@ import 'package:umiperer/modals/Bowler.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/runUpdater.dart';
+import 'package:umiperer/screens/matchDetailsScreens/select_and_create_batsmen_page.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/ball_widget.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
@@ -31,12 +32,12 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   int currentBallNo;
 
   Bowler dummyBowlerData = Bowler(
-      playerName: "Bowler",
-      runs: "R",
-      wickets: "W",
-      overs: "O",
-      median: "M",
-      economy: "E");
+      playerName: "-------",
+      runs: "-",
+      wickets: "-",
+      overs: "-",
+      median: "-",
+      economy: "-");
 
   Bowler currentBowler = Bowler(
       playerName: "Pulkiy",
@@ -85,6 +86,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             currentOverNo = generalMatchData['currentOverNumber'];
             currentBallNo = generalMatchData['currentBallNo'];
             inningNumber = generalMatchData["inningNumber"];
+
+            widget.match.setInningNo(inningNumber);
+
             return Container(
               color: Colors.black12,
               child: Column(
@@ -92,6 +96,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   miniScoreCard(),
                   buildOversList(),
                   textWidget(),
+                  currentOverNo==0?
+                      startFirstOverBtn():
                   scoreSelectionWidget(
                       overNumber: 1, ballNo: 1, inningNo: 1, playersName: "pulkit"),
                 ],
@@ -232,7 +238,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             stream: dataStreams.batsmenData(inningNumber: inningNumber),
             builder: (context, snapshot) {
               if(!snapshot.hasData){
-                return CircularProgressIndicator();
+                return BatsmenScoreRow(batsmen: dummyBatsmen,);
               }else{
                 final batsmenData = snapshot.data.docs;
                 if(batsmenData.isEmpty){
@@ -252,7 +258,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               stream: dataStreams.batsmenData(inningNumber: inningNumber),
               builder: (context, snapshot) {
                 if(!snapshot.hasData){
-                  return CircularProgressIndicator();
+                  return BatsmenScoreRow(batsmen: dummyBatsmen,);
                 }else{
                   final batsmenData = snapshot.data.docs;
                   if(batsmenData.isEmpty){
@@ -277,7 +283,13 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
           ),
           //Bowler's Data
           BowlerStatsRow(
-            bowler: dummyBowlerData,
+            bowler: Bowler(
+                playerName: "Bowler",
+                runs: "R",
+                wickets: "W",
+                overs: "O",
+                median: "M",
+                economy: "E"),
           ),
           SizedBox(
             height: 4,
@@ -286,14 +298,14 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               stream: dataStreams.bowlersData(inningNumber: inningNumber),
               builder: (context, snapshot) {
                 if(!snapshot.hasData){
-                  return CircularProgressIndicator();
+                  return BowlerStatsRow(bowler: dummyBowlerData,);
                 }else{
                   final batsmenData = snapshot.data.docs;
                   if(batsmenData.isEmpty){
-                    return BatsmenScoreRow(batsmen: dummyBatsmen,);
+                    return BowlerStatsRow(bowler: dummyBowlerData,);
                   }else{
-                    return BatsmenScoreRow(
-                      batsmen: batsmen2,
+                    return BowlerStatsRow(
+                      bowler: dummyBowlerData,
                     );
                   }
                 }
@@ -305,8 +317,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   }
 
   buildOversList() {
-
-
     print('WWWWWWWWWWWWWWWWWW::: inning${inningNumber}over');
 
     return Expanded(
@@ -602,6 +612,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
           onPressed: () {
             print("HELLLLOO  :/");
             //newOverPlayersSelectionDialog();
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return SelectAndCreateBatsmenPage(match: widget.match,user: widget.user,);
+            }));
           },
           child: Text("START FIRST OVER"),
         ),

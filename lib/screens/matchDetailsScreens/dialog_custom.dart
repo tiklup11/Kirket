@@ -1,0 +1,102 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
+import 'package:umiperer/modals/Match.dart';
+
+final usersRef = FirebaseFirestore.instance.collection('users');
+
+class AddPlayerDialog extends StatefulWidget {
+
+  AddPlayerDialog({this.match, this.user});
+  final CricketMatch match;
+  final User user;
+  @override
+  _AddPlayerDialogState createState() => _AddPlayerDialogState();
+}
+
+class _AddPlayerDialogState extends State<AddPlayerDialog> {
+
+  String playerName;
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
+        child:
+        Container(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            height: 220,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white),
+            child:dialogContent(context),
+        )
+    );
+  }
+
+  Widget dialogContent(BuildContext context){
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Align(
+          alignment: Alignment.topLeft,
+          child: Text("NEW PLAYER",
+            style: TextStyle(fontWeight: FontWeight.w400,),),
+        ),
+        TextFormField(
+          decoration: InputDecoration(
+            filled: true,
+            icon: Icon(Icons.sports_baseball_sharp),
+            hintText: "Enter player name",
+            labelText: "Player Name",
+            // prefixText: '+1 ',
+          ),
+          onChanged: (value) {
+          //  newMatch.setTeam2Name(value);
+            playerName = value;
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Cancel"),
+            ),
+            FlatButton(
+              color: Colors.blue.shade500,
+              child: Text("Create"),
+              onPressed: () {
+                onCreateBtnPressed();
+              },
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+  void onCreateBtnPressed(){
+    usersRef.doc(widget.user.uid).collection("createdMatches")
+        .doc(widget.match.getMatchId())
+        .collection('${widget.match.getInningNo()}InningBattingData')
+        .doc(playerName).update(
+      {
+        "name":playerName,
+        "runs":0,
+        "balls":0,
+        "noOf4s":0,
+        "noOf6s":0,
+        "isOnStrike":false,
+        "isBatting":false,
+      }
+    );
+  }
+}
