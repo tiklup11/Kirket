@@ -7,7 +7,9 @@ import 'package:umiperer/modals/Bowler.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/runUpdater.dart';
+import 'package:umiperer/screens/fill_new_match_details_screen.dart';
 import 'package:umiperer/screens/matchDetailsScreens/select_and_create_batsmen_page.dart';
+import 'package:umiperer/screens/matchDetailsScreens/select_and_create_bowler_page.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/ball_widget.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
@@ -16,6 +18,7 @@ class ScoreCountingPage extends StatefulWidget {
   ScoreCountingPage({this.match, this.user});
   final CricketMatch match;
   final User user;
+
 
   @override
   _ScoreCountingPageState createState() => _ScoreCountingPageState();
@@ -26,6 +29,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   ScrollController _scrollController;
   RunUpdater runUpdater;
   final scoreSelectionAreaLength = 220;
+  bool isBatsmen1OnStrike =true;
+  String onStrikeBatsmen;
 
   int inningNumber;
   int currentOverNo;
@@ -47,21 +52,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
       median: "3",
       economy: "3.03");
 
-  Batsmen batsmen1 = Batsmen(
-      balls: "40",
-      noOf4s: "11",
-      noOf6s: "4",
-      SR: "90",
-      playerName: "Rahul",
-      runs: "70");
+  Batsmen batsmen1;
 
-  Batsmen batsmen2 = Batsmen(
-      balls: "40",
-      noOf4s: "11",
-      noOf6s: "4",
-      SR: "90",
-      playerName: "Rahul",
-      runs: "70");
+  Batsmen batsmen2;
 
   @override
   void initState() {
@@ -97,7 +90,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   buildOversList(),
                   textWidget(),
                   currentOverNo==0?
-                      startFirstOverBtn():
+                      startOverBtns():
                   scoreSelectionWidget(
                       overNumber: 1, ballNo: 1, inningNo: 1, playersName: "pulkit"),
                 ],
@@ -197,13 +190,16 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     );
   }
 
-  ///TODO: might change its position
-  tossLineWidget() {
-    return Container(
-        padding: EdgeInsets.only(left: 12, top: 12),
-        child: Text(
-            "${widget.match.getTossWinner()} won the toss and choose to ${widget.match.getChoosedOption()}"));
+  void toogleStrikeOnFirebase({String playerName,bool value}){
+    usersRef.doc(widget.user.uid).collection('createdMatches')
+        .doc(widget.match.getMatchId())
+        .collection('${widget.match.getInningNo()}InningBattingData')
+        .doc(playerName)
+        .update({
+      "isOnStrike":value,
+    });
   }
+
 
   ///stream-builder making batsmen score card
   playersScore() {
@@ -221,6 +217,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
       child: Column(
         children: [
           BatsmenScoreRow(
+            isOnStrike: false,
             batsmen: Batsmen(
                 runs: "R",
                 playerName: "Batsmen",
@@ -235,17 +232,70 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
           //Batsman's data
           StreamBuilder<QuerySnapshot>(
-            stream: dataStreams.batsmenData(inningNumber: inningNumber),
+
+            stream: usersRef.doc(widget.user.uid)
+                .collection('createdMatches')
+                .doc(widget.match.getMatchId())
+                .collection('${inningNumber}InningBattingData')
+                .where("isBatting",isEqualTo: true)
+                .where("isOnStrike",isEqualTo: true).snapshots(),
+
+            // stream: dataStreams.batsmenData(inningNumber: inningNumber).where((isBatting) => false).where((isOnStrike) => true),
             builder: (context, snapshot) {
+
               if(!snapshot.hasData){
-                return BatsmenScoreRow(batsmen: dummyBatsmen,);
+                return BatsmenScoreRow(batsmen: dummyBatsmen,isOnStrike: false,);
               }else{
                 final batsmenData = snapshot.data.docs;
                 if(batsmenData.isEmpty){
-                  return BatsmenScoreRow(batsmen: dummyBatsmen,);
+                  return BatsmenScoreRow(batsmen: dummyBatsmen,isOnStrike: false);
                 }else{
-                  return BatsmenScoreRow(
-                    batsmen: batsmen1,
+                  final strikerData = snapshot.data.docs;
+
+                  strikerData.forEach((playerData) {
+                    final ballsPlayed = playerData.data()['balls'];
+                    final noOf4s = playerData.data()['noOf4s'];
+                    final noOf6s = playerData.data()['noOf6s'];
+                    final playerName = playerData.data()['name'];
+                    final runs = playerData.data()['runs'];
+                    onStrikeBatsmen = playerName;
+
+                    int SR = 0;
+                    try{
+                      SR = (runs/ballsPlayed)*100;
+                    }catch(e){
+                      SR = 0;
+                    }
+
+                    batsmen1 = Batsmen(
+                        balls: ballsPlayed.toString(),
+                        noOf4s: noOf4s.toString(),
+                        noOf6s: noOf6s.toString(),
+                        SR: SR.toString(),
+                        playerName: playerName,
+                        runs: runs.toString());
+
+                  });
+
+
+
+                  return GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        if(onStrikeBatsmen!=batsmen1.playerName) {
+                          toogleStrikeOnFirebase(playerName: onStrikeBatsmen,
+                              value: isBatsmen1OnStrike);
+                          isBatsmen1OnStrike = true;
+                          onStrikeBatsmen = batsmen2.playerName;
+                          toogleStrikeOnFirebase(playerName: onStrikeBatsmen,
+                              value: isBatsmen1OnStrike);
+                        }
+                      });
+                    },
+                    child: BatsmenScoreRow(
+                      isOnStrike: isBatsmen1OnStrike,
+                      batsmen: batsmen1,
+                    ),
                   );
                 }
               }
@@ -255,17 +305,65 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             height: 4,
           ),
           StreamBuilder<QuerySnapshot>(
-              stream: dataStreams.batsmenData(inningNumber: inningNumber),
+
+              stream: usersRef.doc(widget.user.uid)
+                  .collection('createdMatches')
+                  .doc(widget.match.getMatchId())
+                  .collection('${inningNumber}InningBattingData')
+                  .where("isBatting",isEqualTo: true)
+                  .where("isOnStrike",isEqualTo: false).snapshots(),
+
+              // stream: dataStreams.batsmenData(inningNumber: inningNumber).where((isBatting) => false).where((isOnStrike) => true),
               builder: (context, snapshot) {
+
                 if(!snapshot.hasData){
-                  return BatsmenScoreRow(batsmen: dummyBatsmen,);
+                  return BatsmenScoreRow(batsmen: dummyBatsmen,isOnStrike: false,);
                 }else{
                   final batsmenData = snapshot.data.docs;
                   if(batsmenData.isEmpty){
-                    return BatsmenScoreRow(batsmen: dummyBatsmen,);
+                    return BatsmenScoreRow(batsmen: dummyBatsmen,isOnStrike: false);
                   }else{
-                    return BatsmenScoreRow(
-                      batsmen: batsmen2,
+                    final strikerData = snapshot.data.docs;
+
+                    strikerData.forEach((playerData) {
+                      final ballsPlayed = playerData.data()['balls'];
+                      final noOf4s = playerData.data()['noOf4s'];
+                      final noOf6s = playerData.data()['noOf6s'];
+                      final playerName = playerData.data()['name'];
+                      final runs = playerData.data()['runs'];
+
+                      int SR = 0;
+                      try{
+                        SR = (runs/ballsPlayed)*100;
+                      }catch(e){
+                        SR = 0;
+                      }
+                      batsmen2 = Batsmen(
+                          balls: ballsPlayed.toString(),
+                          noOf4s: noOf4s.toString(),
+                          noOf6s: noOf6s.toString(),
+                          SR: SR.toString(),
+                          playerName: playerName,
+                          runs: runs.toString());
+                    });
+
+                    return GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          if(onStrikeBatsmen!=batsmen2.playerName) {
+                            toogleStrikeOnFirebase(playerName: onStrikeBatsmen,
+                                value: !isBatsmen1OnStrike);
+                            isBatsmen1OnStrike = false;
+                            onStrikeBatsmen = batsmen2.playerName;
+                            toogleStrikeOnFirebase(playerName: onStrikeBatsmen,
+                                value: !isBatsmen1OnStrike);
+                          }
+                        });
+                      },
+                      child: BatsmenScoreRow(
+                        isOnStrike: !isBatsmen1OnStrike,
+                        batsmen: batsmen2,
+                      ),
                     );
                   }
                 }
@@ -381,7 +479,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                       if (!snapshot.hasData) {
                         return CircularProgressIndicator();
                       } else {
-                        // List<Widget> balls;
 
                         final overData = snapshot.data.data();
 
@@ -396,11 +493,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
                         Map<String, dynamic> fullOverData =
                             overData['fullOverData'];
-                        print(
-                            "MAPPPPPPPPPPPPPPPPP fullOverData: $fullOverData");
                         final isThisCurrentOver = overData["isThisCurrentOver"];
                         final currentBallNo = overData['currentBall'];
-                        // final currentOverNo=overData['overNo'];
                         print("CurrentBallNo::::::::::::::$currentBallNo");
 
                         //decoding the map
@@ -602,23 +696,51 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   }
 
   ///only visible when starting first over to make UI intiative
-  startFirstOverBtn() {
+  startOverBtns() {
     return Container(
+      color: Colors.white,
       width: double.infinity,
       height: scoreSelectionAreaLength.toDouble(),
-      color: Colors.white,
-      child: Container(
-        child: FlatButton(
-          onPressed: () {
-            print("HELLLLOO  :/");
-            //newOverPlayersSelectionDialog();
-            Navigator.push(context, MaterialPageRoute(builder: (context){
-              return SelectAndCreateBatsmenPage(match: widget.match,user: widget.user,);
-            }));
-          },
-          child: Text("START FIRST OVER"),
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          MaterialButton(
+            minWidth: 200,
+            highlightElevation: 0,
+            elevation: 0,
+            color: Colors.blue,
+            child: Text("Select Batsmen"),
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context){
+                return SelectAndCreateBatsmenPage(match: widget.match,user: widget.user,);
+              }));
+            },
+          ),
+          MaterialButton(
+            minWidth: 200,
+            highlightElevation: 0,
+            elevation: 0,
+            color: Colors.blue,
+            child: Text("Select Bowler"),
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context){
+                return SelectAndCreateBowlerPage(match: widget.match,user: widget.user,);
+              }));
+            },
+          )
+        ],
       ),
     );
   }
+
+
+  ///TODO: might change its position
+  tossLineWidget() {
+    return Container(
+        padding: EdgeInsets.only(left: 12, top: 12),
+        child: Text(
+            "${widget.match.getTossWinner()} won the toss and choose to ${widget.match.getChoosedOption()}"));
+  }
 }
+///
+

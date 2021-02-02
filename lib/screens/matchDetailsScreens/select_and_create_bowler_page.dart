@@ -6,22 +6,22 @@ import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/screens/matchDetailsScreens/dialog_custom.dart';
 
-class SelectAndCreateBatsmenPage extends StatefulWidget {
-  SelectAndCreateBatsmenPage({this.match, this.user});
+class SelectAndCreateBowlerPage extends StatefulWidget {
+  SelectAndCreateBowlerPage({this.match, this.user});
 
   final CricketMatch match;
   final User user;
   @override
-  _SelectAndCreateBatsmenPageState createState() =>
-      _SelectAndCreateBatsmenPageState();
+  _SelectAndCreateBowlerPageState createState() =>
+      _SelectAndCreateBowlerPageState();
 }
 
-class _SelectAndCreateBatsmenPageState
-    extends State<SelectAndCreateBatsmenPage> {
+class _SelectAndCreateBowlerPageState
+    extends State<SelectAndCreateBowlerPage> {
   DataStreams _dataStreams;
   bool isPlayerSelected = false;
   HashMap<String,bool> checkBoxMap = HashMap();
-  int maximumCheckBox=2;
+  int maximumCheckBox=1;
   int selectedCheckBox;
 
   @override
@@ -39,23 +39,23 @@ class _SelectAndCreateBatsmenPageState
         appBar: AppBar(
           // backgroundColor: Colors.blueAccent,
           automaticallyImplyLeading: true,
-          title: Text("Select Batsmen"),
+          title: Text("Select Bowler"),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            batsmensList(),
+            bowlersList(),
             addNewPlayerBtn(),
             saveBtn()
           ],
         ));
   }
 
-  Widget batsmensList() {
+  Widget bowlersList() {
 
     return StreamBuilder<QuerySnapshot>(
       stream:
-          _dataStreams.batsmenData(inningNumber: widget.match.getInningNo()),
+      _dataStreams.bowlersData(inningNumber: widget.match.getInningNo()),
       builder: (context, snapshot) {
         selectedCheckBox=0;
         if (!snapshot.hasData) {
@@ -70,10 +70,10 @@ class _SelectAndCreateBatsmenPageState
           ///getting isBatting data and filling checkboxes depending upon them
           playersData.forEach((player) {
 
-            if(player.data()['isBatting']==false){
+            if(player.data()['isBowling']==false){
               checkBoxMap[player.id]=false;
             }
-            if(player.data()['isBatting']==true){
+            if(player.data()['isBowling']==true){
               checkBoxMap[player.id]=true;
               selectedCheckBox++;
             }
@@ -106,11 +106,12 @@ class _SelectAndCreateBatsmenPageState
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("   $playerName"),
+
           Checkbox(
             value: checkBoxMap[playerName],
-            onChanged: (bool value){
+            onChanged: (bool value) {
               if(selectedCheckBox<maximumCheckBox || !value){
-                updateIsBatting(playerName: playerName,value: value);
+                updateIsBowling(playerName: playerName,value: value);
                 setState(() {
                   checkBoxMap[playerName] = value;
                   if(!value){
@@ -125,41 +126,14 @@ class _SelectAndCreateBatsmenPageState
     );
   }
 
-  void updateIsBatting({String playerName, bool value}){
-
-    if(selectedCheckBox==0){
-      usersRef.doc(widget.user.uid).collection('createdMatches')
-          .doc(widget.match.getMatchId())
-          .collection('${widget.match.getInningNo()}InningBattingData')
-          .doc(playerName)
-          .update({
-        "isBatting":value,
-        "isOnStrike":true,
-      });
-    }
-
-    if(selectedCheckBox==1){
-      usersRef.doc(widget.user.uid).collection('createdMatches')
-          .doc(widget.match.getMatchId())
-          .collection('${widget.match.getInningNo()}InningBattingData')
-          .doc(playerName)
-          .update({
-        "isBatting":value,
-        // "isOnStrike":true,
-      });
-    }
-
-    if(!value){
-      usersRef.doc(widget.user.uid).collection('createdMatches')
-          .doc(widget.match.getMatchId())
-          .collection('${widget.match.getInningNo()}InningBattingData')
-          .doc(playerName)
-          .update({
-        "isBatting":value,
-        "isOnStrike":value,
-      });
-    }
-
+  void updateIsBowling({String playerName, bool value}){
+    usersRef.doc(widget.user.uid).collection('createdMatches')
+        .doc(widget.match.getMatchId())
+        .collection('${widget.match.getInningNo()}InningBowlingData')
+        .doc(playerName)
+        .update({
+      "isBowling":value
+    });
   }
 
 
@@ -212,7 +186,7 @@ class _SelectAndCreateBatsmenPageState
         context: context,
         builder: (context) {
           return AddPlayerDialog(
-            areWeAddingBatsmen: true,
+            areWeAddingBatsmen: false,
             user: widget.user,
             match: widget.match,
           );

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
 
@@ -8,9 +7,11 @@ final usersRef = FirebaseFirestore.instance.collection('users');
 
 class AddPlayerDialog extends StatefulWidget {
 
-  AddPlayerDialog({this.match, this.user});
+  AddPlayerDialog({this.match, this.user,@required this.areWeAddingBatsmen});
+
   final CricketMatch match;
   final User user;
+  final bool areWeAddingBatsmen;
   @override
   _AddPlayerDialogState createState() => _AddPlayerDialogState();
 }
@@ -84,19 +85,137 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
   }
 
   void onCreateBtnPressed(){
-    usersRef.doc(widget.user.uid).collection("createdMatches")
-        .doc(widget.match.getMatchId())
-        .collection('${widget.match.getInningNo()}InningBattingData')
-        .doc(playerName).update(
-      {
-        "name":playerName,
-        "runs":0,
-        "balls":0,
-        "noOf4s":0,
-        "noOf6s":0,
-        "isOnStrike":false,
-        "isBatting":false,
+
+    if(widget.match.getInningNo()==1){
+
+      if(widget.areWeAddingBatsmen){
+        usersRef.doc(widget.user.uid).collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('1InningBattingData')
+            .doc(playerName).set(
+            {
+              "name":playerName,
+              "runs":0,
+              "balls":0,
+              "noOf4s":0,
+              "noOf6s":0,
+              "isOnStrike":false,
+              "isBatting":false,
+            }
+        );
+
+        usersRef.doc(widget.user.uid).collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('2InningBowlingData')
+            .doc(playerName).set(
+            {
+              "name":playerName,
+              "runs":0,
+              "overs":0,
+              "wickets":0,
+              "maidens":0,
+              "isBowling":false,
+            }
+        );
+      }else{
+
+        usersRef.doc(widget.user.uid).collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('1InningBowlingData')
+            .doc(playerName).set(
+            {
+              "name":playerName,
+              "runs":0,
+              "overs":0,
+              "wickets":0,
+              "maidens":0,
+              "isBowling":false,
+            }
+        );
+
+        usersRef.doc(widget.user.uid).collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('2InningBattingData')
+            .doc(playerName).set(
+            {
+              "name":playerName,
+              "runs":0,
+              "balls":0,
+              "noOf4s":0,
+              "noOf6s":0,
+              "isOnStrike":false,
+              "isBatting":false,
+            }
+        );
+
       }
-    );
+
+
+    }
+
+    if(widget.match.getInningNo()==2){
+
+      if(widget.areWeAddingBatsmen){
+        usersRef.doc(widget.user.uid).collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('2InningBattingData')
+            .doc(playerName).set(
+            {
+              "name":playerName,
+              "runs":0,
+              "balls":0,
+              "noOf4s":0,
+              "noOf6s":0,
+              "isOnStrike":false,
+              "isBatting":false,
+            }
+        );
+
+        usersRef.doc(widget.user.uid).collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('1InningBowlingData')
+            .doc(playerName).set(
+            {
+              "name":playerName,
+              "runs":0,
+              "overs":0,
+              "wickets":0,
+              "maidens":0,
+              "isBowling":false,
+            }
+        );
+      }else{
+        usersRef.doc(widget.user.uid).collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('2InningBowlingData')
+            .doc(playerName).set(
+            {
+              "name":playerName,
+              "runs":0,
+              "overs":0,
+              "wickets":0,
+              "maidens":0,
+              "isBowling":false,
+            }
+        );
+
+        usersRef.doc(widget.user.uid).collection("createdMatches")
+            .doc(widget.match.getMatchId())
+            .collection('1InningBattingData')
+            .doc(playerName).set(
+            {
+              "name":playerName,
+              "runs":0,
+              "balls":0,
+              "noOf4s":0,
+              "noOf6s":0,
+              "isOnStrike":false,
+              "isBatting":false,
+            }
+        );
+      }
+    }
+
+    Navigator.pop(context);
   }
 }
