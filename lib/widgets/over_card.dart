@@ -37,7 +37,7 @@ class _OverCardState extends State<OverCard> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
       margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-      height: 140,
+      height: 135,
       // color: Colors.white,
       decoration: BoxDecoration(
         color: Colors.white,

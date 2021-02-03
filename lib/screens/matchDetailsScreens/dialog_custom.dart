@@ -130,6 +130,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "wickets":0,
               "maidens":0,
               "isBowling":false,
+              "ballOfTheOver":0,
             }
         );
 
@@ -147,10 +148,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "isBatting":false,
             }
         );
-
       }
-
-
     }
 
     if(widget.match.getInningNo()==2){
@@ -182,6 +180,8 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "wickets":0,
               "maidens":0,
               "isBowling":false,
+              "ballOfTheOver":0,
+
             }
         );
       }else{
@@ -196,6 +196,8 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "wickets":0,
               "maidens":0,
               "isBowling":false,
+              "ballOfTheOver":0,
+
             }
         );
 
@@ -215,7 +217,6 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
         );
       }
     }
-
     Navigator.pop(context);
   }
 }

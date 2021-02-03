@@ -77,7 +77,7 @@ class _SelectAndCreateBatsmenPageState
               checkBoxMap[player.id]=true;
               selectedCheckBox++;
             }
-            playerNames.add(playerText(playerName:player.id));
+            playerNames.add(selectPlayerWidget(playerName:player.id));
           });
 
           print("XXXXXXXXXXXXXXXXXXXXD $selectedCheckBox");
@@ -95,7 +95,7 @@ class _SelectAndCreateBatsmenPageState
   }
 
 
-  Widget playerText({String playerName}) {
+  Widget selectPlayerWidget({String playerName}) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 4,vertical: 4),
       // padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
@@ -110,7 +110,9 @@ class _SelectAndCreateBatsmenPageState
             value: checkBoxMap[playerName],
             onChanged: (bool value){
               if(selectedCheckBox<maximumCheckBox || !value){
+
                 updateIsBatting(playerName: playerName,value: value);
+
                 setState(() {
                   checkBoxMap[playerName] = value;
                   if(!value){
@@ -136,6 +138,7 @@ class _SelectAndCreateBatsmenPageState
         "isBatting":value,
         "isOnStrike":true,
       });
+
     }
 
     if(selectedCheckBox==1){
@@ -158,10 +161,10 @@ class _SelectAndCreateBatsmenPageState
         "isBatting":value,
         "isOnStrike":value,
       });
+
     }
 
   }
-
 
   Widget addNewPlayerText() {
     return Expanded(
@@ -200,11 +203,14 @@ class _SelectAndCreateBatsmenPageState
         child: Text("SAVE"),
         onPressed: () {
           //TODO: update current batsmen name and other related stuff
+          // onSaveBtnPressed();
           Navigator.pop(context);
         },
       ),
     );
   }
+
+
 
 
   openDialog() {

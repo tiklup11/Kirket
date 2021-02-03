@@ -4,6 +4,7 @@ import 'package:umiperer/modals/Ball.dart';
 class BallWidget extends StatelessWidget {
   BallWidget({this.currentBall});
 
+  final double ballRadius = 18.0;
   final Ball currentBall;
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class BallWidget extends StatelessWidget {
               "",
               style: TextStyle(color: Colors.black),
             ),
-            radius: 20,
+            radius: ballRadius,
             backgroundColor: isCurrentBall
                 ? Colors.black54
                 : Colors.blue.shade50,
@@ -62,7 +63,7 @@ class BallWidget extends StatelessWidget {
             "",
             style: TextStyle(color: Colors.black),
           ),
-          radius: 20,
+          radius: ballRadius,
           backgroundColor: Colors.blue.shade50,
         ));
   }

@@ -24,6 +24,12 @@ class RunUpdater {
           .doc(matchId)
           .update({"currentBallNo": FieldValue.increment(1)});
 
+      userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .update({"totalRuns": FieldValue.increment(runScored)});
+
       _updateBatsmenData(
           inningNo: inningNo, batsmenName: batmenName, runsScored: runScored);
 
@@ -77,9 +83,7 @@ class RunUpdater {
             .doc(userUID)
             .collection('createdMatches')
             .doc(matchId)
-            .collection('FirstInning')
-            .doc("BattingTeam")
-            .collection('Players')
+            .collection('1InningBattingData')
             .doc(batsmenName)
             .update({
           "balls": FieldValue.increment(1),
@@ -91,9 +95,7 @@ class RunUpdater {
             .doc(userUID)
             .collection('createdMatches')
             .doc(matchId)
-            .collection('FirstInning')
-            .doc("BattingTeam")
-            .collection('Players')
+            .collection('1InningBattingData')
             .doc(batsmenName)
             .update({
           "balls": FieldValue.increment(1),
@@ -105,9 +107,7 @@ class RunUpdater {
             .doc(userUID)
             .collection('createdMatches')
             .doc(matchId)
-            .collection('FirstInning')
-            .doc("BattingTeam")
-            .collection('Players')
+            .collection('1InningBattingData')
             .doc(batsmenName)
             .update({
           "balls": FieldValue.increment(1),
@@ -120,9 +120,7 @@ class RunUpdater {
             .doc(userUID)
             .collection('createdMatches')
             .doc(matchId)
-            .collection('SecondInning')
-            .doc("BattingTeam")
-            .collection('Players')
+            .collection('2InningBattingData')
             .doc(batsmenName)
             .update({
           "balls": FieldValue.increment(1),
@@ -134,9 +132,7 @@ class RunUpdater {
             .doc(userUID)
             .collection('createdMatches')
             .doc(matchId)
-            .collection('SecondInning')
-            .doc("BattingTeam")
-            .collection('Players')
+            .collection('2InningBattingData')
             .doc(batsmenName)
             .update({
           "balls": FieldValue.increment(1),
@@ -148,9 +144,7 @@ class RunUpdater {
             .doc(userUID)
             .collection('createdMatches')
             .doc(matchId)
-            .collection('SecondInning')
-            .doc("BattingTeam")
-            .collection('Players')
+            .collection('2InningBattingData')
             .doc(batsmenName)
             .update({
           "balls": FieldValue.increment(1),
@@ -166,9 +160,7 @@ class RunUpdater {
           .doc(userUID)
           .collection('createdMatches')
           .doc(matchId)
-          .collection('FirstInning')
-          .doc("BowlingTeam")
-          .collection('Players')
+          .collection('1InningBowlingData')
           .doc(bowlersName)
           .update({
         "ballOfTheOver": FieldValue.increment(1),
@@ -179,9 +171,7 @@ class RunUpdater {
           .doc(userUID)
           .collection('createdMatches')
           .doc(matchId)
-          .collection('SecondInning')
-          .doc("BowlingTeam")
-          .collection('Players')
+          .collection('2InningBowlingData')
           .doc(bowlersName)
           .update({
         "ballOfTheOver": FieldValue.increment(1),

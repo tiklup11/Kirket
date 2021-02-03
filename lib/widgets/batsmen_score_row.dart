@@ -3,29 +3,44 @@ import 'package:umiperer/modals/Batsmen.dart';
 
 class BatsmenScoreRow extends StatelessWidget {
 
-  BatsmenScoreRow({this.batsmen,@required this.isOnStrike});
+  BatsmenScoreRow({this.batsmen,@required this.isOnStrike,@required this.isThisSelectBatsmenBtn});
 
   final Batsmen batsmen;
-  bool isOnStrike;
+  final bool isOnStrike;
+  final bool isThisSelectBatsmenBtn;
 
+  Color whatColor(){
+    if(isThisSelectBatsmenBtn){
+      return Colors.blueGrey.withOpacity(0.5);
+    }
+    if(isOnStrike){
+      return ThemeData.light().primaryColor.withOpacity(0.3);
+    }
+    return Colors.white;
+  }
   @override
   Widget build(BuildContext context) {
+
     return batsmanScoreRow();
   }
 
   batsmanScoreRow() {
     final TextStyle textStyle = TextStyle(color: Colors.black);
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 3,horizontal: 6),
-      color: !isOnStrike?
-      Colors.white:
-      ThemeData.light().primaryColor.withOpacity(0.3),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: whatColor(),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 5,horizontal: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
             width: 120,
-            child: Text(
+            child:
+            batsmen.isOnStrike?
+                Text("${batsmen.playerName} 🏏"):
+            Text(
               batsmen.playerName,
               style: textStyle,
               maxLines: 2,
