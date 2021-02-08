@@ -115,6 +115,8 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "wickets":0,
               "maidens":0,
               "isBowling":false,
+              "totalBalls":6,
+              "ballOfTheOver":0,
             }
         );
       }else{
@@ -131,6 +133,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "maidens":0,
               "isBowling":false,
               "ballOfTheOver":0,
+              "totalBalls":6
             }
         );
 
@@ -181,6 +184,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "maidens":0,
               "isBowling":false,
               "ballOfTheOver":0,
+              "totalBalls":6
 
             }
         );
@@ -197,7 +201,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "maidens":0,
               "isBowling":false,
               "ballOfTheOver":0,
-
+              "totalBalls":6
             }
         );
 

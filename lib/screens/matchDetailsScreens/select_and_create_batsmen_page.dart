@@ -38,8 +38,8 @@ class _SelectAndCreateBatsmenPageState
     return Scaffold(
         appBar: AppBar(
           // backgroundColor: Colors.blueAccent,
-          automaticallyImplyLeading: true,
-          title: Text("Select Batsmen"),
+          automaticallyImplyLeading: false,
+          title: Text("Select Batsmen (${widget.match.getCurrentBattingTeam()})"),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,7 +62,9 @@ class _SelectAndCreateBatsmenPageState
           return CircularProgressIndicator();
         } else {
           final playersData = snapshot.data.docs;
+
           List<Widget> playerNames = [];
+
           if (playersData.isEmpty) {
             return addNewPlayerText();
           }
@@ -200,7 +202,7 @@ class _SelectAndCreateBatsmenPageState
       child: FlatButton(
         minWidth: double.infinity,
         color: ThemeData.light().primaryColor,
-        child: Text("SAVE"),
+        child: Text("CONTINUE.."),
         onPressed: () {
           //TODO: update current batsmen name and other related stuff
           // onSaveBtnPressed();

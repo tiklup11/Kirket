@@ -37,9 +37,9 @@ class _SelectAndCreateBowlerPageState
 
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           // backgroundColor: Colors.blueAccent,
-          automaticallyImplyLeading: true,
-          title: Text("Select Bowler"),
+          title: Text("Select Bowler (${widget.match.getCurrentBowlingTeam()})"),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,7 +171,7 @@ class _SelectAndCreateBowlerPageState
       child: FlatButton(
         minWidth: double.infinity,
         color: ThemeData.light().primaryColor,
-        child: Text("SAVE"),
+        child: Text("CONTINUE.."),
         onPressed: () {
           //TODO: update current batsmen name and other related stuff
           Navigator.pop(context);

@@ -7,6 +7,8 @@ class Bowler{
   String runs;
   String wickets;
   String economy;
+  int totalBallBowled;
+  int ballOfTheOver;
 
   Bowler(
       {this.playerName,
@@ -15,5 +17,7 @@ class Bowler{
       this.runs,
       this.wickets,
       this.economy,
+        this.totalBallBowled,
+        this.ballOfTheOver
       });
 }

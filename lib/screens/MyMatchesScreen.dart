@@ -100,6 +100,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
             }
 
             return ListView.builder(
+              // physics: BouncingScrollPhysics(),
                 itemCount: matchCards.length,
                 itemBuilder: (context, int){
               return matchCards[int];

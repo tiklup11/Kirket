@@ -44,6 +44,14 @@ class CricketMatch{
       return secondBattingTeam;
     }
   }
+  String getCurrentBowlingTeam(){
+    if(getCurrentBattingTeam()==getTeam1Name()){
+      return getTeam2Name();
+    }
+    if(getCurrentBattingTeam()==getTeam2Name()){
+      return getTeam1Name();
+    }
+  }
 
 
   setFirstInnings() {

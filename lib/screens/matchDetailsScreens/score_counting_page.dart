@@ -57,6 +57,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         userUID: widget.user.uid, matchId: widget.match.getMatchId());
     runUpdater = RunUpdater(
         userUID: widget.user.uid, matchId: widget.match.getMatchId());
+
   }
 
   @override
@@ -213,6 +214,14 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
       "nonStrikerBatsmen": playerName
     });
   }
+
+  void updateBowlerDataToGeneralMatchData(String playerName){
+
+    usersRef.doc(widget.user.uid).collection('createdMatches')
+        .doc(widget.match.getMatchId()).update({
+      "currentBowler":playerName
+    });
+  }
   ///    ///    ///
 
   ///stream-builder making batsmen score card
@@ -315,6 +324,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                           runs: runs.toString(),
                           isOnStrike: isOnStrike));
                     });
+
+                    if(currentBothBatsmen.length==1){
+                      currentBothBatsmen.add(dummyBatsmen);
+                    }
 
                     if(currentBothBatsmen[0]!=null){
                       batsmen1 = currentBothBatsmen[0];
@@ -433,6 +446,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
           SizedBox(
             height: 4,
           ),
+
+          ///Bowler's StreamBuilder
           StreamBuilder<QuerySnapshot>(
               stream: usersRef
                   .doc(widget.user.uid)
@@ -456,15 +471,17 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   currentBowler = dummyBowlerData;
 
                   currentBowlerData.forEach((playerData) {
-                    print("ENTERINGGGGGGGGGGG");
-                    print("DATA::BOWLER::  ${playerData.data()}");
+                    // print("ENTERINGGGGGGGGGGG");
+                    // print("DATA::BOWLER::  ${playerData.data()}");
 
                     final maidens = playerData.data()['maidens'];
                     final wickets = playerData.data()['wickets'];
                     final overs = playerData.data()['overs'];
+                    final ballOfThatOver = playerData.data()['ballOfTheOver'];
                     final playerName = playerData.data()['name'];
                     final runs = playerData.data()['runs'];
                     final isBowling = playerData.data()['isBowling'];
+                    final totalBalls = playerData.data()['totalBalls'];
 
                     int eco = 0;
                     try {
@@ -478,10 +495,29 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                       runs: runs.toString(),
                       economy: eco.toStringAsFixed(1),
                       median: maidens.toString(),
-                      overs: overs.toString(),
-                      wickets: wickets.toString()
+                      overs: "$overs.$ballOfThatOver",
+                      wickets: wickets.toString(),
+                      totalBallBowled: totalBalls,
+                      ballOfTheOver: ballOfThatOver
                     );
                   });
+
+                  if(currentBowler!=dummyBowlerData){
+                    updateBowlerDataToGeneralMatchData(currentBowler.playerName);
+                    print("CURRENT B:: ${currentBowler.playerName}");
+                  }
+
+                  ///this is checking if the over is done or not
+                  if(currentBowler.ballOfTheOver==currentBowler.totalBallBowled  && currentBowler!=dummyBowlerData){
+
+                    ///update isBowling to false
+                    ///currentOver++
+                    ///ballOfTheOver==0
+                    ///displaySelectBowlerBtn
+                    updateIsBowling(bowlerName: currentBowler.playerName,setTo: false);
+                    updateBowlerDataToGeneralDoc();
+
+                  }
 
                   return BowlerStatsRow(
                     isThisSelectBowlerBtn: false,
@@ -492,6 +528,28 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         ],
       ),
     );
+  }
+
+  updateIsBowling({String bowlerName, bool setTo}){
+    usersRef.doc(widget.user.uid).collection('createdMatches')
+        .doc(widget.match.getMatchId())
+        .collection('${widget.match.getInningNo()}InningBowlingData')
+        .doc(bowlerName)
+        .update({
+      "isBowling":setTo,
+      "ballOfTheOver":0,
+      "overs":FieldValue.increment(1)
+    });
+  }
+
+  updateBowlerDataToGeneralDoc(){
+    usersRef.doc(widget.user.uid).collection('createdMatches')
+        .doc(widget.match.getMatchId())
+        .update({
+      "currentOverNumber":FieldValue.increment(1),
+      "currentBallNo":0,
+      "currentBowler": null
+    });
   }
 
   buildOversList() {
@@ -559,7 +617,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                         inningNo: inningNumber, overNumber: overNoOnCard),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return CircularProgressIndicator();
+                        return Text("Loading");
                       } else {
                         final overData = snapshot.data.data();
 
@@ -603,6 +661,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   ///this is placed at the bottom, contains many run buttons
   scoreSelectionWidget(
       {String playersName, int overNumber, int ballNo, int inningNo}) {
+
     final double buttonWidth = 60;
     final btnColor = Colors.black12;
     final spaceBtwn = SizedBox(
