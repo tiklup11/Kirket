@@ -95,7 +95,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'tossWinner': null,
       'whatChoose': null, //bat or ball
       'isMatchStarted': false,
-      'currentOverNumber': 0,
+      'currentOverNumber': 1,
       'inningNumber':1,
       'strikerBatsmen': null,
       'nonStrikerBatsmen':null,

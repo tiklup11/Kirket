@@ -70,14 +70,14 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
                 // backgroundColor:Colors.white,
               ),
             ),
-            ListTile(
-              title: Text('Item 1'),
-              trailing: Icon(Icons.arrow_right),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
+            // ListTile(
+            //   title: Text('Item 1'),
+            //   trailing: Icon(Icons.arrow_right),
+            //   onTap: () {
+            //     // Update the state of the app.
+            //     // ...
+            //   },
+            // ),
             ListTile(
               title: Text('Logout'),
               onTap: (){

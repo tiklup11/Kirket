@@ -17,7 +17,7 @@ class BallWidget extends StatelessWidget {
   ///circleBall widget placed inside Over container
   ballWidget() {
     bool isCurrentBall = false;
-    if(currentBall.currentBallNo==key && currentBall.currentOverNumber==currentBall.cardOverNo){
+    if(currentBall.currentBallNo==key && currentBall.currentOverNo==currentBall.cardOverNo){
       isCurrentBall=true;
     }
     print( "and runsScored=${currentBall.runScoredOnThisBall}");

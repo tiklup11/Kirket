@@ -184,10 +184,10 @@ class _SelectAndCreateBatsmenPageState
 
   Widget addNewPlayerBtn() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: EdgeInsets.symmetric(horizontal: 26),
       child: FlatButton(
         minWidth: double.infinity,
-        color: ThemeData.light().primaryColor,
+        color: Colors.blueGrey.shade400,
         child: Text("ADD NEW PLAYER"),
         onPressed: () {
           openDialog();
@@ -198,10 +198,10 @@ class _SelectAndCreateBatsmenPageState
 
   Widget saveBtn() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: EdgeInsets.only(left: 26,right: 26,bottom: 10),
       child: FlatButton(
         minWidth: double.infinity,
-        color: ThemeData.light().primaryColor,
+        color: Colors.blueGrey.shade400,
         child: Text("CONTINUE.."),
         onPressed: () {
           //TODO: update current batsmen name and other related stuff

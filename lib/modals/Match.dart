@@ -51,6 +51,7 @@ class CricketMatch{
     if(getCurrentBattingTeam()==getTeam2Name()){
       return getTeam1Name();
     }
+    return null;
   }
 
 

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Bowler{
   String playerName;
   String overs;
