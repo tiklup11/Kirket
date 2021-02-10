@@ -6,8 +6,6 @@ import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/LiveMatchesScreen.dart';
 import 'package:umiperer/screens/upcoming_matches_screens.dart';
 
-
-
 ///This is BottomNavigationBar
 
 /// This is the stateful widget that the main application instantiates.
@@ -23,10 +21,10 @@ class MatchHomeScreens extends StatefulWidget {
 class _MatchHomeScreensState extends State<MatchHomeScreens> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-   static List<Widget> _widgetOptions;
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static List<Widget> _widgetOptions;
 
-  void _signOut() async{
+  void _signOut() async {
     // print('signing out');
     await FirebaseAuth.instance.signOut();
     GoogleSignIn googleSignIn = GoogleSignIn();
@@ -44,7 +42,9 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
     // TODO: implement initState
     super.initState();
     _widgetOptions = <Widget>[
-      MyMatchesScreen(user: widget.user,),
+      MyMatchesScreen(
+        user: widget.user,
+      ),
       LiveMatchesScreen(),
       UpcomingMatchesScreen(),
       // ProfileScreen(),
@@ -80,7 +80,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
             // ),
             ListTile(
               title: Text('Logout'),
-              onTap: (){
+              onTap: () {
                 showAlertDialog(context);
               },
               trailing: Icon(Icons.arrow_right),
@@ -125,18 +125,17 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
     );
   }
 
-
   showAlertDialog(BuildContext context) {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.pop(context);
       },
     );
     Widget continueButton = FlatButton(
       child: Text("Log0ut"),
-      onPressed:  (){
+      onPressed: () {
         Navigator.pop(context);
         _signOut();
       },
