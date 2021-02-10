@@ -36,8 +36,7 @@ class _TeamDetailsState extends State<TeamDetails> {
           Container(
             margin: EdgeInsets.only(top: (22*SizeConfig.one_H).roundToDouble(),bottom: (2*SizeConfig.one_H).roundToDouble()),
             padding: EdgeInsets.only(left: (16*SizeConfig.one_W).roundToDouble(),
-                top: (4*SizeConfig.one_W).roundToDouble(),
-                bottom: (4*SizeConfig.one_H).roundToDouble()),
+            ),
             child: Text(
               "INFO",
             ),
@@ -50,9 +49,12 @@ class _TeamDetailsState extends State<TeamDetails> {
 
   matchInfo() {
     return Container(
-      padding: EdgeInsets.only(left: (16*SizeConfig.one_W).roundToDouble(), top: (10*SizeConfig.one_H).roundToDouble(),
-          bottom: (10*SizeConfig.one_H).roundToDouble()),
-      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (10*SizeConfig.one_H).roundToDouble()),
+      margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (10*SizeConfig.one_H).roundToDouble()),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular((4*SizeConfig.one_W).roundToDouble()),
+      ),
       child: Column(
         children: [
           dataTable(dataType: "Team 1", dataInfo: widget.match.getTeam1Name()),

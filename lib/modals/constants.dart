@@ -1,5 +1,7 @@
 
-
-const String STATUS_LIVE = 'live match';
-const String STATUS_UPCOMING = 'upcoming match';
-const String STATUS_MY_MATCH = 'my match';
+const String K_WIDEBALL = 'wide';
+const String K_LEGBYE = 'legBye';
+const String K_BYE = 'bye';
+const String K_NOBALL = 'noBall';
+const String K_OUT='out';
+const String K_OVERTHROW = 'overThrow';

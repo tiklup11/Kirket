@@ -5,6 +5,7 @@ import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/runUpdater.dart';
 import 'package:umiperer/modals/size_config.dart';
@@ -13,8 +14,13 @@ import 'package:umiperer/screens/matchDetailsScreens/select_and_create_bowler_pa
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/ball_widget.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
+import 'package:umiperer/widgets/differentWidgets/bye_options.dart';
+import 'package:umiperer/widgets/differentWidgets/leg_bye_options.dart';
+import 'package:umiperer/widgets/differentWidgets/no_ball_options.dart';
+import 'package:umiperer/widgets/differentWidgets/out_options.dart';
+import 'package:umiperer/widgets/differentWidgets/wide_ball_options.dart';
 import 'package:umiperer/widgets/match_card_for_my_matches.dart';
-
+import "dart:io";
 ///media query done
 
 class ScoreCountingPage extends StatefulWidget {
@@ -53,6 +59,14 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   Batsmen batsmen1;
   Batsmen batsmen2;
 
+  ///
+  bool isWideBall =false;
+  bool isLegBye =false;
+  bool isBye = false;
+  bool isOut = false;
+  bool isNoBall = false;
+  ///
+
   @override
   void initState() {
     // TODO: implement initState
@@ -62,6 +76,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         userUID: widget.user.uid, matchId: widget.match.getMatchId());
     runUpdater = RunUpdater(
         userUID: widget.user.uid, matchId: widget.match.getMatchId());
+    currentBothBatsmen=[];
   }
 
   @override
@@ -102,6 +117,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             widget.match.secondBowlingTeam=secondBowlingTeam;
             widget.match.setInningNo(inningNumber);
 
+            final totalRuns = matchData['totalRuns'];
+            final wicketsDown = matchData['wicketsDown'];
+
             if(firstBattingTeam!=null && firstBowlingTeam!=null && secondBattingTeam!=null && secondBowlingTeam!=null)
             {
               widget.match.setFirstInnings();
@@ -122,8 +140,13 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             ///this is my stuff tobe done
             if(currentOverNo==widget.match.getOverCount()+1){
               //updateInningNo;
-              updateInningNumberAndOtherStuff();
+              updateInningNumberAndOtherStuff(totalRuns: totalRuns,totalWickets: wicketsDown);
               widget.match.setInningNo(2);
+            }
+
+            if(globalCurrentBowler!=null && currentOverNumber!=null){
+              //set bowlerName in overDoc
+              settingBowlerNameInOverDoc(bowlerName: globalCurrentBowler,overNo: currentOverNumber);
             }
 
             return Container(
@@ -135,7 +158,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   textWidget(),
                   // currentOverNo == 0
                   //     ? startOverBtns():
-                  whenToDisplayScoreSelectionWidget(),
+                  whenToDisplayWhatAtBottom(),
                 ],
               ),
             );
@@ -143,13 +166,31 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         });
   }
 
-  updateInningNumberAndOtherStuff(){
+  settingBowlerNameInOverDoc({String bowlerName, int overNo}) async{
+    await usersRef
+        .doc(widget.user.uid)
+        .collection('createdMatches')
+        .doc(widget.match.getMatchId())
+        .collection("inning${widget.match.getInningNo()}overs")
+        .doc("over$overNo")
+        .update({
+      "bowlerName":bowlerName
+    });
+  }
+
+  updateInningNumberAndOtherStuff({int totalRuns,int totalWickets}) async{
+
+    ///when 1st inning will end
     if(widget.match.getInningNo()==1){
-      usersRef
+      await usersRef
           .doc(widget.user.uid)
           .collection('createdMatches')
           .doc(widget.match.getMatchId())
           .update({
+
+        "1stInningTotalRuns":totalRuns,
+        "1stInningTotalWickets":totalWickets,
+
         "inningNumber": 2,
         "battingTeam": widget.match.secondBattingTeam,
         "currentBattingTeam": widget.match.secondBattingTeam,
@@ -158,6 +199,17 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         "strikerBatsmen": null,
         "totalRuns": 0,
         "wicketsDown": 0,
+      });
+    }
+
+    if(widget.match.getInningNo()==2){
+      await usersRef
+          .doc(widget.user.uid)
+          .collection('createdMatches')
+          .doc(widget.match.getMatchId())
+          .update({
+        "2stInningTotalRuns":totalRuns,
+        "2stInningTotalWickets":totalWickets,
       });
     }
   }
@@ -192,7 +244,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                 "$totalRuns/$wicketsDown ($currentOverNo.$ballOfTheOver)";
             double CRR = 0.0;
             try {
-              CRR = totalRuns / currentOverNo;
+              CRR = totalRuns / (currentOverNo+1);
             } catch (e) {
               CRR = 0.0;
             }
@@ -288,7 +340,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         .update({"currentBowler": playerName});
   }
 
-  ///    ///    ///
 
   ///stream-builder making batsmen score card
   playersScore() {
@@ -373,19 +424,23 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                       final runs = playerData.data()['runs'];
                       final isOnStrike = playerData.data()['isOnStrike'];
 
-                      int SR = 0;
+                      double SR = 0;
                       try {
-                        SR = (runs / ballsPlayed) * 100;
+                        print("tryinggggggggggggggggggggggggggggggggggggggggggggggggggg");
+                        SR = ((runs / ballsPlayed) * 100);
+                        print("tryinggggggggggggggggggggggggggggggggggggggggggggggggggg ;;SR== $SR");
                       } catch (e) {
+                        print("Failedddddddddddddddddddddd");
                         SR = 0;
                       }
+
 
                       currentBothBatsmen.add(Batsmen(
                           isClickable: true,
                           balls: ballsPlayed.toString(),
                           noOf4s: noOf4s.toString(),
                           noOf6s: noOf6s.toString(),
-                          SR: SR.toString(),
+                          SR: SR.toStringAsFixed(0),
                           playerName: playerName,
                           runs: runs.toString(),
                           isOnStrike: isOnStrike));
@@ -574,15 +629,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   if (currentBowler.ballOfTheOver ==
                           currentBowler.totalBallBowled &&
                       currentBowler != dummyBowler) {
-                    ///update isBowling to false
-                    updateIsBowling(
-                        bowlerName: currentBowler.playerName, setTo: false);
 
-                    ///ballOfTheOver==0 || displaySelectBowlerBtn ||currentOver++
-                    currentBowler = dummyBowler;
-                    updateBowlerDataToGeneralDoc();
-                    updateDataInScoreBoard();
-                    print("CHANGING OVER ||||||| I REPEAT CHANGING OVER");
+                    thingsToDoAfterOverIsComplete(bowlerName: currentBowler.playerName);
                   }
 
                   return BowlerStatsRow(
@@ -594,6 +642,20 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         ],
       ),
     );
+  }
+
+  thingsToDoAfterOverIsComplete({String bowlerName}) async{
+    ///update isBowling to false
+    await updateIsBowling(
+        bowlerName: bowlerName, setTo: false);
+
+    ///ballOfTheOver==0 || displaySelectBowlerBtn ||currentOver++
+    currentBowler = dummyBowler;
+    await updateBowlerDataToGeneralDoc();
+    await updateDataInScoreBoard();
+    // sleep(Duration(milliseconds: 500));
+    //TODO: checking if sleep is required or not
+    print("CHANGING OVER ||||||| I REPEAT CHANGING OVER");
   }
 
   updateIsBowling({String bowlerName, bool setTo}) {
@@ -658,82 +720,93 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
     if (overNoOnCard != null) {
       return Container(
-        // padding: EdgeInsets.symmetric(horizontal: 10),
-        margin: EdgeInsets.symmetric(vertical: (6*SizeConfig.one_H).roundToDouble(), horizontal: (6*SizeConfig.one_W).roundToDouble()),
+        margin: EdgeInsets.symmetric(
+            vertical: (6*SizeConfig.one_H).roundToDouble(),
+            horizontal: (6*SizeConfig.one_W).roundToDouble()),
+        padding: EdgeInsets.symmetric(
+            vertical: (8*SizeConfig.one_H).roundToDouble(),
+            horizontal: (4*SizeConfig.one_W).roundToDouble()),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular((5*SizeConfig.one_W).roundToDouble()),
             color: overNoOnCard == currentOver ? Colors.white : Colors.white60),
         height: (60*SizeConfig.one_H).roundToDouble(),
         // color: Colors.black26,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                left: (8*SizeConfig.one_W).roundToDouble(),
-                top: (8*SizeConfig.one_H).roundToDouble(),
+        child: currentOver == 0
+            ? Row(children: zeroOverBalls)
+            : StreamBuilder<DocumentSnapshot>(
+                stream: dataStreams.getFullOverDataStream(
+                    inningNo: inningNumber, overNumber: overNoOnCard),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("Loading");
+                  } else {
+                    final overData = snapshot.data.data();
+
+                    List<Widget> balls = [
+                      BallWidget(),
+                      BallWidget(),
+                      BallWidget(),
+                      BallWidget(),
+                      BallWidget(),
+                      BallWidget(),
+                    ];
+
+                    Map<String, dynamic> fullOverData =
+                        overData['fullOverData'];
+                    final isThisCurrentOver =
+                        overData["isThisCurrentOver"];
+
+                    final bowlerOfThisOver = overData['bowlerName'];
+
+                    final currentBallNo = overData['currentBall'];
+
+                    //decoding the map [ballNo:::RunsScores]
+                    fullOverData.forEach((ballNo, runsScored) {
+                      Ball ball = Ball(
+                        currentBallNo: int.parse(ballNo),
+                        runScoredOnThisBall: runsScored,
+                        cardOverNo: overNoOnCard,
+                        currentOverNo: currentOverNo,
+                      );
+
+                      if (runsScored != null) {
+                        balls[int.parse(ballNo) - 1] = BallWidget(
+                          currentBall: ball,
+                        );
+                      } else {
+                        print("Ball??????????  $runsScored");
+                        balls[int.parse(ballNo) - 1] = BallWidget(
+                          currentBall: currentBall,
+                        );
+                      }
+                    });
+                    return Column(
+
+                      children: [
+                        Row(
+                          mainAxisAlignment:MainAxisAlignment.spaceBetween ,
+                          children: [
+                            Text("OVER NO: $overNoOnCard"),
+                            SizedBox(width: 30,),
+                            bowlerOfThisOver==null?
+                                Container():
+                            Text("🏐 : $bowlerOfThisOver"),
+                          ],
+                        ),
+                        Row(children: balls),
+                      ],
+                    );
+                  }
+                },
               ),
-              child: Text("OVER NO: $overNoOnCard"),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: (4*SizeConfig.one_H).roundToDouble(), horizontal: (4*SizeConfig.one_W).roundToDouble()),
-              child: currentOver == 0
-                  ? Row(children: zeroOverBalls)
-                  : StreamBuilder<DocumentSnapshot>(
-                      stream: dataStreams.getFullOverDataStream(
-                          inningNo: inningNumber, overNumber: overNoOnCard),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Text("Loading");
-                        } else {
-                          final overData = snapshot.data.data();
-
-                          List<Widget> balls = [
-                            BallWidget(),
-                            BallWidget(),
-                            BallWidget(),
-                            BallWidget(),
-                            BallWidget(),
-                            BallWidget(),
-                          ];
-
-                          Map<String, dynamic> fullOverData =
-                              overData['fullOverData'];
-                          final isThisCurrentOver =
-                              overData["isThisCurrentOver"];
-
-                          final currentBallNo = overData['currentBall'];
-                          // print("CurrentBallNo::::::::::::::$currentBallNo");
-
-                          //decoding the map [ballNo:::RunsScores]
-                          fullOverData.forEach((ballNo, runsScored) {
-                            Ball ball = Ball(
-                              currentBallNo: int.parse(ballNo),
-                              runScoredOnThisBall: runsScored,
-                              cardOverNo: overNoOnCard,
-                              currentOverNo: currentOverNo,
-                            );
-
-                            if (runsScored != null) {
-                              balls[int.parse(ballNo) - 1] = BallWidget(
-                                currentBall: ball,
-                              );
-                            } else {
-                              print("Ball??????????  $runsScored");
-                              balls[int.parse(ballNo) - 1] = BallWidget(
-                                currentBall: currentBall,
-                              );
-                            }
-                          });
-                          return Row(children: balls);
-                        }
-                      },
-                    ),
-            ),
-          ],
-        ),
       );
     }
+  }
+
+  scoreSelectionLoading(){
+    return Center(
+      child: Text("Loading.."),
+    );
   }
 
   ///this is placed at the bottom, contains many run buttons
@@ -746,13 +819,16 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
     return Container(
       height: scoreSelectionAreaLength.toDouble(),
-      color: Colors.white,
+      color: Colors.blueGrey.shade400,
       child: StreamBuilder<DocumentSnapshot>(
           stream: dataStreams.getGeneralMatchDataStream(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return CircularProgressIndicator();
+              return scoreSelectionLoading();
             } else {
+
+              Ball thisBall;
+
               final matchData = snapshot.data.data();
               final currentOver = matchData['currentOverNumber'];
               final currentBallNo = matchData['currentBallNo'];
@@ -760,6 +836,14 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               final nonStrikerBatsmen = matchData['nonStrikerBatsmen'];
               final currentBowler = matchData['currentBowler'];
               final inningNo = matchData['inningNumber'];
+
+              thisBall = Ball(
+                bowlerName: currentBowler,
+                inningNo: inningNo,
+                currentOverNo: currentOver,
+                currentBallNo: currentBallNo,
+                batsmenName: strikerBatsmen,
+              );
 
               return Container(
                 padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (6*SizeConfig.one_H).roundToDouble()),
@@ -775,15 +859,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             color: btnColor,
                             minWidth: buttonWidth,
                             onPressed: () {
-                              // updateRuns(playerName: "RAJU", runs: 0);
+                              thisBall.runScoredOnThisBall=0;
+                              thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  inningNo: inningNo,
-                                  overNo: currentOver,
-                                  ballNumber: currentBallNo,
-                                  batmenName: strikerBatsmen,
-                                  bowlerName: currentBowler,
-                                  isNormalRun: true,
-                                  runScored: 0);
+                                  thisBall: thisBall);
                             },
                             child: Text("0")),
                         spaceBtwn,
@@ -791,15 +870,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             color: btnColor,
                             minWidth: buttonWidth,
                             onPressed: () {
-                              // updateRuns(playerName: playersName, runs: 1);
+                              thisBall.runScoredOnThisBall=1;
+                              thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  inningNo: inningNo,
-                                  overNo: currentOver,
-                                  ballNumber: currentBallNo,
-                                  batmenName: strikerBatsmen,
-                                  bowlerName: currentBowler,
-                                  isNormalRun: true,
-                                  runScored: 1);
+                                  thisBall: thisBall);
                             },
                             child: Text("1")),
                         spaceBtwn,
@@ -807,14 +881,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             color: btnColor,
                             minWidth: buttonWidth,
                             onPressed: () {
+                              thisBall.runScoredOnThisBall=2;
+                              thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  inningNo: inningNo,
-                                  overNo: currentOver,
-                                  ballNumber: currentBallNo,
-                                  batmenName: strikerBatsmen,
-                                  bowlerName: currentBowler,
-                                  isNormalRun: true,
-                                  runScored: 2);
+                                  thisBall: thisBall);
                             },
                             child: Text("2")),
                         spaceBtwn,
@@ -822,14 +892,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             color: btnColor,
                             minWidth: buttonWidth,
                             onPressed: () {
+                              thisBall.runScoredOnThisBall=3;
+                              thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  inningNo: inningNo,
-                                  overNo: currentOver,
-                                  ballNumber: currentBallNo,
-                                  batmenName: strikerBatsmen,
-                                  bowlerName: currentBowler,
-                                  isNormalRun: true,
-                                  runScored: 3);
+                                  thisBall: thisBall);
                             },
                             child: Text("3")),
                         spaceBtwn,
@@ -837,20 +903,16 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             color: btnColor,
                             minWidth: buttonWidth,
                             onPressed: () {
+                              thisBall.runScoredOnThisBall=4;
+                              thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  inningNo: inningNo,
-                                  overNo: currentOver,
-                                  ballNumber: currentBallNo,
-                                  batmenName: strikerBatsmen,
-                                  bowlerName: currentBowler,
-                                  isNormalRun: true,
-                                  runScored: 4);
+                                  thisBall: thisBall);
                             },
                             child: Text("4")),
                       ],
                     ),
 
-                    ///row 2 [6,Wide,LB,Out,NB]
+                    ///row 2 [6,Wide,LB,Bye,NB]
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -858,14 +920,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             color: btnColor,
                             minWidth: buttonWidth,
                             onPressed: () {
+                              thisBall.runScoredOnThisBall=6;
+                              thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  inningNo: inningNo,
-                                  overNo: currentOver,
-                                  ballNumber: currentBallNo,
-                                  batmenName: strikerBatsmen,
-                                  bowlerName: currentBowler,
-                                  isNormalRun: true,
-                                  runScored: 6);
+                                  thisBall: thisBall);
                             },
                             child: Text("6")),
                         spaceBtwn,
@@ -874,8 +932,38 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             onPressed: () {
                               // updateRuns(playerName: playersName, runs: 0);
+                              thisBall.runScoredOnThisBall=0;
+                              thisBall.runKey=K_WIDEBALL;
+                              thisBall.isNormalRun=false;
+
+                              setState(() {
+                                isWideBall=true;
+                              });
+
+                              // runUpdater.updateRun(
+                              //     thisBall: thisBall);
+
                             },
                             child: Text("Wide")),
+                        spaceBtwn,
+                        FlatButton(
+                            color: btnColor,
+                            minWidth: buttonWidth,
+                            //TODO: out btn clicked
+                            onPressed: () {
+                              // updateRuns(playerName: playersName, runs: 0);
+                              thisBall.runScoredOnThisBall=0;
+                              thisBall.runKey=K_BYE;
+                              thisBall.isNormalRun=false;
+
+                              setState(() {
+                                isBye=true;
+                              });
+
+                              // runUpdater.updateRun(
+                              //     thisBall: thisBall);
+                            },
+                            child: Text("Bye")),
                         spaceBtwn,
                         FlatButton(
                             color: btnColor,
@@ -883,6 +971,17 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             //TODO: legBye runs need to updated [open new run set]
                             onPressed: () {
                               // updateRuns(playerName: playersName, runs: 0);
+                              thisBall.runScoredOnThisBall=0;
+                              thisBall.runKey=K_LEGBYE;
+                              thisBall.isNormalRun=false;
+
+                              setState(() {
+                                isLegBye=true;
+                              });
+
+                              // runUpdater.updateRun(
+                              //     thisBall: thisBall);
+
                             },
                             child: Text("LB")),
                         spaceBtwn,
@@ -892,17 +991,19 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             //TODO: no-ball -- open new no-ball set
                             onPressed: () {
                               // updateRuns(playerName: playersName, runs: 1);
+                              thisBall.runScoredOnThisBall=0;
+                              thisBall.runKey=K_NOBALL;
+                              thisBall.isNormalRun=false;
+
+                              setState(() {
+                                isNoBall=true;
+                              });
+                              // runUpdater.updateRun(
+                              //     thisBall: thisBall);
+
                             },
                             child: Text("NB")),
-                        spaceBtwn,
-                        FlatButton(
-                            color: btnColor,
-                            minWidth: buttonWidth,
-                            //TODO: out btn clicked
-                            onPressed: () {
-                              // updateRuns(playerName: playersName, runs: 0);
-                            },
-                            child: Text("Out")),
+
                       ],
                     ),
 
@@ -913,21 +1014,44 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                         FlatButton(
                             color: btnColor,
                             minWidth: buttonWidth,
-                            //TODO: over throw
+                            //TODO: out btn clicked
                             onPressed: () {
                               // updateRuns(playerName: playersName, runs: 0);
+                              thisBall.runScoredOnThisBall=0;
+                              thisBall.runKey=K_OUT;
+                              thisBall.isNormalRun=false;
+                              setState(() {
+                                isOut=true;
+                              });
+                              // runUpdater.updateRun(
+                              //     thisBall: thisBall);
                             },
-                            child: Text("Over Throw")),
+                            child: Text("Out")),
                         spaceBtwn,
                         FlatButton(
                             color: btnColor,
                             minWidth: buttonWidth,
-                            //TODO: start new over
+                            //TODO: over throw
                             onPressed: () {
-                              // newOverPlayersSelectionDialog();
                               // updateRuns(playerName: playersName, runs: 0);
+                              thisBall.runKey=K_OUT;
+                              thisBall.isNormalRun=false;
+                              runUpdater.updateRun(
+                                  thisBall: thisBall);
                             },
-                            child: Text("Start new over")),
+                            child: Text("Over Throw")),
+
+
+                        // spaceBtwn,
+                        // FlatButton(
+                        //     color: btnColor,
+                        //     minWidth: buttonWidth,
+                        //     //TODO: start new over
+                        //     onPressed: () {
+                        //       // newOverPlayersSelectionDialog();
+                        //       // updateRuns(playerName: playersName, runs: 0);
+                        //     },
+                        //     child: Text("Start new over")),
                       ],
                     ),
                   ],
@@ -938,10 +1062,73 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     );
   }
 
-  whenToDisplayScoreSelectionWidget() {
-    if (globalCurrentBowler == null) {
+  whenToDisplayWhatAtBottom({Ball ballData}) {
+
+    if (globalCurrentBowler == null) { //TODO: add batsmen condition please
       return selectPlayersBtn();
     } else {
+
+      if(isWideBall){
+        return WideBallOptions(
+          ball: ballData,
+          userUID: widget.user.uid,
+          matchId: widget.match.getMatchId(),
+          setWideToFalse: (){
+            setState(() {
+              isWideBall=false;
+            });
+          },
+        );
+      }
+      if(isLegBye){
+        return LegByeOptions(
+          ball: ballData,
+          userUID: widget.user.uid,
+          matchId: widget.match.getMatchId(),
+          setLegByeToFalse: (){
+            setState(() {
+              isLegBye=false;
+            });
+          },
+        );
+      }
+      if(isBye){
+        return ByeOptions(
+          ball: ballData,
+          userUID: widget.user.uid,
+          matchId: widget.match.getMatchId(),
+          setByeToFalse: (){
+            setState(() {
+              isBye=false;
+            });
+          },
+        );
+      }
+      if(isOut){
+        return OutOptions(
+          ball: ballData,
+          userUID: widget.user.uid,
+          matchId: widget.match.getMatchId(),
+          setOutToFalse: (){
+            setState(() {
+              isOut=false;
+            });
+          },
+        );
+      }
+      if(isNoBall){
+        return NoBallOptions(
+          ball: ballData,
+          userUID: widget.user.uid,
+          matchId: widget.match.getMatchId(),
+          setNoBallToFalse: (){
+            setState(() {
+              isNoBall=false;
+            });
+          },
+        );
+      }
+
       return scoreSelectionWidget();
     }
   }

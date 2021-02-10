@@ -410,14 +410,6 @@ class _CounterPageState extends State<CounterPage> {
                           onPressed: () {
                             // updateRuns(playerName: "RAJU", runs: 0);
 
-                            runUpdater.updateRun(inningNo: inningNo,overNo: currentOver,
-                              ballNumber: currentBallNo,
-                              batmenName: currentBatsmen1,
-                              bowlerName: currentBowler,
-                              isNormalRun: true,
-                              runScored: 0
-                            );
-
                           },
                           child: Text("0")),
                       spaceBtwn,
@@ -426,13 +418,6 @@ class _CounterPageState extends State<CounterPage> {
                           minWidth: buttonWidth,
                           onPressed: () {
                             // updateRuns(playerName: playersName, runs: 1);
-                            runUpdater.updateRun(inningNo: inningNo,overNo: currentOver,
-                                ballNumber: currentBallNo,
-                                batmenName: currentBatsmen1,
-                                bowlerName: currentBowler,
-                                isNormalRun: true,
-                                runScored: 1
-                            );
                           },
                           child: Text("1")),
                       spaceBtwn,

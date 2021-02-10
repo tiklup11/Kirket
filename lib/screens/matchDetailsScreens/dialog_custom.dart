@@ -77,7 +77,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               child: Text("Cancel"),
             ),
             FlatButton(
-              color: Colors.blue.shade500,
+              color: Colors.blueGrey.shade400,
               child: Text("Create"),
               onPressed: () {
                 onCreateBtnPressed();

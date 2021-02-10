@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:umiperer/modals/Ball.dart';
 
 final userRef = FirebaseFirestore.instance.collection('users');
 
@@ -9,28 +10,23 @@ class RunUpdater {
   final String userUID;
 
   void updateRun(
-      {bool isNormalRun,
-      int overNo,
-      int ballNumber,
-      int inningNo,
-      int runScored,
-      String batmenName,
-      String bowlerName}) {
+      {Ball thisBall}) {
     ///doing 2 things here 1. updatingBallNo and Runs
-    if (isNormalRun) {
+    if (thisBall.isNormalRun) {
 
-      _updateRunsInParticularOver(overNo: overNo,inningNo: inningNo,runsScored: runScored,ballNo: ballNumber);
+      _updateRunsInParticularOver(overNo: thisBall.currentOverNo,inningNo: thisBall.inningNo,
+          runsScored: thisBall.runScoredOnThisBall,ballNo: thisBall.currentBallNo);
 
-      _updateScoreBoardData(inningNo: inningNo,overNo: overNo);
+      _updateScoreBoardData(inningNo: thisBall.inningNo,overNo: thisBall.currentOverNo);
 
-      _updateDataInGeneral(runsScored: runScored);
+      _updateDataInGeneral(runsScored: thisBall.runScoredOnThisBall);
 
       _updateBatsmenData(
-          inningNo: inningNo, batsmenName: batmenName, runsScored: runScored);
+          inningNo: thisBall.inningNo, batsmenName: thisBall.batsmenName, runsScored: thisBall.runScoredOnThisBall);
 
-      _updateBowlerData(inningNo: inningNo,bowlersName: bowlerName,runsScored: runScored);
+      _updateBowlerData(inningNo: thisBall.inningNo,bowlersName: thisBall.bowlerName,runsScored: thisBall.runScoredOnThisBall);
 
-      _updateTotalRuns(inningNo: inningNo,runsScored: runScored);
+      _updateTotalRuns(inningNo: thisBall.inningNo,runsScored: thisBall.runScoredOnThisBall);
 
     }
   }

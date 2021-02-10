@@ -109,7 +109,6 @@ class _SelectAndCreateBowlerPageState
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("   $playerName"),
-
           Checkbox(
             value: checkBoxMap[playerName],
             onChanged: (bool value) {

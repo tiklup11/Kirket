@@ -119,7 +119,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         "overNo": i+1,
         "currentBall": 1,
         "fullOverData":completeOverData,
-        "isThisCurrentOver":false
+        "isThisCurrentOver":false,
+        "bowlerName":null
 
       });
 
@@ -129,7 +130,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         "overNo": i+1,
         "currentBall": 1,
         "fullOverData":completeOverData,
-        "isThisCurrentOver":false
+        "isThisCurrentOver":false,
+        "bowlerName":null
 
       });
     }
