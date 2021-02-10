@@ -18,6 +18,9 @@ class SignInPage extends StatefulWidget {
   _SignInPageState createState() => _SignInPageState();
 }
 
+// keytool -genkey -v -keystore c:\Users\tiklu\kirketKey\key.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias key
+
+
 class _SignInPageState extends State<SignInPage> {
   final _firebaseAuth = FirebaseAuth.instance;
 
@@ -95,7 +98,7 @@ class _SignInPageState extends State<SignInPage> {
     return Container(
       height: (SizeConfig.one_H*30).roundToDouble(),
       child: Center(
-        child: CircularProgressIndicator(),
+        child: Text("Loading..",style: TextStyle(color: Colors.white),),
       ),
     );
   }
@@ -107,7 +110,7 @@ class _SignInPageState extends State<SignInPage> {
         Container(color: Color(0xFF466EB6),),
       Center(
         child: Container(
-          child: Icon(Icons.sports_handball, size:300,),
+          child: Icon(Icons.sports_handball, size:(300*SizeConfig.one_W).roundToDouble(),),
           //TODO: infuture add image releated to cricket
           // decoration: BoxDecoration(
           //   image: DecorationImage(

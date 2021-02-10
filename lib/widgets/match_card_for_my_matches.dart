@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/toss_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
-
+///mqd
 final usersRef = FirebaseFirestore.instance.collection('users');
 
 class MatchCardForCounting extends StatefulWidget {
@@ -21,13 +22,14 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 6, left: 10, right: 10),
-      height: 145,
+      margin: EdgeInsets.only(top: (6*SizeConfig.one_H).roundToDouble(), left: (10*SizeConfig.one_W).roundToDouble(),
+          right: (10*SizeConfig.one_W).roundToDouble()),
+      height: (145*SizeConfig.one_H).roundToDouble(),
       child: Card(
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 14),
+              padding: EdgeInsets.symmetric(horizontal: (14*SizeConfig.one_W).roundToDouble()),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -36,7 +38,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                     children: [
                       Image.asset(
                         'assets/images/team1.png',
-                        scale: 17,
+                        scale: (17*SizeConfig.one_W).roundToDouble(),
                       ),
                       Text(widget.match.getTeam1Name())
                     ],
@@ -44,7 +46,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                   Text(
                     "V/S",
                     style: TextStyle(
-                      fontSize: 25,
+                      fontSize: (25*SizeConfig.one_W).roundToDouble(),
                     ),
                   ),
                   Column(
@@ -52,7 +54,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                     children: [
                       Image.asset(
                         'assets/images/team2.png',
-                        scale: 17,
+                        scale: (17*SizeConfig.one_W).roundToDouble(),
                       ),
                       Text(
                         widget.match.getTeam2Name(),
@@ -63,7 +65,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
               ),
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.one_W).roundToDouble()),
               child: MaterialButton(
                 elevation: 0,
                 highlightElevation: 0,

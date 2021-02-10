@@ -2,6 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/size_config.dart';
+
+
+///MQD
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -23,16 +27,17 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
   Widget build(BuildContext context) {
     return Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular((20*SizeConfig.one_W).roundToDouble()),
         ),
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         child:
         Container(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            height: 220,
+            padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.one_H).roundToDouble(),
+                horizontal: (20*SizeConfig.one_W).roundToDouble()),
+            height: (220*SizeConfig.one_H).roundToDouble(),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular((8*SizeConfig.one_W).roundToDouble()),
                 color: Colors.white),
             child:dialogContent(context),
         )

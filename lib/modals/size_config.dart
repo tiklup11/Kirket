@@ -36,10 +36,6 @@ class SizeConfig {
     heightMultiplier = _blockSizeVertical;
     widthMultiplier = _blockSizeHorizontal;
 
-    // print('heightMultiplier:: $heightMultiplier');
-    // print('widthMultiplier:: $widthMultiplier');
-    // print('textMultiplier::$textMultiplier');
-
   }
 
   //making new UNIT

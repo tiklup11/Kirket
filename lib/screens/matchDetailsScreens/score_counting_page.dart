@@ -7,12 +7,15 @@ import 'package:umiperer/modals/Bowler.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/runUpdater.dart';
-import 'package:umiperer/screens/fill_new_match_details_screen.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/select_and_create_batsmen_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/select_and_create_bowler_page.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/ball_widget.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
+import 'package:umiperer/widgets/match_card_for_my_matches.dart';
+
+///media query done
 
 class ScoreCountingPage extends StatefulWidget {
   ScoreCountingPage({this.match, this.user});
@@ -27,7 +30,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   DataStreams dataStreams;
   ScrollController _scrollController;
   RunUpdater runUpdater;
-  final scoreSelectionAreaLength = 220;
+  final scoreSelectionAreaLength = (220*SizeConfig.one_H).roundToDouble();
   bool isBatsmen1OnStrike = true;
   String globalOnStrikeBatsmen;
   String globalCurrentBowler;
@@ -69,12 +72,59 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
           } else {
-            final generalMatchData = snapshot.data.data();
-            currentOverNo = generalMatchData['currentOverNumber'];
-            currentBallNo = generalMatchData['currentBallNo'];
-            inningNumber = generalMatchData["inningNumber"];
-            globalCurrentBowler = generalMatchData["currentBowler"];
+            final matchData = snapshot.data.data();
+
+            currentOverNo = matchData['currentOverNumber'];
+            currentBallNo = matchData['currentBallNo'];
+            inningNumber = matchData["inningNumber"];
+            globalCurrentBowler = matchData["currentBowler"];
+
+            ///getting data from firebase and setting it to the CricketMatch object
+            final team1Name = matchData['team1name'];
+            final team2Name = matchData['team2name'];
+            final oversCount = matchData['overCount'];
+            final matchId = matchData['matchId'];
+            final playerCount = matchData['playerCount'];
+            final tossWinner = matchData['tossWinner'];
+            final batOrBall = matchData['whatChoose'];
+            final location = matchData['matchLocation'];
+            final isMatchStarted = matchData['isMatchStarted'];
+            final currentOverNumber = matchData['currentOverNumber'];
+            final firstBattingTeam = matchData['firstBattingTeam'];
+            final firstBowlingTeam = matchData['firstBowlingTeam'];
+            final secondBattingTeam = matchData['secondBattingTeam'];
+            final secondBowlingTeam = matchData['secondBowlingTeam'];
+            final currentBattingTeam = matchData['currentBattingTeam'];
+
+            widget.match.firstBattingTeam=firstBattingTeam;
+            widget.match.firstBowlingTeam=firstBowlingTeam;
+            widget.match.secondBattingTeam=secondBattingTeam;
+            widget.match.secondBowlingTeam=secondBowlingTeam;
             widget.match.setInningNo(inningNumber);
+
+            if(firstBattingTeam!=null && firstBowlingTeam!=null && secondBattingTeam!=null && secondBowlingTeam!=null)
+            {
+              widget.match.setFirstInnings();
+            }
+
+            widget.match.currentOver.setCurrentOverNo(currentOverNumber);
+            widget.match.setTeam1Name(team1Name);
+            widget.match.setTeam2Name(team2Name);
+            widget.match.setMatchId(matchId);
+            widget.match.setPlayerCount(playerCount);
+            widget.match.setLocation(location);
+            widget.match.setTossWinner(tossWinner);
+            widget.match.setBatOrBall(batOrBall);
+            widget.match.setOverCount(oversCount);
+            widget.match.setIsMatchStarted(isMatchStarted);
+
+
+            ///this is my stuff tobe done
+            if(currentOverNo==widget.match.getOverCount()+1){
+              //updateInningNo;
+              updateInningNumberAndOtherStuff();
+              widget.match.setInningNo(2);
+            }
 
             return Container(
               color: Colors.black12,
@@ -93,9 +143,28 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         });
   }
 
+  updateInningNumberAndOtherStuff(){
+    if(widget.match.getInningNo()==1){
+      usersRef
+          .doc(widget.user.uid)
+          .collection('createdMatches')
+          .doc(widget.match.getMatchId())
+          .update({
+        "inningNumber": 2,
+        "battingTeam": widget.match.secondBattingTeam,
+        "currentBattingTeam": widget.match.secondBattingTeam,
+        "currentOverNumber": 1,
+        "nonStrikerBatsmen": null,
+        "strikerBatsmen": null,
+        "totalRuns": 0,
+        "wicketsDown": 0,
+      });
+    }
+  }
+
   Widget textWidget() {
     return Container(
-      margin: EdgeInsets.only(top: 3, bottom: 6),
+      margin: EdgeInsets.only(top: (3*SizeConfig.one_H).roundToDouble(), bottom: (6*SizeConfig.one_H).roundToDouble()),
       child: Text(
         'OPTIONS FOR NEXT BALL',
         style: TextStyle(fontWeight: FontWeight.w400),
@@ -131,11 +200,11 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               children: [
                 tossLineWidget(),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (10*SizeConfig.one_H).roundToDouble()),
+                  margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (10*SizeConfig.one_H).roundToDouble()),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular((4*SizeConfig.one_W).roundToDouble()),
                   ),
                   child: Column(
                     children: [
@@ -146,14 +215,14 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.match.getCurrentBattingTeam(),
-                                style: TextStyle(fontSize: 24),
+                                widget.match.getCurrentBattingTeam().toUpperCase(),
+                                style: TextStyle(fontSize: (24*SizeConfig.one_W).roundToDouble()),
                               ),
                               Text(
                                 // runs/wickets (currentOverNumber.currentBallNo)
                                 // "65/3  (13.2)",
                                 runsFormat,
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: (16*SizeConfig.one_W).roundToDouble()),
                               )
                             ],
                           ),
@@ -168,9 +237,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                         ],
                       ),
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: 6),
+                        margin: EdgeInsets.symmetric(vertical: (6*SizeConfig.one_H).roundToDouble()),
                         color: Colors.black12,
-                        height: 2,
+                        height: (2*SizeConfig.one_W).roundToDouble(),
                       ),
                       playersScore(),
                     ],
@@ -260,7 +329,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             ),
           ),
           SizedBox(
-            height: 4,
+            height: (4*SizeConfig.one_H).roundToDouble(),
           ),
 
           //Batsman's data
@@ -381,7 +450,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 4,
+                          height: (4*SizeConfig.one_H).roundToDouble(),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -413,12 +482,12 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               }),
           //Line
           Container(
-            margin: EdgeInsets.symmetric(vertical: 6),
+            margin: EdgeInsets.symmetric(vertical: (6*SizeConfig.one_H).roundToDouble()),
             color: Colors.black12,
-            height: 2,
+            height: (2*SizeConfig.one_H).roundToDouble(),
           ),
           SizedBox(
-            height: 4,
+            height: (4*SizeConfig.one_H).roundToDouble(),
           ),
           //Bowler's Data
           GestureDetector(
@@ -442,7 +511,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             ),
           ),
           SizedBox(
-            height: 4,
+            height: (4*SizeConfig.one_H).roundToDouble(),
           ),
 
           ///Bowler's StreamBuilder
@@ -590,24 +659,24 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     if (overNoOnCard != null) {
       return Container(
         // padding: EdgeInsets.symmetric(horizontal: 10),
-        margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+        margin: EdgeInsets.symmetric(vertical: (6*SizeConfig.one_H).roundToDouble(), horizontal: (6*SizeConfig.one_W).roundToDouble()),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular((5*SizeConfig.one_W).roundToDouble()),
             color: overNoOnCard == currentOver ? Colors.white : Colors.white60),
-        height: 60,
+        height: (60*SizeConfig.one_H).roundToDouble(),
         // color: Colors.black26,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: EdgeInsets.only(
-                left: 8,
-                top: 8,
+                left: (8*SizeConfig.one_W).roundToDouble(),
+                top: (8*SizeConfig.one_H).roundToDouble(),
               ),
               child: Text("OVER NO: $overNoOnCard"),
             ),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              margin: EdgeInsets.symmetric(vertical: (4*SizeConfig.one_H).roundToDouble(), horizontal: (4*SizeConfig.one_W).roundToDouble()),
               child: currentOver == 0
                   ? Row(children: zeroOverBalls)
                   : StreamBuilder<DocumentSnapshot>(
@@ -669,10 +738,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
   ///this is placed at the bottom, contains many run buttons
   scoreSelectionWidget({int ballNo, int inningNo}) {
-    final double buttonWidth = 60;
+    final double buttonWidth = (60*SizeConfig.one_W).roundToDouble();
     final btnColor = Colors.black12;
     final spaceBtwn = SizedBox(
-      width: 4,
+      width: (4*SizeConfig.one_W).roundToDouble(),
     );
 
     return Container(
@@ -693,7 +762,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               final inningNo = matchData['inningNumber'];
 
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (6*SizeConfig.one_H).roundToDouble()),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   // mainAxisAlignment: MainAxisAlignment.center,
@@ -881,7 +950,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     return Container(
       height: scoreSelectionAreaLength.toDouble(),
       color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 70),
+      padding: EdgeInsets.symmetric(horizontal: (70*SizeConfig.one_W).roundToDouble()),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -915,56 +984,13 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     );
   }
 
-  ///only visible when starting first over to make UI intiative
-  startOverBtns() {
-    return Container(
-      color: Colors.white,
-      width: double.infinity,
-      height: scoreSelectionAreaLength.toDouble(),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          MaterialButton(
-            minWidth: 200,
-            highlightElevation: 0,
-            elevation: 0,
-            color: Colors.blue,
-            child: Text("Select Batsmen"),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return SelectAndCreateBatsmenPage(
-                  match: widget.match,
-                  user: widget.user,
-                );
-              }));
-            },
-          ),
-          MaterialButton(
-            minWidth: 200,
-            highlightElevation: 0,
-            elevation: 0,
-            color: Colors.blue,
-            child: Text("Select Bowler"),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return SelectAndCreateBowlerPage(
-                  match: widget.match,
-                  user: widget.user,
-                );
-              }));
-            },
-          )
-        ],
-      ),
-    );
-  }
 
   ///TODO: might change its position
   tossLineWidget() {
     return Container(
-        padding: EdgeInsets.only(left: 12, top: 12),
+        padding: EdgeInsets.only(left: (12*SizeConfig.one_W).roundToDouble(), top: (12*SizeConfig.one_H).roundToDouble()),
         child: Text(
-            "${widget.match.getTossWinner()} won the toss and choose to ${widget.match.getChoosedOption()}"));
+            "${widget.match.getTossWinner()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()} (Inning: ${widget.match.getInningNo()}) "));
   }
 
   ///updateDataInScoreBoard when Over is finished

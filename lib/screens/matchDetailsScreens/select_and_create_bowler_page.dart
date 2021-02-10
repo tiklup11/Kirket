@@ -4,7 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/dataStreams.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/dialog_custom.dart';
+
+///MQD
 
 class SelectAndCreateBowlerPage extends StatefulWidget {
   SelectAndCreateBowlerPage({this.match, this.user});
@@ -97,7 +100,7 @@ class _SelectAndCreateBowlerPageState
 
   Widget playerText({String playerName}) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4,vertical: 4),
+        margin: EdgeInsets.symmetric(horizontal: (4*SizeConfig.one_W).roundToDouble(),vertical: (4*SizeConfig.one_H).roundToDouble()),
       // padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
       decoration: BoxDecoration(
           color: ThemeData.light().primaryColor.withOpacity(0.1)
@@ -143,7 +146,7 @@ class _SelectAndCreateBowlerPageState
         child: Text(
           "ADD NEW PLAYER",
           style: TextStyle(
-              fontSize: 20,
+              fontSize: (20*SizeConfig.one_W).roundToDouble(),
               fontWeight: FontWeight.w400,
               fontStyle: FontStyle.italic),
         ),
@@ -153,7 +156,7 @@ class _SelectAndCreateBowlerPageState
 
   Widget addNewPlayerBtn() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 26),
+      margin: EdgeInsets.symmetric(horizontal: (26*SizeConfig.one_W).roundToDouble()),
       child: FlatButton(
         minWidth: double.infinity,
         color: Colors.blueGrey.shade400,
@@ -167,7 +170,9 @@ class _SelectAndCreateBowlerPageState
 
   Widget saveBtn() {
     return Container(
-      margin: EdgeInsets.only(left: 26,right: 26,bottom: 10),
+      margin: EdgeInsets.only(left: (26*SizeConfig.one_W).roundToDouble(),
+          right: (26*SizeConfig.one_W).roundToDouble(),
+          bottom: (10*SizeConfig.one_H).roundToDouble()),
       child: FlatButton(
         minWidth: double.infinity,
         color: Colors.blueGrey.shade400,

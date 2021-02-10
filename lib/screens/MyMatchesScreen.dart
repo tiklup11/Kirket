@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/modals/constants.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/fill_new_match_details_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:umiperer/widgets/match_card_for_my_matches.dart';
+
+///MQD
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -46,7 +48,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
             final matchesData = snapshot.data.docs;
             for(var matchData in matchesData){
 
-              final CricketMatch match = CricketMatch(matchStatus: STATUS_MY_MATCH);
+              final CricketMatch match = CricketMatch();
 
               final team1Name = matchData.data()['team1name'];
               final team2Name = matchData.data()['team2name'];
@@ -116,7 +118,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
         context: context,
         builder: (builder){
           return Container(
-            height: 120.0,
+            height: (120*SizeConfig.one_H).roundToDouble(),
             color: Color(0xFF737373),
             // color: Colors.transparent, //could change this to Color(0xFF737373),
             //so you don't have to change MaterialApp canvasColor
@@ -124,8 +126,8 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8.0),
-                        topRight: Radius.circular(8.0))),
+                        topLeft: Radius.circular((8*SizeConfig.one_W).roundToDouble()),
+                        topRight: Radius.circular((8*SizeConfig.one_W).roundToDouble()))),
                 child: Column(
                   children: [
                     FlatButton(

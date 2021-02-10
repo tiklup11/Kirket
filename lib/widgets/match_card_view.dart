@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/live_score_page.dart';
 
+///mqd
 class LiveMatchCard extends StatelessWidget {
   LiveMatchCard({this.match});
 
@@ -10,8 +12,10 @@ class LiveMatchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 4,left: 10,right: 10),
-      height: 130,
+      margin: EdgeInsets.only(top: (4*SizeConfig.one_H).roundToDouble(),
+          left: (10*SizeConfig.one_W).roundToDouble(),
+          right: (10*SizeConfig.one_W).roundToDouble()),
+      height: (130*SizeConfig.one_H).roundToDouble(),
       child: Card(
         child: MaterialButton(
           onPressed: () {
@@ -23,7 +27,7 @@ class LiveMatchCard extends StatelessWidget {
             }));
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 14),
+            padding: EdgeInsets.symmetric(horizontal: (14*SizeConfig.one_W).roundToDouble()),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -32,7 +36,7 @@ class LiveMatchCard extends StatelessWidget {
                   children: [
                     Image.asset(
                       'assets/images/team1.png',
-                      scale: 17,
+                      scale: (17*SizeConfig.one_W).roundToDouble(),
                     ),
                     Text(match.getTeam1Name())
                   ],
@@ -40,7 +44,7 @@ class LiveMatchCard extends StatelessWidget {
                 Text(
                   "V/S",
                   style: TextStyle(
-                    fontSize: 25,
+                    fontSize: (25*SizeConfig.one_W).roundToDouble(),
                   ),
                 ),
                 Column(
@@ -48,7 +52,7 @@ class LiveMatchCard extends StatelessWidget {
                   children: [
                     Image.asset(
                       'assets/images/team2.png',
-                      scale: 17,
+                      scale: (17*SizeConfig.one_W).roundToDouble(),
                     ),
                     Text(
                       match.getTeam2Name(),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Ball.dart';
+import 'package:umiperer/modals/size_config.dart';
 
+///mqd
 class BallWidget extends StatelessWidget {
   BallWidget({this.currentBall});
 
-  final double ballRadius = 18.0;
+  final double ballRadius = (20*SizeConfig.one_W).roundToDouble();
   final Ball currentBall;
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class BallWidget extends StatelessWidget {
     print( "and runsScored=${currentBall.runScoredOnThisBall}");
     if(currentBall.currentOverNo==0){
       return Container(
-          margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          margin: EdgeInsets.symmetric(horizontal: (4*SizeConfig.one_W).roundToDouble(), vertical: (4*SizeConfig.one_H).roundToDouble()),
           child: CircleAvatar(
             child:
             Text(
@@ -37,7 +39,8 @@ class BallWidget extends StatelessWidget {
           ));
     }
     return Container(
-        margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        margin: EdgeInsets.symmetric(horizontal: (4*SizeConfig.one_W).roundToDouble(),
+            vertical: (4*SizeConfig.one_H).roundToDouble()),
         child: CircleAvatar(
           child: currentBall.runScoredOnThisBall == null
               ? Text(
@@ -48,7 +51,7 @@ class BallWidget extends StatelessWidget {
             currentBall.runScoredOnThisBall.toString(),
             style: TextStyle(color: Colors.black),
           ),
-          radius: 20,
+          radius: (20*SizeConfig.one_W).roundToDouble(),
           backgroundColor: isCurrentBall
               ? Colors.black54
               : Colors.blue.shade50,
@@ -57,7 +60,8 @@ class BallWidget extends StatelessWidget {
 
   nullBallWidget() {
     return Container(
-        margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        margin: EdgeInsets.symmetric(horizontal: (4*SizeConfig.one_W).roundToDouble(),
+            vertical: (4*SizeConfig.one_H).roundToDouble()),
         child: CircleAvatar(
           child: Text(
             "",

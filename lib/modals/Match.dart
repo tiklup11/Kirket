@@ -5,8 +5,6 @@ import 'package:umiperer/modals/CricketOver.dart';
 
 class CricketMatch{
 
-  CricketMatch({@required this.matchStatus,
-  });
 
   String _team1Name;
   String _team2Name;

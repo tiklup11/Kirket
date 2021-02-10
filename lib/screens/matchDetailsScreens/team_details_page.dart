@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/size_config.dart';
 
-
+///MQD
 //this tab is under MatchDetails
 class TeamDetails extends StatefulWidget {
   TeamDetails({this.match});
@@ -12,10 +13,9 @@ class TeamDetails extends StatefulWidget {
 }
 
 class _TeamDetailsState extends State<TeamDetails> {
+
   bool isListACollapsed = true;
   bool isListBCollapsed = true;
-
-
 
   @override
   void initState() {
@@ -34,8 +34,10 @@ class _TeamDetailsState extends State<TeamDetails> {
         children: [
           //matchINFO
           Container(
-            margin: EdgeInsets.only(top: 22,bottom: 2),
-            padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
+            margin: EdgeInsets.only(top: (22*SizeConfig.one_H).roundToDouble(),bottom: (2*SizeConfig.one_H).roundToDouble()),
+            padding: EdgeInsets.only(left: (16*SizeConfig.one_W).roundToDouble(),
+                top: (4*SizeConfig.one_W).roundToDouble(),
+                bottom: (4*SizeConfig.one_H).roundToDouble()),
             child: Text(
               "INFO",
             ),
@@ -48,7 +50,8 @@ class _TeamDetailsState extends State<TeamDetails> {
 
   matchInfo() {
     return Container(
-      padding: EdgeInsets.only(left: 16, top: 10, bottom: 10),
+      padding: EdgeInsets.only(left: (16*SizeConfig.one_W).roundToDouble(), top: (10*SizeConfig.one_H).roundToDouble(),
+          bottom: (10*SizeConfig.one_H).roundToDouble()),
       color: Colors.white,
       child: Column(
         children: [
@@ -73,7 +76,7 @@ class _TeamDetailsState extends State<TeamDetails> {
       children: [
         Container(
           margin: EdgeInsets.symmetric(vertical: 3),
-            width: 220,
+            width: (220*SizeConfig.one_W).roundToDouble(),
             child: Text(
               dataType,
               style: TextStyle(color: Colors.black54),

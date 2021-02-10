@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:umiperer/modals/size_config.dart';
 
+
+///mqd
 class OverCard extends StatefulWidget {
 
   OverCard({this.match,this.user,this.currentOverNumber});
@@ -22,7 +25,7 @@ class _OverCardState extends State<OverCard> {
   @override
   Widget build(BuildContext context) {
 
-    final SizedBox sizedBox = SizedBox(width: 2,);
+    final SizedBox sizedBox = SizedBox(width: (2*SizeConfig.one_W).roundToDouble(),);
 
     balls = [
       overBallWidget(context: context,),
@@ -35,13 +38,13 @@ class _OverCardState extends State<OverCard> {
     ];
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-      margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-      height: 135,
+      padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(),vertical: (10*SizeConfig.one_H).roundToDouble()),
+      margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(),vertical: (10*SizeConfig.one_H).roundToDouble()),
+      height: (135*SizeConfig.one_H).roundToDouble(),
       // color: Colors.white,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8)
+        borderRadius: BorderRadius.circular((8*SizeConfig.one_W).roundToDouble())
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,13 +75,13 @@ class _OverCardState extends State<OverCard> {
       width:60,
       decoration: BoxDecoration(
         color: Colors.blue,
-        borderRadius: BorderRadius.circular(6)
+        borderRadius: BorderRadius.circular((6*SizeConfig.one_W).roundToDouble())
       ),
       child: Center(
         child: DropdownButton<String>(
           value: dropdownValue,
           // icon: Icon(Icons.add),
-          iconSize: 24,
+          iconSize: (24*SizeConfig.one_W).roundToDouble(),
           elevation: 16,
           style: TextStyle(color: Colors.black),
           underline: Container(),
@@ -103,11 +106,12 @@ class _OverCardState extends State<OverCard> {
     return DropdownButton<String>(
       value: dropdownValue,
       // icon: icon,
-      iconSize: 24,
+      iconSize: (24*SizeConfig.one_W).roundToDouble(),
+
       elevation: 16,
       style: TextStyle(color: Colors.deepPurple),
       underline: Container(
-        height: 2,
+        height: (2*SizeConfig.one_H).roundToDouble(),
         color: Colors.deepPurpleAccent,
       ),
       onChanged: (String newValue) {
@@ -128,8 +132,8 @@ class _OverCardState extends State<OverCard> {
   addNewBallButton(){
     return FlatButton(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-      minWidth: 60,
-      height: 48,
+      minWidth: (60*SizeConfig.one_W).roundToDouble(),
+      height: (48*SizeConfig.one_H).roundToDouble(),
       color: Colors.blue,
         onPressed: (){
         setState(() {

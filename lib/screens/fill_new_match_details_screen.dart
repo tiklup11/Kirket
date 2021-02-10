@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/constants.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:uuid/uuid.dart';
 
-final usersRef = FirebaseFirestore.instance.collection('users');
+///media querydone
+final usersRefe = FirebaseFirestore.instance.collection('users');
 
 class FillNewMatchDetailsPage extends StatelessWidget {
    FillNewMatchDetailsPage({this.user});
@@ -83,7 +85,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     print("QQQQQQQQQQQQQQQ:::  ${widget.user.email}");
     print("QQQQQQQQQQQQQQQ:::  ${newMatch.getMatchId()}");
 
-    usersRef.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).set({
+    usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).set({
 
       'matchId':newMatch.getMatchId(),
       'team1name': newMatch.getTeam1Name(),
@@ -111,7 +113,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
       var completeOverData = {"1":null,"2":null,"3":null,"4":null,"5":null,"6":null};
 
-      usersRef.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning1overs')
+      usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning1overs')
           .doc("over${i+1}").set({
 
         "overNo": i+1,
@@ -121,7 +123,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
       });
 
-      usersRef.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning2overs')
+      usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning2overs')
           .doc("over${i+1}").set({
 
         "overNo": i+1,
@@ -133,7 +135,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     }
 
     ///matchDoc > FirstInningCollection > scoreBoardDataDoc >
-    usersRef.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
+    usersRefe.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
     .collection('FirstInning').doc('scoreBoardData').set({
       "ballOfTheOver":0,
       "currentOverNo":0,
@@ -141,7 +143,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       "wicketsDown":0
     });
 
-    usersRef.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
+    usersRefe.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
         .collection('SecondInning').doc('scoreBoardData').set({
       "ballOfTheOver":0,
       "currentOverNo":0,
@@ -155,7 +157,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    newMatch = CricketMatch(matchStatus: STATUS_MY_MATCH);
+    newMatch = CricketMatch();
   }
 
   @override
@@ -174,7 +176,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         child: Scrollbar(
           child: SingleChildScrollView(
             dragStartBehavior: DragStartBehavior.down,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: (16*SizeConfig.one_W).roundToDouble()),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

@@ -119,7 +119,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
           // ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blueAccent,
+        // selectedItemColor: Colors.blueAccent,
         onTap: _onItemTapped,
       ),
     );
