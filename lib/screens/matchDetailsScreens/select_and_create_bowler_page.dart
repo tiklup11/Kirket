@@ -100,7 +100,7 @@ class _SelectAndCreateBowlerPageState
 
   Widget playerText({String playerName}) {
     return Container(
-        margin: EdgeInsets.symmetric(horizontal: (4*SizeConfig.one_W).roundToDouble(),vertical: (4*SizeConfig.one_H).roundToDouble()),
+        margin: EdgeInsets.symmetric(horizontal: (4*SizeConfig.oneW).roundToDouble(),vertical: (4*SizeConfig.oneH).roundToDouble()),
       // padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
       decoration: BoxDecoration(
           color: ThemeData.light().primaryColor.withOpacity(0.1)
@@ -145,7 +145,7 @@ class _SelectAndCreateBowlerPageState
         child: Text(
           "ADD NEW PLAYER",
           style: TextStyle(
-              fontSize: (20*SizeConfig.one_W).roundToDouble(),
+              fontSize: (20*SizeConfig.oneW).roundToDouble(),
               fontWeight: FontWeight.w400,
               fontStyle: FontStyle.italic),
         ),
@@ -155,7 +155,7 @@ class _SelectAndCreateBowlerPageState
 
   Widget addNewPlayerBtn() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: (26*SizeConfig.one_W).roundToDouble()),
+      margin: EdgeInsets.symmetric(horizontal: (26*SizeConfig.oneW).roundToDouble()),
       child: FlatButton(
         minWidth: double.infinity,
         color: Colors.blueGrey.shade400,
@@ -169,9 +169,9 @@ class _SelectAndCreateBowlerPageState
 
   Widget saveBtn() {
     return Container(
-      margin: EdgeInsets.only(left: (26*SizeConfig.one_W).roundToDouble(),
-          right: (26*SizeConfig.one_W).roundToDouble(),
-          bottom: (10*SizeConfig.one_H).roundToDouble()),
+      margin: EdgeInsets.only(left: (26*SizeConfig.oneW).roundToDouble(),
+          right: (26*SizeConfig.oneW).roundToDouble(),
+          bottom: (10*SizeConfig.oneH).roundToDouble()),
       child: FlatButton(
         minWidth: double.infinity,
         color: Colors.blueGrey.shade400,

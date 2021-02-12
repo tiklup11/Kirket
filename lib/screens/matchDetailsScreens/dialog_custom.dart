@@ -27,17 +27,17 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
   Widget build(BuildContext context) {
     return Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular((20*SizeConfig.one_W).roundToDouble()),
+          borderRadius: BorderRadius.circular((20*SizeConfig.oneW).roundToDouble()),
         ),
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         child:
         Container(
-            padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.one_H).roundToDouble(),
-                horizontal: (20*SizeConfig.one_W).roundToDouble()),
-            height: (220*SizeConfig.one_H).roundToDouble(),
+            padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.oneH).roundToDouble(),
+                horizontal: (20*SizeConfig.oneW).roundToDouble()),
+            height: (220*SizeConfig.oneH).roundToDouble(),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular((8*SizeConfig.one_W).roundToDouble()),
+                borderRadius: BorderRadius.circular((8*SizeConfig.oneW).roundToDouble()),
                 color: Colors.white),
             child:dialogContent(context),
         )
@@ -121,6 +121,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "maidens":0,
               "isBowling":false,
               "totalBalls":6,
+              "overLength":6,
               "ballOfTheOver":0,
             }
         );
@@ -138,7 +139,8 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "maidens":0,
               "isBowling":false,
               "ballOfTheOver":0,
-              "totalBalls":6
+              "totalBalls":6,
+              "overLength":6,
             }
         );
 
@@ -189,7 +191,8 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "maidens":0,
               "isBowling":false,
               "ballOfTheOver":0,
-              "totalBalls":6
+              "totalBalls":6,
+              "overLength":6,
 
             }
         );
@@ -206,7 +209,8 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "maidens":0,
               "isBowling":false,
               "ballOfTheOver":0,
-              "totalBalls":6
+              "totalBalls":6,
+              "overLength":6,
             }
         );
 

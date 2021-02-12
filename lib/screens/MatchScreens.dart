@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/LiveMatchesScreen.dart';
+import 'package:umiperer/screens/about_us_page.dart';
+import 'package:umiperer/screens/admin_access_page.dart';
 import 'package:umiperer/screens/upcoming_matches_screens.dart';
 
 ///This is BottomNavigationBar
@@ -20,8 +22,7 @@ class MatchHomeScreens extends StatefulWidget {
 /// This is the private State class that goes with MyStatefulWidget.
 class _MatchHomeScreensState extends State<MatchHomeScreens> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
   static List<Widget> _widgetOptions;
 
   void _signOut() async {
@@ -54,6 +55,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Colors.black12,
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
         // through the options in the drawer if there isn't enough vertical
@@ -70,20 +72,29 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
                 // backgroundColor:Colors.white,
               ),
             ),
-            // ListTile(
-            //   title: Text('Item 1'),
-            //   trailing: Icon(Icons.arrow_right),
-            //   onTap: () {
-            //     // Update the state of the app.
-            //     // ...
-            //   },
-            // ),
+            widget.user.uid=="4VwUugdc6XVPJkR2yltZtFGh4HN2" || widget.user.uid=="V3lwRvXi2pXYFOnaA9JAC2lgvY42"?
+                adminTile():Container(),
+            SizedBox(height: 4,),
             ListTile(
+              tileColor: Colors.blueGrey.shade50,
+              leading: Icon(Icons.alternate_email_rounded),
+              title: Text('About Us'),
+              // trailing: Icon(Icons.arrow_right),
+              onTap: () {
+                // Update the state of the app.
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return AboutUsPage();
+                }));
+              },
+            ),
+            SizedBox(height: 4,),
+            ListTile(
+              tileColor: Colors.blueGrey.shade50,
+              leading: Icon(Icons.login_rounded),
               title: Text('Logout'),
               onTap: () {
                 showAlertDialog(context);
               },
-              trailing: Icon(Icons.arrow_right),
             ),
           ],
         ),
@@ -156,6 +167,20 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       context: context,
       builder: (BuildContext context) {
         return alert;
+      },
+    );
+  }
+
+  adminTile(){
+    return ListTile(
+      tileColor: Colors.blueGrey.shade50,
+      leading: Icon(Icons.person_sharp),
+      title: Text('Admin Access'),
+      onTap: () {
+        // Update the state of the app.
+        Navigator.push(context, MaterialPageRoute(builder: (context){
+          return AdminAccessPage();
+        }));
       },
     );
   }

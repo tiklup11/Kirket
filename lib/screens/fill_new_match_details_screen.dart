@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:uuid/uuid.dart';
 
@@ -53,7 +52,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
     if (newMatch.getOverCount()!=null && newMatch.getPlayerCount()!=null &&
     newMatch.getTeam1Name()!=null && newMatch.getTeam2Name()!=null && newMatch.getLocation()!=null &&
-        newMatch.getOverCount()!='' && newMatch.getPlayerCount()!='' &&
+        newMatch.getOverCount().toString()!='' && newMatch.getPlayerCount().toString()!='' &&
         newMatch.getTeam1Name()!='' && newMatch.getTeam2Name()!='' && newMatch.getLocation()!=''
     ) {
       // print('QWWWWWWWWW:::   ${newMatch.getTeam1Name()}');
@@ -94,6 +93,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'playerCount': newMatch.getPlayerCount(),
       'matchLocation': newMatch.getLocation(),
       'timeStamp': DateTime.now(),
+      'isFirstInningEnd':false,
       'tossWinner': null,
       'whatChoose': null, //bat or ball
       'isMatchStarted': false,
@@ -120,8 +120,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         "currentBall": 1,
         "fullOverData":completeOverData,
         "isThisCurrentOver":false,
-        "bowlerName":null
-
+        "bowlerName":null,
+        "overLength":6
       });
 
       usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning2overs')
@@ -131,7 +131,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         "currentBall": 1,
         "fullOverData":completeOverData,
         "isThisCurrentOver":false,
-        "bowlerName":null
+        "bowlerName":null,
+        "overLength":6
 
       });
     }
@@ -178,7 +179,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         child: Scrollbar(
           child: SingleChildScrollView(
             dragStartBehavior: DragStartBehavior.down,
-            padding: EdgeInsets.symmetric(horizontal: (16*SizeConfig.one_W).roundToDouble()),
+            padding: EdgeInsets.symmetric(horizontal: (16*SizeConfig.oneW).roundToDouble()),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

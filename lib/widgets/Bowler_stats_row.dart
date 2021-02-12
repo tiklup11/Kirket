@@ -18,9 +18,9 @@ class BowlerStatsRow extends StatelessWidget {
     final TextStyle textStyle = TextStyle(color: Colors.black);
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: (6*SizeConfig.one_H).roundToDouble(),horizontal: (6*SizeConfig.one_W).roundToDouble()),
+      padding: EdgeInsets.symmetric(vertical: (6*SizeConfig.oneH).roundToDouble(),horizontal: (6*SizeConfig.oneW).roundToDouble()),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular((4*SizeConfig.one_W)..roundToDouble()),
+        borderRadius: BorderRadius.circular((4*SizeConfig.oneW)..roundToDouble()),
         color: isThisSelectBowlerBtn?
         Colors.blueGrey.withOpacity(0.5):Colors.white,
       ),
@@ -28,7 +28,7 @@ class BowlerStatsRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            width: (120*SizeConfig.one_W).roundToDouble(),
+            width: (120*SizeConfig.oneW).roundToDouble(),
             child: Text(
               bowler.playerName,
               style: textStyle,
@@ -36,35 +36,35 @@ class BowlerStatsRow extends StatelessWidget {
             ),
           ),
           Container(
-              width: (30*SizeConfig.one_W).roundToDouble(),
+              width: (30*SizeConfig.oneW).roundToDouble(),
 
               child: Text(
                 bowler.overs,
                 style: textStyle,
               )),
           Container(
-              width: (30*SizeConfig.one_W).roundToDouble(),
+              width: (30*SizeConfig.oneW).roundToDouble(),
 
               child: Text(
                 bowler.median,
                 style: textStyle,
               )),
           Container(
-              width: (30*SizeConfig.one_W).roundToDouble(),
+              width: (30*SizeConfig.oneW).roundToDouble(),
 
               child: Text(
                 bowler.runs,
                 style: textStyle,
               )),
           Container(
-              width: (30*SizeConfig.one_W).roundToDouble(),
+              width: (30*SizeConfig.oneW).roundToDouble(),
 
               child: Text(
                 bowler.wickets,
                 style: textStyle,
               )),
           Container(
-              width: (30*SizeConfig.one_W).roundToDouble(),
+              width: (34*SizeConfig.oneW).roundToDouble(),
 
               child: Text(
                 bowler.economy,

@@ -7,7 +7,7 @@ class Batsmen{
   String balls;
   String noOf4s;
   String noOf6s;
-  String SR;
+  String sR;
   bool isOnStrike;
   bool isClickable;
 
@@ -17,7 +17,7 @@ class Batsmen{
       this.balls,
       this.noOf4s,
       this.noOf6s,
-      this.SR,
+      this.sR,
       this.isOnStrike,
       @required this.isClickable});
 }

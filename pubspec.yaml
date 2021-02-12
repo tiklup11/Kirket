@@ -27,6 +27,8 @@ dependencies:
   google_sign_in: ^4.5.6
   cloud_firestore: ^0.14.4
   uuid: ^2.2.2
+  url_launcher: ^5.7.10
+  giffy_dialog: ^1.8.0
 
 
 
@@ -53,4 +55,6 @@ flutter:
    - assets/images/team2.png
    - assets/images/ball.png
    - assets/images/bat.png
+   - assets/images/aboutUs.png
+   - assets/gifs/
 

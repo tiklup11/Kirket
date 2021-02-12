@@ -18,14 +18,14 @@ class ByeOptions extends StatefulWidget {
 
 class _ByeOptionsState extends State<ByeOptions> {
 
-  final scoreSelectionAreaLength = (220*SizeConfig.one_H).roundToDouble();
+  final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID );
+    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context);
   }
 
   @override
@@ -34,10 +34,10 @@ class _ByeOptionsState extends State<ByeOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.one_W).roundToDouble();
+    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
     final btnColor = Colors.black12;
     final spaceBtwn = SizedBox(
-      width: (4*SizeConfig.one_W).roundToDouble(),
+      width: (4*SizeConfig.oneW).roundToDouble(),
     );
 
     return Container(
@@ -49,7 +49,7 @@ class _ByeOptionsState extends State<ByeOptions> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (6*SizeConfig.one_H).roundToDouble()),
+              padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (6*SizeConfig.oneH).roundToDouble()),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 // mainAxisAlignment: MainAxisAlignment.center,
@@ -63,7 +63,7 @@ class _ByeOptionsState extends State<ByeOptions> {
                           minWidth: buttonWidth,
                           onPressed: () {
                             // updateRuns(playerName: "RAJU", runs: 0);
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("1B")),
                       spaceBtwn,
@@ -72,7 +72,7 @@ class _ByeOptionsState extends State<ByeOptions> {
                           minWidth: buttonWidth,
                           onPressed: () {
                             // updateRuns(playerName: playersName, runs: 1);
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("2B")),
 
@@ -88,7 +88,7 @@ class _ByeOptionsState extends State<ByeOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("3B")),
                       spaceBtwn,
@@ -96,7 +96,7 @@ class _ByeOptionsState extends State<ByeOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("4B")),
                       spaceBtwn,
@@ -104,7 +104,7 @@ class _ByeOptionsState extends State<ByeOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("5B")),
                     ],

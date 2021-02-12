@@ -90,15 +90,17 @@ class _SignInPageState extends State<SignInPage> {
   Scaffold signInScreen(BuildContext context) {
     return
       Scaffold(
+        // resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomPadding: true,
       body: lightThemeLogin(),
     );
   }
 
   Container loadingScreen(){
     return Container(
-      height: (SizeConfig.one_H*30).roundToDouble(),
+      height: (SizeConfig.oneH*30).roundToDouble(),
       child: Center(
-        child: Text("Loading..",style: TextStyle(color: Colors.white),),
+        child: Text("signing in...",style: TextStyle(color: Colors.white),),
       ),
     );
   }
@@ -107,10 +109,13 @@ class _SignInPageState extends State<SignInPage> {
   Stack lightThemeLogin() {
     return
       Stack(children: [
-        Container(color: Color(0xFF466EB6),),
+        Container(
+          // color: Color(0xFF466EB6),
+        color: Colors.blueGrey
+        ),
       Center(
         child: Container(
-          child: Icon(Icons.sports_handball, size:(300*SizeConfig.one_W).roundToDouble(),),
+          child: Icon(Icons.sports_handball, size:(300*SizeConfig.oneW).roundToDouble(),),
           //TODO: infuture add image releated to cricket
           // decoration: BoxDecoration(
           //   image: DecorationImage(
@@ -135,11 +140,10 @@ class _SignInPageState extends State<SignInPage> {
               });
             },
             child: Container(
-              height: 40,
+              height: (40*SizeConfig.oneH).roundToDouble(),
                 margin: EdgeInsets.symmetric(horizontal:( 15.81*SizeConfig.widthMultiplier).roundToDouble()),
                 padding: EdgeInsets.symmetric(vertical: (0.61*SizeConfig.heightMultiplier).roundToDouble()),
                 decoration: BoxDecoration(
-                  // color: CupertinoColors.systemBlue,
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular((0.8*SizeConfig.heightMultiplier).roundToDouble()),
                 ),

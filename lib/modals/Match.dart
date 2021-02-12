@@ -30,6 +30,8 @@ class CricketMatch{
   String currentBatsmen1;
   String currentBatsmen2;
 
+  bool isFirstInningEnd= false;
+
   List<String> team1List=[];
   List<String> team2List=[];
 

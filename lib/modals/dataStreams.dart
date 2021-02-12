@@ -141,7 +141,7 @@ class DataStreams{
           .collection('createdMatches')
           .doc(matchId)
           .collection('inning{$inningNumber}overs')
-          .doc("over${overNumber}")
+          .doc("over$overNumber")
           .snapshots();
 
       return allOversDocStream;

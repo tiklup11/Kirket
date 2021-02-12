@@ -18,14 +18,14 @@ class NoBallOptions extends StatefulWidget {
 
 class _NoBallOptionsState extends State<NoBallOptions> {
 
-  final scoreSelectionAreaLength = (220*SizeConfig.one_H).roundToDouble();
+  final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID );
+    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context);
   }
 
   @override
@@ -34,10 +34,10 @@ class _NoBallOptionsState extends State<NoBallOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.one_W).roundToDouble();
+    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
     final btnColor = Colors.black12;
     final spaceBtwn = SizedBox(
-      width: (4*SizeConfig.one_W).roundToDouble(),
+      width: (4*SizeConfig.oneW).roundToDouble(),
     );
 
     return Container(
@@ -50,7 +50,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (6*SizeConfig.one_H).roundToDouble()),
+              padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (6*SizeConfig.oneH).roundToDouble()),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 // mainAxisAlignment: MainAxisAlignment.center,
@@ -64,7 +64,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                           minWidth: buttonWidth,
                           onPressed: () {
                             // updateRuns(playerName: "RAJU", runs: 0);
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("NB+0")),
                       spaceBtwn,
@@ -73,7 +73,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                           minWidth: buttonWidth,
                           onPressed: () {
                             // updateRuns(playerName: playersName, runs: 1);
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("NB+1")),
 
@@ -89,7 +89,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("NB+2")),
                       spaceBtwn,
@@ -97,7 +97,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("NB+3")),
                       spaceBtwn,
@@ -105,7 +105,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("NB+4")),
                     ],
@@ -119,7 +119,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("NB+5")),
                       spaceBtwn,
@@ -127,7 +127,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("NB+5")),
                       spaceBtwn,

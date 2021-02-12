@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/runUpdater.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/screens/ciruclarprogress_dialog.dart';
 
 class WideBallOptions extends StatefulWidget {
 
@@ -18,14 +19,26 @@ class WideBallOptions extends StatefulWidget {
 
 class _WideBallOptionsState extends State<WideBallOptions> {
 
-  final scoreSelectionAreaLength = (220*SizeConfig.one_H).roundToDouble();
+  final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
+
+  displayProgressDialog() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return ProgressDialog(
+            // areWeAddingBatsmen: true,
+            // match: widget.match,
+            // user: widget.user,
+          );
+        });
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID );
+    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context );
   }
 
   @override
@@ -34,10 +47,10 @@ class _WideBallOptionsState extends State<WideBallOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.one_W).roundToDouble();
+    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
     final btnColor = Colors.black12;
     final spaceBtwn = SizedBox(
-      width: (4*SizeConfig.one_W).roundToDouble(),
+      width: (4*SizeConfig.oneW).roundToDouble(),
     );
 
     return Container(
@@ -50,7 +63,7 @@ class _WideBallOptionsState extends State<WideBallOptions> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (6*SizeConfig.one_H).roundToDouble()),
+              padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (6*SizeConfig.oneH).roundToDouble()),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 // mainAxisAlignment: MainAxisAlignment.center,
@@ -63,17 +76,19 @@ class _WideBallOptionsState extends State<WideBallOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            // updateRuns(playerName: "RAJU", runs: 0);
-                            runUpdater.updateRun(thisBall: widget.ball);
+
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Wide+0")),
                       spaceBtwn,
                       FlatButton(
                           color: btnColor,
                           minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 1);
-                            runUpdater.updateRun(thisBall: widget.ball);
+                          onPressed: () async{
+                            displayProgressDialog();
+                            widget.ball.runScoredOnThisBall=1;
+                            await runUpdater.updateRun(thisBallData: widget.ball);
+                            Navigator.pop(context);
                           },
                           child: Text("Wide+1")),
 
@@ -89,7 +104,7 @@ class _WideBallOptionsState extends State<WideBallOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Wide+2")),
                       spaceBtwn,
@@ -97,7 +112,7 @@ class _WideBallOptionsState extends State<WideBallOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Wide+3")),
                       spaceBtwn,
@@ -105,7 +120,7 @@ class _WideBallOptionsState extends State<WideBallOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Wide+4")),
                     ],

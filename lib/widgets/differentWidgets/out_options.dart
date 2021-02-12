@@ -18,14 +18,14 @@ class OutOptions extends StatefulWidget {
 
 class _OutOptionsState extends State<OutOptions> {
 
-  final scoreSelectionAreaLength = (220*SizeConfig.one_H).roundToDouble();
+  final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID );
+    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context);
   }
 
   @override
@@ -34,10 +34,10 @@ class _OutOptionsState extends State<OutOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.one_W).roundToDouble();
+    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
     final btnColor = Colors.black12;
     final spaceBtwn = SizedBox(
-      width: (4*SizeConfig.one_W).roundToDouble(),
+      width: (4*SizeConfig.oneW).roundToDouble(),
     );
 
     return Container(
@@ -50,7 +50,7 @@ class _OutOptionsState extends State<OutOptions> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (6*SizeConfig.one_H).roundToDouble()),
+              padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (6*SizeConfig.oneH).roundToDouble()),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 // mainAxisAlignment: MainAxisAlignment.center,
@@ -64,7 +64,7 @@ class _OutOptionsState extends State<OutOptions> {
                           minWidth: buttonWidth,
                           onPressed: () {
                             // updateRuns(playerName: "RAJU", runs: 0);
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Bowled")),
                       spaceBtwn,
@@ -73,7 +73,7 @@ class _OutOptionsState extends State<OutOptions> {
                           minWidth: buttonWidth,
                           onPressed: () {
                             // updateRuns(playerName: playersName, runs: 1);
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Caught")),
                       spaceBtwn,
@@ -81,7 +81,7 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("LBW")),
                       spaceBtwn,
@@ -89,7 +89,7 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Run Out")),
                     ],
@@ -103,7 +103,7 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Stumped")),
                       spaceBtwn,
@@ -111,7 +111,7 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Hit Wicket")),
                       spaceBtwn,
@@ -119,7 +119,7 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
-                            runUpdater.updateRun(thisBall: widget.ball);
+                            runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Injured")),
                     ],

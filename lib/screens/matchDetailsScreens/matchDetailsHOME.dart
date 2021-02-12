@@ -91,31 +91,45 @@ class MatchDetails extends StatelessWidget {
     ///when we delete a collection,
     ///inner collections are not deleted, so we have to delete inner collections also
 
+    Navigator.pop(context);
     print("deleting the docs");
 
-    final team1BatsmenRef = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection(match.getTeam1Name()).doc(match.getTeam1Name()).collection('batsmen').get();
-    for(var docs in team1BatsmenRef.docs){
+    final batsmen1Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("1InningBattingData").get();
+    for(var docs in batsmen1Ref.docs){
       await docs.reference.delete();
     }
 
-    final team1BowlerRef = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection(match.getTeam1Name()).doc(match.getTeam1Name()).collection('bowlers').get();
-    for(var docs in team1BowlerRef.docs){
+    final batsmen2Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("2InningBattingData").get();
+    for(var docs in batsmen2Ref.docs){
       await docs.reference.delete();
     }
 
-    final team1Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection(match.getTeam1Name()).get();
-    for(var docs in team1Ref.docs){
+    final bowler1Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("1InningBowlingData").get();
+    for(var docs in bowler1Ref.docs){
       await docs.reference.delete();
     }
 
-    final team2Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection(match.getTeam2Name()).get();
-    for(var docs in team2Ref.docs){
+    final bowler2Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("2InningBowlingData").get();
+    for(var docs in bowler2Ref.docs){
+      await docs.reference.delete();
+    }
+
+    await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("FirstInning").doc("scoreBoardData").delete();
+
+    await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("SecondInning").doc("scoreBoardData").delete();
+
+    final overs1Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("inning1overs").get();
+    for(var docs in overs1Ref.docs){
+      await docs.reference.delete();
+    }
+
+    final overs2Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("inning2overs").get();
+    for(var docs in overs2Ref.docs){
       await docs.reference.delete();
     }
 
     await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).delete();
 
-    Navigator.pop(context);
 
   }
 

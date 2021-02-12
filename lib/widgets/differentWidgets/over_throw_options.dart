@@ -3,20 +3,20 @@ import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/runUpdater.dart';
 import 'package:umiperer/modals/size_config.dart';
 
-class LegByeOptions extends StatefulWidget {
+class OverThrowOptions extends StatefulWidget {
 
-  LegByeOptions({this.ball,this.matchId,this.userUID,this.setLegByeToFalse});
+  OverThrowOptions({this.ball,this.matchId,this.userUID,this.setOverThrowToFalse});
 
   final Ball ball;
   final String matchId;
   final String userUID;
-  final Function setLegByeToFalse;
+  final Function setOverThrowToFalse;
 
   @override
-  _LegByeOptionsState createState() => _LegByeOptionsState();
+  _OverThrowOptionsState createState() => _OverThrowOptionsState();
 }
 
-class _LegByeOptionsState extends State<LegByeOptions> {
+class _OverThrowOptionsState extends State<OverThrowOptions> {
 
   final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
@@ -44,6 +44,7 @@ class _LegByeOptionsState extends State<LegByeOptions> {
         padding: EdgeInsets.symmetric(vertical: 20),
         height: scoreSelectionAreaLength.toDouble(),
         color: Colors.blueGrey.shade400,
+
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -65,7 +66,7 @@ class _LegByeOptionsState extends State<LegByeOptions> {
                             // updateRuns(playerName: "RAJU", runs: 0);
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
-                          child: Text("1LB")),
+                          child: Text("+1 OverThrow")),
                       spaceBtwn,
                       FlatButton(
                           color: btnColor,
@@ -74,7 +75,7 @@ class _LegByeOptionsState extends State<LegByeOptions> {
                             // updateRuns(playerName: playersName, runs: 1);
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
-                          child: Text("2LB")),
+                          child: Text("+2 OverThrow")),
 
 
                     ],
@@ -90,7 +91,7 @@ class _LegByeOptionsState extends State<LegByeOptions> {
                           onPressed: () {
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
-                          child: Text("3LB")),
+                          child: Text("+3 OverThrow")),
                       spaceBtwn,
                       FlatButton(
                           color: btnColor,
@@ -98,15 +99,8 @@ class _LegByeOptionsState extends State<LegByeOptions> {
                           onPressed: () {
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
-                          child: Text("4LB")),
-                      spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("5LB")),
+                          child: Text("+4 OverThrow")),
+
                     ],
                   ),
 
@@ -121,7 +115,16 @@ class _LegByeOptionsState extends State<LegByeOptions> {
                           onPressed: () {
                             // updateRuns(playerName: playersName, runs: 0);
                           },
-                          child: Text("Over Throw")),
+                          child: Text("+6 OverThrow")),
+
+                      spaceBtwn,
+                      FlatButton(
+                          color: btnColor,
+                          minWidth: buttonWidth,
+                          onPressed: () {
+                            runUpdater.updateRun(thisBallData: widget.ball);
+                          },
+                          child: Text("+5 OverThrow")),
                     ],
                   ),
                 ],
@@ -131,7 +134,7 @@ class _LegByeOptionsState extends State<LegByeOptions> {
                 icon: Icon(Icons.close),
                 onPressed:(){
                   ///set isWide to false
-                  widget.setLegByeToFalse();
+                  widget.setOverThrowToFalse();
                 } )
           ],
         )

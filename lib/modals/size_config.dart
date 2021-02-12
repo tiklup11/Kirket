@@ -39,8 +39,8 @@ class SizeConfig {
   }
 
   //making new UNIT
-  static double one_W = (0.25*widthMultiplier).roundToDouble();
+  static double oneW = (0.25*widthMultiplier).roundToDouble();
 
-  static double one_H = (0.12*heightMultiplier).roundToDouble();
+  static double oneH = (0.12*heightMultiplier).roundToDouble();
 
 }

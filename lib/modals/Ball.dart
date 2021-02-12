@@ -1,5 +1,6 @@
 class Ball{
   int runScoredOnThisBall;
+  String runToShowOnUI;
   int cardOverNo;
   int currentBallNo;
   int currentOverNo;
@@ -18,6 +19,7 @@ class Ball{
         this.inningNo,
         this.batsmenName,
         this.runKey,
-        this.isNormalRun
+        this.isNormalRun,
+        this.runToShowOnUI
       });
 }

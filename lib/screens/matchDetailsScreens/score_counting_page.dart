@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/runUpdater.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/screens/ciruclarprogress_dialog.dart';
 import 'package:umiperer/screens/matchDetailsScreens/select_and_create_batsmen_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/select_and_create_bowler_page.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
@@ -18,6 +21,7 @@ import 'package:umiperer/widgets/differentWidgets/bye_options.dart';
 import 'package:umiperer/widgets/differentWidgets/leg_bye_options.dart';
 import 'package:umiperer/widgets/differentWidgets/no_ball_options.dart';
 import 'package:umiperer/widgets/differentWidgets/out_options.dart';
+import 'package:umiperer/widgets/differentWidgets/over_throw_options.dart';
 import 'package:umiperer/widgets/differentWidgets/wide_ball_options.dart';
 import 'package:umiperer/widgets/match_card_for_my_matches.dart';
 import "dart:io";
@@ -36,7 +40,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   DataStreams dataStreams;
   ScrollController _scrollController;
   RunUpdater runUpdater;
-  final scoreSelectionAreaLength = (220*SizeConfig.one_H).roundToDouble();
+  final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   bool isBatsmen1OnStrike = true;
   String globalOnStrikeBatsmen;
   String globalCurrentBowler;
@@ -65,7 +69,19 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   bool isBye = false;
   bool isOut = false;
   bool isNoBall = false;
+  bool isOverThrow = false;
   ///
+  void setIsUploadingDataToFalse(){
+    setState(() {
+      isUploadingData =false;
+    });
+  }
+
+  void setIsUploadingDataToTrue(){
+    setState(() {
+      isUploadingData =true;
+    });
+  }
 
   @override
   void initState() {
@@ -75,8 +91,21 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     dataStreams = DataStreams(
         userUID: widget.user.uid, matchId: widget.match.getMatchId());
     runUpdater = RunUpdater(
-        userUID: widget.user.uid, matchId: widget.match.getMatchId());
+        userUID: widget.user.uid, matchId: widget.match.getMatchId(),context: context,
+    setIsUploadingDataToFalse: setIsUploadingDataToFalse
+    );
     currentBothBatsmen=[];
+  }
+   displayProgressDialog() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return ProgressDialog(
+            // areWeAddingBatsmen: true,
+            // match: widget.match,
+            // user: widget.user,
+          );
+        });
   }
 
   @override
@@ -93,6 +122,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             currentBallNo = matchData['currentBallNo'];
             inningNumber = matchData["inningNumber"];
             globalCurrentBowler = matchData["currentBowler"];
+            globalOnStrikeBatsmen = matchData['strikerBatsmen'];
 
             ///getting data from firebase and setting it to the CricketMatch object
             final team1Name = matchData['team1name'];
@@ -149,6 +179,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               settingBowlerNameInOverDoc(bowlerName: globalCurrentBowler,overNo: currentOverNumber);
             }
 
+            print("____________________________________________________________");
+
             return Container(
               color: Colors.black12,
               child: Column(
@@ -158,7 +190,18 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   textWidget(),
                   // currentOverNo == 0
                   //     ? startOverBtns():
-                  whenToDisplayWhatAtBottom(),
+                  Container(
+                    color:Colors.blueGrey.shade400,
+                    height: scoreSelectionAreaLength,
+                    width: double.infinity,
+                    child: whenToDisplayWhatAtBottom(ballData: Ball(
+                      inningNo: widget.match.getInningNo(),
+                      batsmenName: globalOnStrikeBatsmen,
+                      currentBallNo: currentBallNo,
+                      currentOverNo: currentOverNumber,
+                      bowlerName: globalCurrentBowler,
+                    ),),
+                  )
                 ],
               ),
             );
@@ -179,7 +222,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   }
 
   updateInningNumberAndOtherStuff({int totalRuns,int totalWickets}) async{
-
     ///when 1st inning will end
     if(widget.match.getInningNo()==1){
       await usersRef
@@ -200,6 +242,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         "totalRuns": 0,
         "wicketsDown": 0,
       });
+
+      return;
     }
 
     if(widget.match.getInningNo()==2){
@@ -211,12 +255,14 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         "2stInningTotalRuns":totalRuns,
         "2stInningTotalWickets":totalWickets,
       });
+      return;
     }
+
   }
 
   Widget textWidget() {
     return Container(
-      margin: EdgeInsets.only(top: (3*SizeConfig.one_H).roundToDouble(), bottom: (6*SizeConfig.one_H).roundToDouble()),
+      margin: EdgeInsets.only(top: (3*SizeConfig.oneH).roundToDouble(), bottom: (6*SizeConfig.oneH).roundToDouble()),
       child: Text(
         'OPTIONS FOR NEXT BALL',
         style: TextStyle(fontWeight: FontWeight.w400),
@@ -244,7 +290,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                 "$totalRuns/$wicketsDown ($currentOverNo.$ballOfTheOver)";
             double CRR = 0.0;
             try {
-              CRR = totalRuns / (currentOverNo+1);
+              CRR = totalRuns / (currentOverNo+currentBallNo/6);
             } catch (e) {
               CRR = 0.0;
             }
@@ -252,11 +298,11 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               children: [
                 tossLineWidget(),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (10*SizeConfig.one_H).roundToDouble()),
-                  margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (10*SizeConfig.one_H).roundToDouble()),
+                  padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (10*SizeConfig.oneH).roundToDouble()),
+                  margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (10*SizeConfig.oneH).roundToDouble()),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular((4*SizeConfig.one_W).roundToDouble()),
+                    borderRadius: BorderRadius.circular((4*SizeConfig.oneW).roundToDouble()),
                   ),
                   child: Column(
                     children: [
@@ -268,13 +314,13 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             children: [
                               Text(
                                 widget.match.getCurrentBattingTeam().toUpperCase(),
-                                style: TextStyle(fontSize: (24*SizeConfig.one_W).roundToDouble()),
+                                style: TextStyle(fontSize: (24*SizeConfig.oneW).roundToDouble()),
                               ),
                               Text(
                                 // runs/wickets (currentOverNumber.currentBallNo)
                                 // "65/3  (13.2)",
                                 runsFormat,
-                                style: TextStyle(fontSize: (16*SizeConfig.one_W).roundToDouble()),
+                                style: TextStyle(fontSize: (16*SizeConfig.oneW).roundToDouble()),
                               )
                             ],
                           ),
@@ -289,9 +335,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                         ],
                       ),
                       Container(
-                        margin: EdgeInsets.symmetric(vertical: (6*SizeConfig.one_H).roundToDouble()),
+                        margin: EdgeInsets.symmetric(vertical: (6*SizeConfig.oneH).roundToDouble()),
                         color: Colors.black12,
-                        height: (2*SizeConfig.one_W).roundToDouble(),
+                        height: (2*SizeConfig.oneW).roundToDouble(),
                       ),
                       playersScore(),
                     ],
@@ -348,7 +394,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         isOnStrike: false,
         runs: "-",
         playerName: "--------",
-        SR: "-",
+        sR: "-",
         noOf6s: "-",
         noOf4s: "-",
         balls: "-");
@@ -373,14 +419,14 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   isClickable: false,
                   runs: "R",
                   playerName: "Batsmen",
-                  SR: "SR",
+                  sR: "SR",
                   noOf6s: "6s",
                   noOf4s: "4s",
                   balls: "B"),
             ),
           ),
           SizedBox(
-            height: (4*SizeConfig.one_H).roundToDouble(),
+            height: (4*SizeConfig.oneH).roundToDouble(),
           ),
 
           //Batsman's data
@@ -434,13 +480,16 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                         SR = 0;
                       }
 
+                      if(SR.isNaN){
+                        SR=0.0;
+                      }
 
                       currentBothBatsmen.add(Batsmen(
                           isClickable: true,
                           balls: ballsPlayed.toString(),
                           noOf4s: noOf4s.toString(),
                           noOf6s: noOf6s.toString(),
-                          SR: SR.toStringAsFixed(0),
+                          sR: SR.toStringAsFixed(0),
                           playerName: playerName,
                           runs: runs.toString(),
                           isOnStrike: isOnStrike));
@@ -505,7 +554,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                           ),
                         ),
                         SizedBox(
-                          height: (4*SizeConfig.one_H).roundToDouble(),
+                          height: (4*SizeConfig.oneH).roundToDouble(),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -537,12 +586,12 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               }),
           //Line
           Container(
-            margin: EdgeInsets.symmetric(vertical: (6*SizeConfig.one_H).roundToDouble()),
+            margin: EdgeInsets.symmetric(vertical: (6*SizeConfig.oneH).roundToDouble()),
             color: Colors.black12,
-            height: (2*SizeConfig.one_H).roundToDouble(),
+            height: (2*SizeConfig.oneH).roundToDouble(),
           ),
           SizedBox(
-            height: (4*SizeConfig.one_H).roundToDouble(),
+            height: (4*SizeConfig.oneH).roundToDouble(),
           ),
           //Bowler's Data
           GestureDetector(
@@ -566,7 +615,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             ),
           ),
           SizedBox(
-            height: (4*SizeConfig.one_H).roundToDouble(),
+            height: (4*SizeConfig.oneH).roundToDouble(),
           ),
 
           ///Bowler's StreamBuilder
@@ -591,6 +640,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
                   currentBowler = dummyBowler;
 
+                  int overLengthToFinishTheOver; //this overLength counts wide noball etc..
+
                   currentBowlerData.forEach((playerData) {
                     final maidens = playerData.data()['maidens'];
                     final wickets = playerData.data()['wickets'];
@@ -600,6 +651,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                     final runs = playerData.data()['runs'];
                     final isBowling = playerData.data()['isBowling'];
                     final totalBalls = playerData.data()['totalBalls'];
+                    overLengthToFinishTheOver = playerData.data()['overLength'];
 
                     int eco = 0;
                     try {
@@ -607,6 +659,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                     } catch (e) {
                       eco = 0;
                     }
+
+                    if(eco.isNaN){eco=0;}
 
                     currentBowler = Bowler(
                         playerName: playerName,
@@ -627,9 +681,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
                   ///this is checking if the over is done or not
                   if (currentBowler.ballOfTheOver ==
-                          currentBowler.totalBallBowled &&
+                      currentBowler.totalBallBowled &&
                       currentBowler != dummyBowler) {
-
                     thingsToDoAfterOverIsComplete(bowlerName: currentBowler.playerName);
                   }
 
@@ -721,15 +774,15 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     if (overNoOnCard != null) {
       return Container(
         margin: EdgeInsets.symmetric(
-            vertical: (6*SizeConfig.one_H).roundToDouble(),
-            horizontal: (6*SizeConfig.one_W).roundToDouble()),
+            vertical: (6*SizeConfig.oneH).roundToDouble(),
+            horizontal: (6*SizeConfig.oneW).roundToDouble()),
         padding: EdgeInsets.symmetric(
-            vertical: (8*SizeConfig.one_H).roundToDouble(),
-            horizontal: (4*SizeConfig.one_W).roundToDouble()),
+            vertical: (8*SizeConfig.oneH).roundToDouble(),
+            horizontal: (4*SizeConfig.oneW).roundToDouble()),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular((5*SizeConfig.one_W).roundToDouble()),
+            borderRadius: BorderRadius.circular((5*SizeConfig.oneW).roundToDouble()),
             color: overNoOnCard == currentOver ? Colors.white : Colors.white60),
-        height: (60*SizeConfig.one_H).roundToDouble(),
+        height: (60*SizeConfig.oneH).roundToDouble(),
         // color: Colors.black26,
         child: currentOver == 0
             ? Row(children: zeroOverBalls)
@@ -742,14 +795,13 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   } else {
                     final overData = snapshot.data.data();
 
-                    List<Widget> balls = [
-                      BallWidget(),
-                      BallWidget(),
-                      BallWidget(),
-                      BallWidget(),
-                      BallWidget(),
-                      BallWidget(),
-                    ];
+                    final overLength = overData['overLength'];
+
+                    List<Widget> balls = [];
+
+                    for(int i=0;i<overLength;i++){
+                      balls.add(BallWidget());
+                    }
 
                     Map<String, dynamic> fullOverData =
                         overData['fullOverData'];
@@ -757,17 +809,18 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                         overData["isThisCurrentOver"];
 
                     final bowlerOfThisOver = overData['bowlerName'];
-
                     final currentBallNo = overData['currentBall'];
 
                     //decoding the map [ballNo:::RunsScores]
                     fullOverData.forEach((ballNo, runsScored) {
+
                       Ball ball = Ball(
                         currentBallNo: int.parse(ballNo),
-                        runScoredOnThisBall: runsScored,
+                        runToShowOnUI: runsScored,
                         cardOverNo: overNoOnCard,
                         currentOverNo: currentOverNo,
                       );
+
 
                       if (runsScored != null) {
                         balls[int.parse(ballNo) - 1] = BallWidget(
@@ -781,7 +834,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                       }
                     });
                     return Column(
-
                       children: [
                         Row(
                           mainAxisAlignment:MainAxisAlignment.spaceBetween ,
@@ -811,10 +863,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
   ///this is placed at the bottom, contains many run buttons
   scoreSelectionWidget({int ballNo, int inningNo}) {
-    final double buttonWidth = (60*SizeConfig.one_W).roundToDouble();
+    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
     final btnColor = Colors.black12;
     final spaceBtwn = SizedBox(
-      width: (4*SizeConfig.one_W).roundToDouble(),
+      width: (4*SizeConfig.oneW).roundToDouble(),
     );
 
     return Container(
@@ -846,7 +898,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               );
 
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (6*SizeConfig.one_H).roundToDouble()),
+                padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (6*SizeConfig.oneH).roundToDouble()),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   // mainAxisAlignment: MainAxisAlignment.center,
@@ -862,7 +914,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall=0;
                               thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  thisBall: thisBall);
+                                  thisBallData: thisBall);
                             },
                             child: Text("0")),
                         spaceBtwn,
@@ -872,8 +924,12 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             onPressed: () {
                               thisBall.runScoredOnThisBall=1;
                               thisBall.isNormalRun=true;
+                              // displayProgressDialog();
+                              setIsUploadingDataToTrue();
                               runUpdater.updateRun(
-                                  thisBall: thisBall);
+                                  thisBallData: thisBall,
+                              );
+                              // Navigator.pop(context);
                             },
                             child: Text("1")),
                         spaceBtwn,
@@ -884,7 +940,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall=2;
                               thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  thisBall: thisBall);
+                                  thisBallData: thisBall);
                             },
                             child: Text("2")),
                         spaceBtwn,
@@ -895,7 +951,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall=3;
                               thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  thisBall: thisBall);
+                                  thisBallData: thisBall);
                             },
                             child: Text("3")),
                         spaceBtwn,
@@ -906,7 +962,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall=4;
                               thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  thisBall: thisBall);
+                                  thisBallData: thisBall);
                             },
                             child: Text("4")),
                       ],
@@ -923,7 +979,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall=6;
                               thisBall.isNormalRun=true;
                               runUpdater.updateRun(
-                                  thisBall: thisBall);
+                                  thisBallData: thisBall);
                             },
                             child: Text("6")),
                         spaceBtwn,
@@ -931,17 +987,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             color: btnColor,
                             minWidth: buttonWidth,
                             onPressed: () {
-                              // updateRuns(playerName: playersName, runs: 0);
-                              thisBall.runScoredOnThisBall=0;
-                              thisBall.runKey=K_WIDEBALL;
-                              thisBall.isNormalRun=false;
 
                               setState(() {
                                 isWideBall=true;
                               });
-
-                              // runUpdater.updateRun(
-                              //     thisBall: thisBall);
 
                             },
                             child: Text("Wide")),
@@ -951,8 +1000,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: out btn clicked
                             onPressed: () {
-                              // updateRuns(playerName: playersName, runs: 0);
-                              thisBall.runScoredOnThisBall=0;
+
                               thisBall.runKey=K_BYE;
                               thisBall.isNormalRun=false;
 
@@ -970,17 +1018,12 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: legBye runs need to updated [open new run set]
                             onPressed: () {
-                              // updateRuns(playerName: playersName, runs: 0);
-                              thisBall.runScoredOnThisBall=0;
                               thisBall.runKey=K_LEGBYE;
                               thisBall.isNormalRun=false;
 
                               setState(() {
                                 isLegBye=true;
                               });
-
-                              // runUpdater.updateRun(
-                              //     thisBall: thisBall);
 
                             },
                             child: Text("LB")),
@@ -990,8 +1033,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: no-ball -- open new no-ball set
                             onPressed: () {
-                              // updateRuns(playerName: playersName, runs: 1);
-                              thisBall.runScoredOnThisBall=0;
                               thisBall.runKey=K_NOBALL;
                               thisBall.isNormalRun=false;
 
@@ -1017,7 +1058,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             //TODO: out btn clicked
                             onPressed: () {
                               // updateRuns(playerName: playersName, runs: 0);
-                              thisBall.runScoredOnThisBall=0;
                               thisBall.runKey=K_OUT;
                               thisBall.isNormalRun=false;
                               setState(() {
@@ -1034,24 +1074,18 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             //TODO: over throw
                             onPressed: () {
                               // updateRuns(playerName: playersName, runs: 0);
-                              thisBall.runKey=K_OUT;
+                              thisBall.runKey=K_OVERTHROW;
                               thisBall.isNormalRun=false;
-                              runUpdater.updateRun(
-                                  thisBall: thisBall);
+
+                              setState(() {
+                                isOverThrow=true;
+                              });
+
+                              // runUpdater.updateRun(
+                              //     thisBall: thisBall);
                             },
                             child: Text("Over Throw")),
 
-
-                        // spaceBtwn,
-                        // FlatButton(
-                        //     color: btnColor,
-                        //     minWidth: buttonWidth,
-                        //     //TODO: start new over
-                        //     onPressed: () {
-                        //       // newOverPlayersSelectionDialog();
-                        //       // updateRuns(playerName: playersName, runs: 0);
-                        //     },
-                        //     child: Text("Start new over")),
                       ],
                     ),
                   ],
@@ -1062,13 +1096,24 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     );
   }
 
+  bool isUploadingData = false;
+  ///bye & legBye & out & noBall, these things have their own
+  ///set of things..logic to display them is below
   whenToDisplayWhatAtBottom({Ball ballData}) {
 
-    if (globalCurrentBowler == null) { //TODO: add batsmen condition please
+    if(isUploadingData){
+      return loadingGif();
+    }
+
+    if (globalCurrentBowler == null || globalOnStrikeBatsmen ==null) { //TODO: add batsmen condition please
       return selectPlayersBtn();
     } else {
 
       if(isWideBall){
+
+        ballData.runKey=K_WIDEBALL;
+        ballData.isNormalRun=false;
+
         return WideBallOptions(
           ball: ballData,
           userUID: widget.user.uid,
@@ -1081,6 +1126,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         );
       }
       if(isLegBye){
+
+        ballData.runKey=K_LEGBYE;
+        ballData.isNormalRun=false;
+
         return LegByeOptions(
           ball: ballData,
           userUID: widget.user.uid,
@@ -1093,6 +1142,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         );
       }
       if(isBye){
+
+        ballData.runKey=K_BYE;
+        ballData.isNormalRun=false;
+
         return ByeOptions(
           ball: ballData,
           userUID: widget.user.uid,
@@ -1105,6 +1158,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         );
       }
       if(isOut){
+
+        ballData.runKey=K_OUT;
+        ballData.isNormalRun=false;
+
         return OutOptions(
           ball: ballData,
           userUID: widget.user.uid,
@@ -1117,6 +1174,11 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         );
       }
       if(isNoBall){
+
+        ballData.runKey=K_NOBALL;
+        ballData.isNormalRun=false;
+
+
         return NoBallOptions(
           ball: ballData,
           userUID: widget.user.uid,
@@ -1128,22 +1190,39 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
           },
         );
       }
+      if(isOverThrow){
+
+        ballData.runKey=K_OVERTHROW;
+        ballData.isNormalRun=false;
+
+        return OverThrowOptions(
+          ball: ballData,
+          userUID: widget.user.uid,
+          matchId: widget.match.getMatchId(),
+          setOverThrowToFalse: (){
+            setState(() {
+              isOverThrow=false;
+            });
+          },
+        );
+      }
 
       return scoreSelectionWidget();
     }
   }
 
+  ///SelectBatsmen and bowler btn
   selectPlayersBtn() {
     return Container(
       height: scoreSelectionAreaLength.toDouble(),
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: (70*SizeConfig.one_W).roundToDouble()),
+      color: Colors.blueGrey.shade400,
+      padding: EdgeInsets.symmetric(horizontal: (70*SizeConfig.oneW).roundToDouble()),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FlatButton(
               minWidth: double.infinity,
-              color: Colors.blueGrey.shade400,
+              color: Colors.black12,
               child: Text("Select Batsmen"),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -1155,7 +1234,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               }),
           FlatButton(
             minWidth: double.infinity,
-            color: Colors.blueGrey.shade400,
+            color: Colors.black12,
             child: Text("Select Bowler"),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -1175,7 +1254,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   ///TODO: might change its position
   tossLineWidget() {
     return Container(
-        padding: EdgeInsets.only(left: (12*SizeConfig.one_W).roundToDouble(), top: (12*SizeConfig.one_H).roundToDouble()),
+        padding: EdgeInsets.only(left: (12*SizeConfig.oneW).roundToDouble(), top: (12*SizeConfig.oneH).roundToDouble()),
         child: Text(
             "${widget.match.getTossWinner()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()} (Inning: ${widget.match.getInningNo()}) "));
   }
@@ -1205,6 +1284,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     }
   }
 
+
   Widget miniScoreLoadingScreen(){
     return Expanded(
       child: Container(
@@ -1216,6 +1296,33 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
       ),
     );
   }
+
+  List<String> gifPaths = [
+    'assets/gifs/tenor_2.gif',
+    'assets/gifs/tenor_3.gif',
+    'assets/gifs/tenor_4.gif',
+    'assets/gifs/tenor_5.gif',
+    'assets/gifs/tenor_6.gif'
+  ];
+
+  Widget loadingGif() {
+
+    Random random = new Random();
+    int randomNumber = random.nextInt(4);
+
+    String gifPath = gifPaths[randomNumber];
+
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16,horizontal: 16),
+      child: Image.asset(
+          gifPaths[1],
+        height: 100,width: 100,
+      ),
+    );
+
+  }
+
+
 
 }
 

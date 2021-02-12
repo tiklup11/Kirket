@@ -24,6 +24,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+          // backgroundColor: Colors.black12,
           floatingActionButton: FloatingActionButton(
             onPressed: (){
               _modalBottomSheetMenu(context);
@@ -118,7 +119,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
         context: context,
         builder: (builder){
           return Container(
-            height: (120*SizeConfig.one_H).roundToDouble(),
+            height: (120*SizeConfig.oneH).roundToDouble(),
             color: Color(0xFF737373),
             // color: Colors.transparent, //could change this to Color(0xFF737373),
             //so you don't have to change MaterialApp canvasColor
@@ -126,8 +127,8 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular((8*SizeConfig.one_W).roundToDouble()),
-                        topRight: Radius.circular((8*SizeConfig.one_W).roundToDouble()))),
+                        topLeft: Radius.circular((8*SizeConfig.oneW).roundToDouble()),
+                        topRight: Radius.circular((8*SizeConfig.oneW).roundToDouble()))),
                 child: Column(
                   children: [
                     FlatButton(

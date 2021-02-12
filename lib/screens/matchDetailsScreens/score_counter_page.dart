@@ -73,7 +73,7 @@ class _CounterPageState extends State<CounterPage> {
     _chosenValue = widget.match.team2List[0];
     _scrollController = ScrollController(keepScrollOffset: true);
     dataStreams = DataStreams(userUID: widget.user.uid, matchId: widget.match.getMatchId());
-    runUpdater =RunUpdater(userUID: widget.user.uid,matchId: widget.match.getMatchId());
+    runUpdater =RunUpdater(userUID: widget.user.uid,matchId: widget.match.getMatchId(),context: context);
 
     print("YEEEEESSS, INIT METHOD CALLED _____________________________________");
   }
@@ -310,7 +310,7 @@ class _CounterPageState extends State<CounterPage> {
             balls: batsmen1Balls.toString(),
             noOf4s: batsmen1Fours.toString(),
             noOf6s: batsmen1Sixes.toString(),
-            SR: batsmen1SR.toString(),
+            sR: batsmen1SR.toString(),
           ),
           SizedBox(
             height: 4,
@@ -321,7 +321,7 @@ class _CounterPageState extends State<CounterPage> {
             balls: batsmen2Balls.toString(),
             noOf4s: batsmen2Fours.toString(),
             noOf6s: batsmen2Sixes.toString(),
-            SR: batsmen2SR.toString(),
+            sR: batsmen2SR.toString(),
           ),
 
           //Line
@@ -747,7 +747,7 @@ class _CounterPageState extends State<CounterPage> {
       String balls,
       String noOf4s,
       String noOf6s,
-      String SR}) {
+      String sR}) {
     final TextStyle textStyle = TextStyle(color: Colors.black);
 
     return Row(
@@ -788,7 +788,7 @@ class _CounterPageState extends State<CounterPage> {
         Container(
             width: 30,
             child: Text(
-              SR,
+              sR,
               style: textStyle,
             )),
       ],

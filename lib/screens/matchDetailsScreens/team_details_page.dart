@@ -34,8 +34,8 @@ class _TeamDetailsState extends State<TeamDetails> {
         children: [
           //matchINFO
           Container(
-            margin: EdgeInsets.only(top: (22*SizeConfig.one_H).roundToDouble(),bottom: (2*SizeConfig.one_H).roundToDouble()),
-            padding: EdgeInsets.only(left: (16*SizeConfig.one_W).roundToDouble(),
+            margin: EdgeInsets.only(top: (22*SizeConfig.oneH).roundToDouble(),bottom: (2*SizeConfig.oneH).roundToDouble()),
+            padding: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),
             ),
             child: Text(
               "INFO",
@@ -49,11 +49,11 @@ class _TeamDetailsState extends State<TeamDetails> {
 
   matchInfo() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (10*SizeConfig.one_H).roundToDouble()),
-      margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.one_W).roundToDouble(), vertical: (10*SizeConfig.one_H).roundToDouble()),
+      padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (10*SizeConfig.oneH).roundToDouble()),
+      margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (10*SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular((4*SizeConfig.one_W).roundToDouble()),
+        borderRadius: BorderRadius.circular((4*SizeConfig.oneW).roundToDouble()),
       ),
       child: Column(
         children: [
@@ -78,7 +78,7 @@ class _TeamDetailsState extends State<TeamDetails> {
       children: [
         Container(
           margin: EdgeInsets.symmetric(vertical: 3),
-            width: (220*SizeConfig.one_W).roundToDouble(),
+            width: (220*SizeConfig.oneW).roundToDouble(),
             child: Text(
               dataType,
               style: TextStyle(color: Colors.black54),
