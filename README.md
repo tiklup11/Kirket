@@ -1,6 +1,10 @@
 # Kirket 
 
-A new Flutter application.
+A new Flutter application.This is basically a cloud Cricket Score Counter application, so
+your audience can track live score.
+
+>Simple and Inituitive UI
+>Dark Mode comming soon
 
 ## Getting Started
 
