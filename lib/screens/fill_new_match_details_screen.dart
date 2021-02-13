@@ -93,7 +93,9 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'playerCount': newMatch.getPlayerCount(),
       'matchLocation': newMatch.getLocation(),
       'timeStamp': DateTime.now(),
+      'isFirstInningStarted':false,
       'isFirstInningEnd':false,
+      'isSecondStartedYet':false,
       'tossWinner': null,
       'whatChoose': null, //bat or ball
       'isMatchStarted': false,

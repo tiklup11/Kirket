@@ -60,8 +60,8 @@ class AboutUsPage extends StatelessWidget {
     );
   }
 
-  launchFreepikURL(String web_url) async {
-    final url = web_url;
+  launchFreepikURL(String webUrl) async {
+    final url = webUrl;
     if (await canLaunch(url)) {
       await launch(url);
     } else {

@@ -5,12 +5,16 @@ import 'package:umiperer/modals/size_config.dart';
 
 class NoBallOptions extends StatefulWidget {
 
-  NoBallOptions({this.ball,this.matchId,this.userUID,this.setNoBallToFalse});
+  NoBallOptions({
+    this.setUpdatingDataToFalse,this.setUpdatingDataToTrue,
+    this.ball,this.matchId,this.userUID,this.setNoBallToFalse});
 
   final Ball ball;
   final String matchId;
   final String userUID;
   final Function setNoBallToFalse;
+  final Function setUpdatingDataToTrue;
+  final Function setUpdatingDataToFalse;
 
   @override
   _NoBallOptionsState createState() => _NoBallOptionsState();
@@ -20,12 +24,14 @@ class _NoBallOptionsState extends State<NoBallOptions> {
 
   final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
+  final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
+  final btnColor = Colors.black12;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context);
+    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse);
   }
 
   @override
@@ -34,8 +40,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
-    final btnColor = Colors.black12;
+
     final spaceBtwn = SizedBox(
       width: (4*SizeConfig.oneW).roundToDouble(),
     );
@@ -59,25 +64,9 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: "RAJU", runs: 0);
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("NB+0")),
+                      customNoBallButton(runScored: 1,btnText: "NB+0",toShowOnUI: "NB+0"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 1);
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("NB+1")),
-
-
+                      customNoBallButton(runScored: 2,btnText: "NB+1",toShowOnUI: "NB+1"),
                     ],
                   ),
 
@@ -85,29 +74,11 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("NB+2")),
+                      customNoBallButton(runScored: 3,btnText: "NB+2",toShowOnUI: "NB+2"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("NB+3")),
+                      customNoBallButton(runScored: 4,btnText: "NB+3",toShowOnUI: "NB+3"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("NB+4")),
+                      customNoBallButton(runScored: 5,btnText: "NB+4",toShowOnUI: "NB+4"),
                     ],
                   ),
 
@@ -115,30 +86,9 @@ class _NoBallOptionsState extends State<NoBallOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("NB+5")),
+                      customNoBallButton(runScored: 6,btnText: "NB+5",toShowOnUI: "NB+5"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("NB+5")),
-                      spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          //TODO: over throw
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 0);
-                          },
-                          child: Text("Over Throw")),
+                      customNoBallButton(runScored: 7,btnText: "NB+6",toShowOnUI: "NB+6"),
                     ],
                   ),
                 ],
@@ -153,5 +103,18 @@ class _NoBallOptionsState extends State<NoBallOptions> {
           ],
         )
     );
+  }
+
+  customNoBallButton({int runScored,String btnText,String toShowOnUI}){
+    return FlatButton(
+        color: btnColor,
+        minWidth: buttonWidth,
+        onPressed: () {
+          widget.setUpdatingDataToTrue();
+          widget.ball.runScoredOnThisBall=runScored;
+          widget.ball.runToShowOnUI=toShowOnUI;
+          runUpdater.updateRun(thisBallData: widget.ball);
+        },
+        child: Text(btnText));
   }
 }

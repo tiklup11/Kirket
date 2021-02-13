@@ -5,12 +5,16 @@ import 'package:umiperer/modals/size_config.dart';
 
 class OverThrowOptions extends StatefulWidget {
 
-  OverThrowOptions({this.ball,this.matchId,this.userUID,this.setOverThrowToFalse});
+  OverThrowOptions({
+    this.setUpdatingDataToFalse,this.setUpdatingDataToTrue,
+    this.ball,this.matchId,this.userUID,this.setOverThrowToFalse});
 
   final Ball ball;
   final String matchId;
   final String userUID;
   final Function setOverThrowToFalse;
+  final Function setUpdatingDataToTrue;
+  final Function setUpdatingDataToFalse;
 
   @override
   _OverThrowOptionsState createState() => _OverThrowOptionsState();
@@ -20,12 +24,14 @@ class _OverThrowOptionsState extends State<OverThrowOptions> {
 
   final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
+  final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
+  final btnColor = Colors.black12;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context );
+    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse);
   }
 
   @override
@@ -34,8 +40,7 @@ class _OverThrowOptionsState extends State<OverThrowOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
-    final btnColor = Colors.black12;
+
     final spaceBtwn = SizedBox(
       width: (4*SizeConfig.oneW).roundToDouble(),
     );
@@ -59,25 +64,9 @@ class _OverThrowOptionsState extends State<OverThrowOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: "RAJU", runs: 0);
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("+1 OverThrow")),
+                      customOverThrowButton(runScored: 1,toShowOnUI: "+1Th",btnText: "+1 OverThrow"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 1);
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("+2 OverThrow")),
-
-
+                      customOverThrowButton(runScored: 2,toShowOnUI: "+2Th",btnText: "+2 OverThrow"),
                     ],
                   ),
 
@@ -85,46 +74,17 @@ class _OverThrowOptionsState extends State<OverThrowOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("+3 OverThrow")),
+                      customOverThrowButton(runScored: 3,toShowOnUI: "+3Th",btnText: "+3 OverThrow"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("+4 OverThrow")),
-
+                      customOverThrowButton(runScored: 4,toShowOnUI: "+4Th",btnText: "+4 OverThrow"),
                     ],
                   ),
-
-                  ///row 3 [over throw, overEnd,]
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          //TODO: over throw
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 0);
-                          },
-                          child: Text("+6 OverThrow")),
-
+                      customOverThrowButton(runScored: 5,toShowOnUI: "+5Th",btnText: "+5 OverThrow"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("+5 OverThrow")),
+                      customOverThrowButton(runScored: 6,toShowOnUI: "+6Th",btnText: "+6 OverThrow"),
                     ],
                   ),
                 ],
@@ -139,5 +99,18 @@ class _OverThrowOptionsState extends State<OverThrowOptions> {
           ],
         )
     );
+  }
+
+  customOverThrowButton({int runScored,String btnText,String toShowOnUI}){
+    return FlatButton(
+        color: btnColor,
+        minWidth: buttonWidth,
+        onPressed: () {
+          widget.setUpdatingDataToTrue();
+          widget.ball.runScoredOnThisBall=runScored;
+          widget.ball.runToShowOnUI=toShowOnUI;
+          runUpdater.updateRun(thisBallData: widget.ball);
+        },
+        child: Text(btnText));
   }
 }

@@ -5,12 +5,16 @@ import 'package:umiperer/modals/size_config.dart';
 
 class OutOptions extends StatefulWidget {
 
-  OutOptions({this.ball,this.matchId,this.userUID,this.setOutToFalse});
+  OutOptions({
+    this.setUpdatingDataToTrue,this.setUpdatingDataToFalse,
+    this.ball,this.matchId,this.userUID,this.setOutToFalse});
 
   final Ball ball;
   final String matchId;
   final String userUID;
   final Function setOutToFalse;
+  final Function setUpdatingDataToTrue;
+  final Function setUpdatingDataToFalse;
 
   @override
   _OutOptionsState createState() => _OutOptionsState();
@@ -25,7 +29,7 @@ class _OutOptionsState extends State<OutOptions> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context);
+    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse);
   }
 
   @override
@@ -64,6 +68,8 @@ class _OutOptionsState extends State<OutOptions> {
                           minWidth: buttonWidth,
                           onPressed: () {
                             // updateRuns(playerName: "RAJU", runs: 0);
+                            widget.setUpdatingDataToTrue();
+                            widget.ball.runScoredOnThisBall=0;
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Bowled")),
@@ -73,6 +79,8 @@ class _OutOptionsState extends State<OutOptions> {
                           minWidth: buttonWidth,
                           onPressed: () {
                             // updateRuns(playerName: playersName, runs: 1);
+                            widget.setUpdatingDataToTrue();
+                            widget.ball.runScoredOnThisBall=0;
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Caught")),
@@ -81,6 +89,8 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
+                            widget.setUpdatingDataToTrue();
+                            widget.ball.runScoredOnThisBall=0;
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("LBW")),
@@ -89,6 +99,8 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
+                            widget.setUpdatingDataToTrue();
+                            widget.ball.runScoredOnThisBall=0;
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Run Out")),
@@ -103,6 +115,8 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
+                            widget.setUpdatingDataToTrue();
+                            widget.ball.runScoredOnThisBall=0;
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Stumped")),
@@ -111,6 +125,8 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
+                            widget.setUpdatingDataToTrue();
+                            widget.ball.runScoredOnThisBall=0;
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Hit Wicket")),
@@ -119,6 +135,8 @@ class _OutOptionsState extends State<OutOptions> {
                           color: btnColor,
                           minWidth: buttonWidth,
                           onPressed: () {
+                            widget.setUpdatingDataToTrue();
+                            widget.ball.runScoredOnThisBall=0;
                             runUpdater.updateRun(thisBallData: widget.ball);
                           },
                           child: Text("Injured")),

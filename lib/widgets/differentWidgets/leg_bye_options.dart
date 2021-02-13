@@ -5,12 +5,16 @@ import 'package:umiperer/modals/size_config.dart';
 
 class LegByeOptions extends StatefulWidget {
 
-  LegByeOptions({this.ball,this.matchId,this.userUID,this.setLegByeToFalse});
+  LegByeOptions({
+    this.setUpdatingDataToFalse,this.setUpdatingDataToTrue,
+    this.ball,this.matchId,this.userUID,this.setLegByeToFalse});
 
   final Ball ball;
   final String matchId;
   final String userUID;
   final Function setLegByeToFalse;
+  final Function setUpdatingDataToTrue;
+  final Function setUpdatingDataToFalse;
 
   @override
   _LegByeOptionsState createState() => _LegByeOptionsState();
@@ -20,12 +24,14 @@ class _LegByeOptionsState extends State<LegByeOptions> {
 
   final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
+  final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
+  final btnColor = Colors.black12;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context );
+    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse);
   }
 
   @override
@@ -34,8 +40,7 @@ class _LegByeOptionsState extends State<LegByeOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
-    final btnColor = Colors.black12;
+
     final spaceBtwn = SizedBox(
       width: (4*SizeConfig.oneW).roundToDouble(),
     );
@@ -58,25 +63,9 @@ class _LegByeOptionsState extends State<LegByeOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: "RAJU", runs: 0);
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("1LB")),
+                      customLegByeButton(runScored: 1,btnText: "1LB",toShowOnUI: "1LB"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 1);
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("2LB")),
-
-
+                      customLegByeButton(runScored: 2,btnText: "2LB",toShowOnUI: "2LB"),
                     ],
                   ),
 
@@ -84,46 +73,27 @@ class _LegByeOptionsState extends State<LegByeOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("3LB")),
+                      customLegByeButton(runScored: 3,btnText: "3LB",toShowOnUI: "3LB"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("4LB")),
+                      customLegByeButton(runScored: 4,btnText: "4LB",toShowOnUI: "4LB"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("5LB")),
+                      customLegByeButton(runScored: 5,btnText: "5LB",toShowOnUI: "5LB"),
                     ],
                   ),
-
                   ///row 3 [over throw, overEnd,]
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          //TODO: over throw
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 0);
-                          },
-                          child: Text("Over Throw")),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     FlatButton(
+                  //         color: btnColor,
+                  //         minWidth: buttonWidth,
+                  //         //TODO: over throw
+                  //         onPressed: () {
+                  //           // updateRuns(playerName: playersName, runs: 0);
+                  //         },
+                  //         child: Text("Over Throw")),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
@@ -136,5 +106,17 @@ class _LegByeOptionsState extends State<LegByeOptions> {
           ],
         )
     );
+  }
+  customLegByeButton({int runScored,String btnText,String toShowOnUI}){
+    return FlatButton(
+        color: btnColor,
+        minWidth: buttonWidth,
+        onPressed: () {
+          widget.setUpdatingDataToTrue();
+          widget.ball.runScoredOnThisBall=runScored;
+          widget.ball.runToShowOnUI=toShowOnUI;
+          runUpdater.updateRun(thisBallData: widget.ball);
+        },
+        child: Text(btnText));
   }
 }

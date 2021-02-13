@@ -5,12 +5,16 @@ import 'package:umiperer/modals/size_config.dart';
 
 class ByeOptions extends StatefulWidget {
 
-  ByeOptions({this.ball,this.matchId,this.userUID,this.setByeToFalse});
+  ByeOptions({
+    this.setUpdatingDataToTrue,this.setUpdatingDataToFalse,
+    this.ball,this.matchId,this.userUID,this.setByeToFalse});
 
   final Ball ball;
   final String matchId;
   final String userUID;
   final Function setByeToFalse;
+  final Function setUpdatingDataToTrue;
+  final Function setUpdatingDataToFalse;
 
   @override
   _ByeOptionsState createState() => _ByeOptionsState();
@@ -20,12 +24,14 @@ class _ByeOptionsState extends State<ByeOptions> {
 
   final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
+  final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
+  final btnColor = Colors.black12;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context);
+    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse);
   }
 
   @override
@@ -34,8 +40,7 @@ class _ByeOptionsState extends State<ByeOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
-    final btnColor = Colors.black12;
+
     final spaceBtwn = SizedBox(
       width: (4*SizeConfig.oneW).roundToDouble(),
     );
@@ -58,25 +63,9 @@ class _ByeOptionsState extends State<ByeOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: "RAJU", runs: 0);
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("1B")),
+                      customByeButton(runScored: 1,btnText: "1B",toShowOnUI: "1B"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 1);
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("2B")),
-
-
+                      customByeButton(runScored: 2,btnText: "2B",toShowOnUI: "2B"),
                     ],
                   ),
 
@@ -84,29 +73,11 @@ class _ByeOptionsState extends State<ByeOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("3B")),
+                      customByeButton(runScored: 3,btnText: "3B",toShowOnUI: "3B"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("4B")),
+                      customByeButton(runScored: 4,btnText: "4B",toShowOnUI: "4B"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("5B")),
+                      customByeButton(runScored: 5,btnText: "5B",toShowOnUI: "5B"),
                     ],
                   ),
 
@@ -114,14 +85,7 @@ class _ByeOptionsState extends State<ByeOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          //TODO: over throw
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 0);
-                          },
-                          child: Text("Over Throw")),
+                      customByeButton(runScored: 6,btnText: "6B",toShowOnUI: "6B"),
                     ],
                   ),
                 ],
@@ -136,5 +100,18 @@ class _ByeOptionsState extends State<ByeOptions> {
           ],
         )
     );
+  }
+
+  customByeButton({int runScored,String btnText,String toShowOnUI}){
+    return FlatButton(
+        color: btnColor,
+        minWidth: buttonWidth,
+        onPressed: () {
+          widget.setUpdatingDataToTrue();
+          widget.ball.runScoredOnThisBall=runScored;
+          widget.ball.runToShowOnUI=toShowOnUI;
+          runUpdater.updateRun(thisBallData: widget.ball);
+        },
+        child: Text(btnText));
   }
 }

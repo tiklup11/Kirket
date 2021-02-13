@@ -6,12 +6,16 @@ import 'package:umiperer/screens/ciruclarprogress_dialog.dart';
 
 class WideBallOptions extends StatefulWidget {
 
-  WideBallOptions({this.ball,this.matchId,this.userUID,this.setWideToFalse});
+  WideBallOptions({this.ball,this.matchId,this.userUID,
+    this.setWideToFalse,this.setUpdatingDataToTrue,this.setUpdatingDataToFalse,
+  });
 
   final Ball ball;
   final String matchId;
   final String userUID;
   final Function setWideToFalse;
+  final Function setUpdatingDataToTrue;
+  final Function setUpdatingDataToFalse;
 
   @override
   _WideBallOptionsState createState() => _WideBallOptionsState();
@@ -21,24 +25,19 @@ class _WideBallOptionsState extends State<WideBallOptions> {
 
   final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
+  final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
+  final btnColor = Colors.black12;
 
-  displayProgressDialog() {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return ProgressDialog(
-            // areWeAddingBatsmen: true,
-            // match: widget.match,
-            // user: widget.user,
-          );
-        });
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context );
+    runUpdater = RunUpdater(
+        matchId: widget.matchId,userUID: widget.userUID,
+        context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse,
+        // setWideToFalse: widget.setWideToFalse
+    );
   }
 
   @override
@@ -47,8 +46,7 @@ class _WideBallOptionsState extends State<WideBallOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
-    final btnColor = Colors.black12;
+
     final spaceBtwn = SizedBox(
       width: (4*SizeConfig.oneW).roundToDouble(),
     );
@@ -72,27 +70,9 @@ class _WideBallOptionsState extends State<WideBallOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Wide+0")),
+                      customButton(runScored: 1,btnText: "Wide+0",toShowOnUI: "Wd+0"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () async{
-                            displayProgressDialog();
-                            widget.ball.runScoredOnThisBall=1;
-                            await runUpdater.updateRun(thisBallData: widget.ball);
-                            Navigator.pop(context);
-                          },
-                          child: Text("Wide+1")),
-
-
+                      customButton(runScored: 2,btnText: "Wide+1",toShowOnUI: "Wd+1"),
                     ],
                   ),
 
@@ -100,57 +80,53 @@ class _WideBallOptionsState extends State<WideBallOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Wide+2")),
+                      customButton(runScored: 3,btnText: "Wide+2",toShowOnUI:"Wd+2" ),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Wide+3")),
+                      customButton(runScored: 4,btnText: "Wide+3",toShowOnUI: "Wd+3"),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Wide+4")),
+                      customButton(runScored: 5,btnText: "Wide+4",toShowOnUI: "Wd+4"),
                     ],
                   ),
-
                   ///row 3 [over throw, overEnd,]
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          //TODO: over throw
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 0);
-                          },
-                          child: Text("Over Throw")),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     FlatButton(
+                  //         color: btnColor,
+                  //         minWidth: buttonWidth,
+                  //         //TODO: over throw
+                  //         onPressed: () {
+                  //           // updateRuns(playerName: playersName, runs: 0);
+                  //         },
+                  //         child: Text("Over Throw")),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
             IconButton(
                 icon: Icon(Icons.close),
-                onPressed:(){
+                onPressed:() {
                   ///set isWide to false
                   widget.setWideToFalse();
                 } )
           ],
         )
     );
+  }
+
+  ///this is the wideCustom btn
+  customButton({int runScored,String btnText,String toShowOnUI}){
+    return FlatButton(
+        color: btnColor,
+        minWidth: buttonWidth,
+        onPressed: () {
+          widget.setUpdatingDataToTrue();
+          widget.ball.runScoredOnThisBall=runScored;
+          widget.ball.runToShowOnUI=toShowOnUI;
+          runUpdater.updateRun(thisBallData: widget.ball);
+          // widget.setIsWideToFalse();
+        },
+        child: Text(btnText));
   }
 }
