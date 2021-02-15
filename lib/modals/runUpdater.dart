@@ -20,31 +20,22 @@ class RunUpdater {
 
     ///doing 2 things here 1. updatingBallNo and Runs
     if (thisBallData.isNormalRun) {
-      await _updateRunsInParticularOver(
-        toShowOnUI: thisBallData.runToShowOnUI,
-          overNo: thisBallData.currentOverNo,
-          inningNo: thisBallData.inningNo,
-          runsScored: thisBallData.runScoredOnThisBall,
-          ballNo: thisBallData.currentBallNo);
+      await _updateRunsInParticularOver(toShowOnUI: thisBallData.runToShowOnUI, overNo: thisBallData.currentOverNo,
+          inningNo: thisBallData.inningNo, runsScored: thisBallData.runScoredOnThisBall, ballNo: thisBallData.currentBallNo);
 
       await _updateScoreBoardData(
           inningNo: thisBallData.inningNo, overNo: thisBallData.currentOverNo);
 
       await _updateDataInGeneral(runsScored: thisBallData.runScoredOnThisBall);
 
-      await _updateBatsmenData(
-          inningNo: thisBallData.inningNo,
-          batsmenName: thisBallData.batsmenName,
+      await _updateBatsmenData(inningNo: thisBallData.inningNo, batsmenName: thisBallData.batsmenName,
           runsScored: thisBallData.runScoredOnThisBall);
 
-      await _updateBowlerData(
-          inningNo: thisBallData.inningNo,
-          bowlersName: thisBallData.bowlerName,
-          runsScored: thisBallData.runScoredOnThisBall);
+      await _updateBowlerData(inningNo: thisBallData.inningNo,
+          bowlersName: thisBallData.bowlerName, runsScored: thisBallData.runScoredOnThisBall);
 
       await _updateTotalRunsInScoreBoard(
-          inningNo: thisBallData.inningNo,
-          runsScored: thisBallData.runScoredOnThisBall);
+          inningNo: thisBallData.inningNo, runsScored: thisBallData.runScoredOnThisBall);
 
       setIsUploadingDataToFalse();
       // Navigator.pop(context);
@@ -337,11 +328,7 @@ class RunUpdater {
   }
 
   _updateRunsInOverDocForSpecialCases(
-      {int inningNo,
-      int runsScored,
-      int ballNo,
-      int overNo,
-      String runsOnUI}) async {
+      {int inningNo, int runsScored, int ballNo, int overNo, String runsOnUI}) async {
     await userRef
         .doc(userUID)
         .collection('createdMatches')
@@ -437,4 +424,166 @@ class RunUpdater {
     return;
   }
 
+  _updateBatsmenDataForWicket({String batsmenName, int runsScored, int inningNo}) async {
+    ///updating players score and bowler stats
+    if (inningNo == 1) {
+        await userRef
+            .doc(userUID)
+            .collection('createdMatches')
+            .doc(matchId)
+            .collection('1InningBattingData')
+            .doc(batsmenName)
+            .update({
+          "balls": FieldValue.increment(1),
+          "runs": FieldValue.increment(runsScored),
+          "isOut":true,
+          "isBatting":false,
+          "isOnStrike":false,
+        });
+      }
+    else {
+        await userRef
+            .doc(userUID)
+            .collection('createdMatches')
+            .doc(matchId)
+            .collection('2InningBattingData')
+            .doc(batsmenName)
+            .update({
+          "balls": FieldValue.increment(1),
+          "runs": FieldValue.increment(runsScored),
+          "isOut":true,
+          "isBatting":false,
+          "isOnStrike":false,
+        });
+      }
+  }
+
+  _updateBowlerDataForWicket({String bowlersName, int runsScored, int inningNo}) async {
+    if (inningNo == 1) {
+      await userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .collection('1InningBowlingData')
+          .doc(bowlersName)
+          .update({
+        "ballOfTheOver": FieldValue.increment(1),
+        "runs": FieldValue.increment(runsScored),
+        "wickets":FieldValue.increment(1),
+      });
+    } else {
+      await userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .collection('2InningBowlingData')
+          .doc(bowlersName)
+          .update({
+        "ballOfTheOver": FieldValue.increment(1),
+        "runs": FieldValue.increment(runsScored),
+        "wickets":FieldValue.increment(1),
+      });
+    }
+  }
+
+  _updateScoreBoardDataForWicket({
+    int inningNo,
+    int overNo,
+  }) async {
+    if (inningNo == 1) {
+      ///updating in SCOREBOARD_DATA
+      await userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .collection('FirstInning')
+          .doc("scoreBoardData")
+          .update({
+        "ballOfTheOver": FieldValue.increment(1),
+        "wicketsDown":FieldValue.increment(1),
+      });
+
+      await userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .collection("inning1overs")
+          .doc("over$overNo")
+          .update({"currentBall": FieldValue.increment(1)});
+    } else {
+      ///updating in SCOREBOARD_DATA
+      await userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .collection('SecondInning')
+          .doc("scoreBoardData")
+          .update({"ballOfTheOver": FieldValue.increment(1),
+          "wicketsDown":FieldValue.increment(1),
+      });
+
+      await userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .collection("inning2overs")
+          .doc("over$overNo")
+          .update({
+        "currentBall": FieldValue.increment(1),
+      });
+    }
+  }
+
+  _updateDataInGeneralForWicket({int runsScored}) async {
+    await userRef
+        .doc(userUID)
+        .collection('createdMatches')
+        .doc(matchId)
+        .update({
+      "currentBallNo": FieldValue.increment(1),
+      "wicketsDown":FieldValue.increment(1),
+      "totalRuns": FieldValue.increment(runsScored),
+      "strikerBatsmen":null,
+      "nonStrikerBatsmen":null,
+    });
+
+  }
+
+
+  ///out update function
+  ///this will be in to different cases on will be
+  /// 1. runOut
+  /// 2. allOtherCases
+  void updateOut({Ball thisBallData,}) async{
+
+    // if(thisBallData.runKey==K_RUNOUT){
+    //
+    // }
+    //
+    // if(thisBallData.runKey==K_NOT_RUNOUT){
+
+      await _updateRunsInParticularOver(toShowOnUI: thisBallData.runToShowOnUI, overNo: thisBallData.currentOverNo,
+          inningNo: thisBallData.inningNo, runsScored: thisBallData.runScoredOnThisBall, ballNo: thisBallData.currentBallNo);
+
+      await _updateScoreBoardDataForWicket(
+          inningNo: thisBallData.inningNo, overNo: thisBallData.currentOverNo);
+
+      await _updateDataInGeneralForWicket(runsScored: thisBallData.runScoredOnThisBall);
+
+      await _updateBatsmenDataForWicket(inningNo: thisBallData.inningNo, batsmenName: thisBallData.batsmenName,
+          runsScored: thisBallData.runScoredOnThisBall);
+
+      await _updateBowlerDataForWicket(inningNo: thisBallData.inningNo,
+          bowlersName: thisBallData.bowlerName, runsScored: thisBallData.runScoredOnThisBall);
+
+      await _updateTotalRunsInScoreBoard(
+          inningNo: thisBallData.inningNo, runsScored: thisBallData.runScoredOnThisBall);
+
+      setIsUploadingDataToFalse();
+      // Navigator.pop(context);
+      print("End progress dialog");
+      return;
+    }
+
+  // }
 }

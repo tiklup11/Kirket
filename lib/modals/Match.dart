@@ -10,6 +10,11 @@ class CricketMatch{
   int _playersCount;
   int _inningNumber=1;
 
+  int totalRunsOf1stInning;
+  int totalRunsOf2ndInning;
+  int totalWicketsOf1stInning;
+  int totalWicketsOf2ndInning;
+
   CricketOver currentOver = CricketOver();
   String _matchId;
   String _location;
@@ -29,8 +34,13 @@ class CricketMatch{
   String currentBowler;
   String currentBatsmen1;
   String currentBatsmen2;
+  String nonStrikerBatsmen;
+  String strikerBatsmen;
 
-  bool isFirstInningEnd= false;
+  bool isFirstInningEnd;
+  bool isFirstInningStartedYet;
+  bool isSecondInningStartedYet;
+  bool isSecondInningEnd;
 
   List<String> team1List=[];
   List<String> team2List=[];

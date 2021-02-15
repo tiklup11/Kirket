@@ -96,6 +96,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'isFirstInningStarted':false,
       'isFirstInningEnd':false,
       'isSecondStartedYet':false,
+      "isSecondInningEnd":false,
       'tossWinner': null,
       'whatChoose': null, //bat or ball
       'isMatchStarted': false,
@@ -104,13 +105,16 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'strikerBatsmen': null,
       'nonStrikerBatsmen':null,
       'currentBowler': null,
-      'totalRuns': 0,
-      'wicketsDownOfInning1':0,
+      'totalRunsOfCurrentInning': 0,
+      'totalWicketsOfInning1':0,
+      'totalWicketsOfInning2':0,
+      'totalRunsOfInning1':null,
+      'totalRunsOfInning2':null,
       'currentBallNo': 0,
 
     });
 
-    ///making everyOver doc inside Overs COllections inside first innings collections
+    ///making everyOver doc inside Overs Collections inside first innings collections
     for(int i=0;i<newMatch.getOverCount();i++){
 
       var completeOverData = {"1":null,"2":null,"3":null,"4":null,"5":null,"6":null};

@@ -20,9 +20,9 @@ class BatsmenScoreRow extends StatelessWidget {
     }
     return Colors.white;
   }
+
   @override
   Widget build(BuildContext context) {
-
     return batsmanScoreRow();
   }
 

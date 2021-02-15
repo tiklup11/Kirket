@@ -87,20 +87,6 @@ class _WideBallOptionsState extends State<WideBallOptions> {
                       customButton(runScored: 5,btnText: "Wide+4",toShowOnUI: "Wd+4"),
                     ],
                   ),
-                  ///row 3 [over throw, overEnd,]
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     FlatButton(
-                  //         color: btnColor,
-                  //         minWidth: buttonWidth,
-                  //         //TODO: over throw
-                  //         onPressed: () {
-                  //           // updateRuns(playerName: playersName, runs: 0);
-                  //         },
-                  //         child: Text("Over Throw")),
-                  //   ],
-                  // ),
                 ],
               ),
             ),

@@ -36,7 +36,7 @@ class MatchDetails extends StatelessWidget {
     ];
 
     return DefaultTabController(
-      initialIndex: 1,
+      initialIndex: 0,
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(

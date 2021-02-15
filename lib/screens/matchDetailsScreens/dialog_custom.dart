@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
 
-
 ///MQD
 
 final usersRef = FirebaseFirestore.instance.collection('users');
@@ -156,6 +155,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "noOf6s":0,
               "isOnStrike":false,
               "isBatting":false,
+              "isOut":false,
             }
         );
       }
@@ -176,6 +176,8 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "noOf6s":0,
               "isOnStrike":false,
               "isBatting":false,
+              "isOut":false,
+
             }
         );
 
@@ -193,6 +195,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "ballOfTheOver":0,
               "totalBalls":6,
               "overLength":6,
+              "isOut":false,
 
             }
         );
@@ -226,6 +229,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "noOf6s":0,
               "isOnStrike":false,
               "isBatting":false,
+              "isOut":false,
             }
         );
       }

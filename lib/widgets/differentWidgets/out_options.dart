@@ -24,6 +24,8 @@ class _OutOptionsState extends State<OutOptions> {
 
   final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
+  final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
+  final btnColor = Colors.black12;
 
   @override
   void initState() {
@@ -38,8 +40,7 @@ class _OutOptionsState extends State<OutOptions> {
   }
   ///this is placed at the bottom, contains many run buttons
   wideBallOptions() {
-    final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
-    final btnColor = Colors.black12;
+
     final spaceBtwn = SizedBox(
       width: (4*SizeConfig.oneW).roundToDouble(),
     );
@@ -63,83 +64,26 @@ class _OutOptionsState extends State<OutOptions> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: "RAJU", runs: 0);
-                            widget.setUpdatingDataToTrue();
-                            widget.ball.runScoredOnThisBall=0;
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Bowled")),
+                      customOutButton(btnText: "Bowled",toShowOnUI: "W",runScored: 0),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            // updateRuns(playerName: playersName, runs: 1);
-                            widget.setUpdatingDataToTrue();
-                            widget.ball.runScoredOnThisBall=0;
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Caught")),
-                      spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            widget.setUpdatingDataToTrue();
-                            widget.ball.runScoredOnThisBall=0;
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("LBW")),
-                      spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            widget.setUpdatingDataToTrue();
-                            widget.ball.runScoredOnThisBall=0;
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Run Out")),
+                      customOutButton(btnText: "Caught",toShowOnUI: "W",runScored: 0),
                     ],
                   ),
-
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      customOutButton(btnText: "LBW",toShowOnUI: "W",runScored: 0),
+                      spaceBtwn,
+                      customOutButton(btnText: "Stumped",toShowOnUI: "W",runScored: 0),
+                    ],
+                  ),
                   ///row 2 [6,Wide,LB,Out,NB]
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            widget.setUpdatingDataToTrue();
-                            widget.ball.runScoredOnThisBall=0;
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Stumped")),
+                      customOutButton(btnText: "Hit Wicket",toShowOnUI: "W",runScored: 0),
                       spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            widget.setUpdatingDataToTrue();
-                            widget.ball.runScoredOnThisBall=0;
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Hit Wicket")),
-                      spaceBtwn,
-                      FlatButton(
-                          color: btnColor,
-                          minWidth: buttonWidth,
-                          onPressed: () {
-                            widget.setUpdatingDataToTrue();
-                            widget.ball.runScoredOnThisBall=0;
-                            runUpdater.updateRun(thisBallData: widget.ball);
-                          },
-                          child: Text("Injured")),
+                      customOutButton(btnText: "Injured",toShowOnUI: "W",runScored: 0),
                     ],
                   ),
                 ],
@@ -154,5 +98,21 @@ class _OutOptionsState extends State<OutOptions> {
           ],
         )
     );
+  }
+
+
+  ///this is the wideCustom btn
+  customOutButton({int runScored,String btnText,String toShowOnUI}){
+    return FlatButton(
+        color: btnColor,
+        minWidth: buttonWidth,
+        onPressed: () {
+          widget.setUpdatingDataToTrue();
+          widget.ball.runScoredOnThisBall=runScored;
+          widget.ball.runToShowOnUI=toShowOnUI;
+          runUpdater.updateOut(thisBallData: widget.ball);
+          // widget.setIsWideToFalse();
+        },
+        child: Text(btnText));
   }
 }

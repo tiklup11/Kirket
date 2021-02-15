@@ -5,3 +5,5 @@ const String K_BYE = 'bye';
 const String K_NOBALL = 'noBall';
 const String K_OUT='out';
 const String K_OVERTHROW = 'overThrow';
+const String K_RUNOUT = 'runOut';
+const String K_NOT_RUNOUT = 'notRunOut';
