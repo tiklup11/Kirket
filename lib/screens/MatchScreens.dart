@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/LiveMatchesScreen.dart';
+import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/about_us_page.dart';
 import 'package:umiperer/screens/admin_access_page.dart';
 import 'package:umiperer/screens/upcoming_matches_screens.dart';
@@ -22,6 +22,7 @@ class MatchHomeScreens extends StatefulWidget {
 /// This is the private State class that goes with MyStatefulWidget.
 class _MatchHomeScreensState extends State<MatchHomeScreens> {
   int _selectedIndex = 0;
+  // CustomAdMob customAdMob = CustomAdMob();
 
   static List<Widget> _widgetOptions;
 
@@ -38,22 +39,33 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
     });
   }
 
+  List<String> titleList = [
+    "Live Scores",
+    "My Matches",
+    "Upcomings"
+  ];
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     _widgetOptions = <Widget>[
+      LiveMatchesScreen(),
       MyMatchesScreen(
         user: widget.user,
       ),
-      LiveMatchesScreen(),
-      UpcomingMatchesScreen(),
+      UpcomingMatchesScreen(user: widget.user,),
       // ProfileScreen(),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+
+    String title = titleList[_selectedIndex];
+
     return Scaffold(
       // backgroundColor: Colors.black12,
       drawer: Drawer(
@@ -87,14 +99,14 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
               leading: Icon(Icons.login_rounded),
               title: Text('Logout'),
               onTap: () {
-                showAlertDialog(context);
+                showAlertDialog(context: context);
               },
             ),
           ],
         ),
       ),
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text(title),
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -103,13 +115,12 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
         unselectedIconTheme: IconThemeData(color: Colors.black38),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.sports_baseball),
-            label: 'My Matches',
-          ),
-          BottomNavigationBarItem(
-            // backgroundColor: Colors.black,
             icon: Icon(Icons.home),
             label: 'Live Scores',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sports_baseball),
+            label: 'My Matches',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.sports_handball),
@@ -117,21 +128,19 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
           ),
         ],
         currentIndex: _selectedIndex,
-        // selectedItemColor: Colors.blueAccent,
         onTap: _onItemTapped,
       ),
     );
   }
 
-  showAlertDialog(BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
+  showAlertDialog({BuildContext context}) {
+    Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed: () {
         Navigator.pop(context);
       },
     );
-    Widget continueButton = FlatButton(
+    Widget logoutButton = TextButton(
       child: Text("Log0ut"),
       onPressed: () {
         Navigator.pop(context);
@@ -139,13 +148,12 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       },
     );
 
-    // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Confirm"),
       content: Text("Would you like to log out?"),
       actions: [
         cancelButton,
-        continueButton,
+        logoutButton,
       ],
     );
 

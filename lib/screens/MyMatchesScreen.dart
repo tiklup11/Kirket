@@ -145,12 +145,41 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                         minWidth: double.infinity,
                         child: Text("Create Tournament"),
                         onPressed: (){
-                          print("pressed");
+                          Navigator.pop(context);
+                          showAlertDialog(context: context);
+                          // print("pressed");
                         }),
                   ],
                 )),
           );
         }
+    );
+  }
+
+  showAlertDialog({BuildContext context}) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Okays"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Coming soon"),
+      content: Text("This feature is coming soon.."),
+      actions: [
+        cancelButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

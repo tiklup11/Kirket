@@ -14,6 +14,8 @@ class CricketMatch{
   int totalRunsOf2ndInning;
   int totalWicketsOf1stInning;
   int totalWicketsOf2ndInning;
+  int totalRuns;
+  int wicketDown;
 
   CricketOver currentOver = CricketOver();
   String _matchId;
@@ -41,6 +43,7 @@ class CricketMatch{
   bool isFirstInningStartedYet;
   bool isSecondInningStartedYet;
   bool isSecondInningEnd;
+  bool isMatchLive;
 
   List<String> team1List=[];
   List<String> team2List=[];

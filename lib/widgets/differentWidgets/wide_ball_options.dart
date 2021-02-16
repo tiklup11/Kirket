@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/runUpdater.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/ciruclarprogress_dialog.dart';
 
 class WideBallOptions extends StatefulWidget {
 

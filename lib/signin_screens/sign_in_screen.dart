@@ -91,7 +91,7 @@ class _SignInPageState extends State<SignInPage> {
     return
       Scaffold(
         // resizeToAvoidBottomInset: true,
-        resizeToAvoidBottomPadding: true,
+        resizeToAvoidBottomInset: true,
       body: lightThemeLogin(),
     );
   }

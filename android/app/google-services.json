@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "612366601319-52jotej0r2lu05rdmc6drh96brf39psv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.okays.umiperer",
+            "certificate_hash": "275aecc34dc761fb4c0916be44b24d657fd1036f"
+          }
+        },
+        {
           "client_id": "612366601319-b71e6jo4lg6cb7fajolti95j9k2hfsna.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.okays.umiperer",
             "certificate_hash": "d13a8e4dfe945318250ec92c82057aa1be97a257"
+          }
+        },
+        {
+          "client_id": "612366601319-s80e164ach4fcdhtbaob881od3ju93r7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.okays.umiperer",
+            "certificate_hash": "8fd5224aa676ac0a97f219a7236d8e3e53a4ffc4"
           }
         },
         {

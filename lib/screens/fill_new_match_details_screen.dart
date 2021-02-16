@@ -9,6 +9,8 @@ import 'package:uuid/uuid.dart';
 
 ///media querydone
 final usersRefe = FirebaseFirestore.instance.collection('users');
+final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
+
 
 class FillNewMatchDetailsPage extends StatelessWidget {
    FillNewMatchDetailsPage({this.user});
@@ -59,6 +61,9 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       generateIdForMatch();
       //TODO: 1.Upload Match Details on firebase
       uploadMatchDataToCloud();
+
+      ///only userId and matchId are uploaded there
+      uploadDataToLiveMatches();
       //2. Navigate to a screen and pass Match
       Navigator.pop(context);
 
@@ -72,6 +77,14 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         "Please fill all details",
       );
     }
+  }
+
+  ///in live matches we get data from here
+  uploadDataToLiveMatches(){
+    liveMatchesRef.doc(newMatch.getMatchId()).set({
+      "matchId":newMatch.getMatchId(),
+      "userId":widget.user.uid,
+    });
   }
 
   generateIdForMatch(){
@@ -111,7 +124,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'totalRunsOfInning1':null,
       'totalRunsOfInning2':null,
       'currentBallNo': 0,
-
+      'isLive':true,
     });
 
     ///making everyOver doc inside Overs Collections inside first innings collections
