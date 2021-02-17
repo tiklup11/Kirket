@@ -105,6 +105,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               "noOf6s":0,
               "isOnStrike":false,
               "isBatting":false,
+              "isOut":false,
             }
         );
 

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/LiveMatchesScreen.dart';
 import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/about_us_page.dart';
@@ -11,6 +12,7 @@ import 'package:umiperer/screens/upcoming_matches_screens.dart';
 ///This is BottomNavigationBar
 
 /// This is the stateful widget that the main application instantiates.
+/// mqd
 class MatchHomeScreens extends StatefulWidget {
   MatchHomeScreens({this.user});
   final User user;
@@ -22,12 +24,10 @@ class MatchHomeScreens extends StatefulWidget {
 /// This is the private State class that goes with MyStatefulWidget.
 class _MatchHomeScreensState extends State<MatchHomeScreens> {
   int _selectedIndex = 0;
-  // CustomAdMob customAdMob = CustomAdMob();
 
   static List<Widget> _widgetOptions;
 
   void _signOut() async {
-    // print('signing out');
     await FirebaseAuth.instance.signOut();
     GoogleSignIn googleSignIn = GoogleSignIn();
     await googleSignIn.signOut();
@@ -67,7 +67,6 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
     String title = titleList[_selectedIndex];
 
     return Scaffold(
-      // backgroundColor: Colors.black12,
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -82,7 +81,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
             ),
             widget.user.uid=="4VwUugdc6XVPJkR2yltZtFGh4HN2" || widget.user.uid=="V3lwRvXi2pXYFOnaA9JAC2lgvY42"?
                 adminTile():Container(),
-            SizedBox(height: 4,),
+            SizedBox(height: (4*SizeConfig.oneH).roundToDouble(),),
             ListTile(
               tileColor: Colors.blueGrey.shade50,
               leading: Icon(Icons.alternate_email_rounded),
@@ -93,7 +92,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
                 }));
               },
             ),
-            SizedBox(height: 4,),
+            SizedBox(height: (4*SizeConfig.oneH).roundToDouble(),),
             ListTile(
               tileColor: Colors.blueGrey.shade50,
               leading: Icon(Icons.login_rounded),

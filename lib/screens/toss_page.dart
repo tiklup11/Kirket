@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,8 +25,8 @@ class _TossScreenState extends State<TossScreen> {
   Color unSelectedColor = Colors.black12;
   Color selectedColor = Colors.blue;
 
-  final double outerRadius = 40;
-  final double innerRadius = 32;
+  final double outerRadius = (40*SizeConfig.oneW).roundToDouble();
+  final double innerRadius = (26*SizeConfig.oneW).roundToDouble();
 
   bool isTeam1Selected=false;
   bool isTeam2Selected=false;
@@ -60,10 +61,10 @@ class _TossScreenState extends State<TossScreen> {
     return Container(
       decoration: BoxDecoration(
           color: Colors.black12,
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
       ),
-      margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+      margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (10*SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble(),vertical: (20*SizeConfig.oneH).roundToDouble()),
       child: Column(
         // crossAxisAlignment: ,
         children: [
@@ -90,7 +91,10 @@ class _TossScreenState extends State<TossScreen> {
                       radius: outerRadius,
                       child: CircleAvatar(
                         radius: innerRadius,
-                        backgroundImage: NetworkImage('https://image.freepik.com/free-vector/mysterious-esport-logo-design_149374-148.jpg'),
+                        child: Image.asset(
+                          'assets/images/team1.png',
+                          scale: (17*SizeConfig.oneW).roundToDouble(),
+                        ),
                       ),
                     ),
                     Text(widget.match.getTeam1Name())
@@ -116,7 +120,10 @@ class _TossScreenState extends State<TossScreen> {
                       radius: outerRadius,
                       child: CircleAvatar(
                         radius: innerRadius,
-                        backgroundImage: NetworkImage('https://image.freepik.com/free-vector/mysterious-esport-logo-design_149374-148.jpg'),
+                        child: Image.asset(
+                          'assets/images/team2.png',
+                          scale: (17*SizeConfig.oneW).roundToDouble(),
+                        ),
                       ),
                     ),
                     Text(widget.match.getTeam2Name())
@@ -134,10 +141,10 @@ class _TossScreenState extends State<TossScreen> {
     return Container(
       decoration: BoxDecoration(
           color: Colors.black12,
-          borderRadius: BorderRadius.circular(10)
+          borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
       ),
-      margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+      margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (10*SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble(),vertical: (20*SizeConfig.oneH).roundToDouble()),
       child: Column(
         // crossAxisAlignment: ,
         children: [
@@ -199,10 +206,10 @@ class _TossScreenState extends State<TossScreen> {
 
   continueButton(){
     return Container(
-      margin: EdgeInsets.only(top: 10),
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble()),
       child: MaterialButton(
-        height: 40,
+        height: (40*SizeConfig.oneH).roundToDouble(),
         elevation: 0,
         highlightElevation: 0,
         color: Colors.black12,

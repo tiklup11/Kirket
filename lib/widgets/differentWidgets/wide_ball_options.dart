@@ -51,7 +51,7 @@ class _WideBallOptionsState extends State<WideBallOptions> {
     );
 
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 20),
+        padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.oneH).roundToDouble()),
         height: scoreSelectionAreaLength.toDouble(),
         color: Colors.blueGrey.shade400,
 

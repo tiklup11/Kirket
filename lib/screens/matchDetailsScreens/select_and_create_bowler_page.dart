@@ -101,7 +101,6 @@ class _SelectAndCreateBowlerPageState
   Widget playerText({String playerName}) {
     return Container(
         margin: EdgeInsets.symmetric(horizontal: (4*SizeConfig.oneW).roundToDouble(),vertical: (4*SizeConfig.oneH).roundToDouble()),
-      // padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
       decoration: BoxDecoration(
           color: ThemeData.light().primaryColor.withOpacity(0.1)
       ),

@@ -24,21 +24,23 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
     return Container(
       margin: EdgeInsets.only(top: (6*SizeConfig.oneH).roundToDouble(), left: (10*SizeConfig.oneW).roundToDouble(),
           right: (10*SizeConfig.oneW).roundToDouble()),
-      height: (145*SizeConfig.oneH).roundToDouble(),
+      height: (160*SizeConfig.oneH).roundToDouble(),
       child: Card(
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: (14*SizeConfig.oneW).roundToDouble()),
+              padding: EdgeInsets.symmetric(horizontal: (14*SizeConfig.oneW).roundToDouble(),vertical:( 14*SizeConfig.oneH).roundToDouble()),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        'assets/images/team1.png',
-                        scale: (17*SizeConfig.oneW).roundToDouble(),
+                      CircleAvatar(
+                        child: Image.asset(
+                          'assets/images/team1.png',
+                          scale: (17*SizeConfig.oneW).roundToDouble(),
+                        ),
                       ),
                       Text(widget.match.getTeam1Name())
                     ],
@@ -52,9 +54,11 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        'assets/images/team2.png',
-                        scale: (17*SizeConfig.oneW).roundToDouble(),
+                      CircleAvatar(
+                        child: Image.asset(
+                          'assets/images/team2.png',
+                          scale: (17*SizeConfig.oneW).roundToDouble(),
+                        ),
                       ),
                       Text(
                         widget.match.getTeam2Name(),

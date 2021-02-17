@@ -64,7 +64,7 @@ class _RunOutOptionsState extends State<RunOutOptions> {
     );
 
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 30),
+        padding: EdgeInsets.symmetric(vertical: (30*SizeConfig.oneH).roundToDouble()),
         height: scoreSelectionAreaLength.toDouble(),
         color: Colors.blueGrey.shade400,
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/live_score_page.dart';
+import 'package:umiperer/screens/matchDetailsHome_forAudience.dart';
 
 ///mqd
 class LiveMatchCard extends StatelessWidget {
@@ -26,7 +26,7 @@ class LiveMatchCard extends StatelessWidget {
           onPressed: () {
             if(match.getIsMatchStarted()){
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return LiveScorePage(matchUID: matchUID, creatorUID: creatorUID,match: match,);
+                return MatchDetailsHomeForAudience(match: match,creatorUID: creatorUID,matchUID: matchUID,);
               }));
             }else{
               showAlertDialog(context: context);
@@ -82,14 +82,14 @@ class LiveMatchCard extends StatelessWidget {
   liveScore(){
 
     final String runsFormat =
-        "${match.totalRuns} / ${match.wicketDown} (${match.currentOver.getCurrentOverNo()}.${match.currentOver.getCurrentBallNo()})";
+        "${match.totalRuns} / ${match.wicketDown} (${match.currentOver.getCurrentOverNo()-1}.${match.currentOver.getCurrentBallNo()})";
     double CRR = 0.0;
     try {
-      CRR = match.totalRuns / (match.currentOver.getCurrentOverNo() + match.currentOver.getCurrentBallNo()/ 6);
+      // CRR = totalRuns / (currentOverNo + currentBallNo / 6);
+      CRR = match.totalRuns / ((match.currentOver.getCurrentOverNo()-1)+(match.currentOver.getCurrentBallNo()/ 6));
     } catch (e) {
       CRR = 0.0;
     }
-
     return Column(
       children: [
         // tossLineWidget(),

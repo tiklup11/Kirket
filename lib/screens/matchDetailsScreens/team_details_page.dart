@@ -77,7 +77,7 @@ class _TeamDetailsState extends State<TeamDetails> {
     return Row(
       children: [
         Container(
-          margin: EdgeInsets.symmetric(vertical: 3),
+          margin: EdgeInsets.symmetric(vertical: (3*SizeConfig.oneW).roundToDouble()),
             width: (220*SizeConfig.oneW).roundToDouble(),
             child: Text(
               dataType,

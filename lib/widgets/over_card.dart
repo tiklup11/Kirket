@@ -72,7 +72,7 @@ class _OverCardState extends State<OverCard> {
 
   overBallWidget({BuildContext context}){
     return Container(
-      width:60,
+      width:(60*SizeConfig.oneW).roundToDouble(),
       decoration: BoxDecoration(
         color: Colors.blue,
         borderRadius: BorderRadius.circular((6*SizeConfig.oneW).roundToDouble())

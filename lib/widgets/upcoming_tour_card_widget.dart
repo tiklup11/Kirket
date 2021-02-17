@@ -22,12 +22,12 @@ class _UpcomingTournamentCardState extends State<UpcomingTournamentCard> {
 
   Container cardV(){
 
-    final spaceV = SizedBox(height: 4,);
-    final spaceH = SizedBox(width: 5,);
+    final spaceV = SizedBox(height: (4*SizeConfig.oneH).roundToDouble(),);
+    final spaceH = SizedBox(width: (5*SizeConfig.oneW).roundToDouble(),);
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular((8*SizeConfig.oneW).roundToDouble()),
         // image: DecorationImage(image: AssetImage('assets/images/bg.png'), fit: BoxFit.cover,),
       ),
       margin: EdgeInsets.only(top: (6*SizeConfig.oneH).roundToDouble(), left: (10*SizeConfig.oneW).roundToDouble(),
@@ -35,14 +35,14 @@ class _UpcomingTournamentCardState extends State<UpcomingTournamentCard> {
       height: (170*SizeConfig.oneH).roundToDouble(),
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.only(top: 14,left: 12,right: 12),
+          padding: EdgeInsets.only(top: (14*SizeConfig.oneH).roundToDouble(),left: (12*SizeConfig.oneW).roundToDouble(),right: (12*SizeConfig.oneW).roundToDouble()),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${widget.upcomingTournament.tournamentName.toUpperCase()}',style: TextStyle(fontSize: 24,color: Colors.black,fontWeight: FontWeight.w500,),maxLines: 2,),
+                  Text('${widget.upcomingTournament.tournamentName.toUpperCase()}',style: TextStyle(fontSize: (24*SizeConfig.oneW).roundToDouble(),color: Colors.black,fontWeight: FontWeight.w500,),maxLines: 2,),
                   spaceV,
                   Row(
                     children: [

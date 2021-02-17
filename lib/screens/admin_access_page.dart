@@ -5,6 +5,7 @@ import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/screens/toss_page.dart';
 import 'package:umiperer/widgets/admin_card.dart';
 
+///mqd
 final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
 
 class AdminAccessPage extends StatefulWidget {
@@ -21,7 +22,7 @@ class AdminAccessPage extends StatefulWidget {
 class _AdminAccessPageState extends State<AdminAccessPage> {
 
   String matchUID;
-  String creatorUID;
+  String creatorUID = "V3lwRvXi2pXYFOnaA9JAC2lgvY42";
 
   @override
   Widget build(BuildContext context) {
@@ -33,21 +34,7 @@ class _AdminAccessPageState extends State<AdminAccessPage> {
 
   Widget matchesData(){
 
-    return StreamBuilder<QuerySnapshot>(
-        stream:liveMatchesRef.snapshots(),
-        builder: (context,snapshot){
-
-          if(!snapshot.hasData){return Container(child: CircularProgressIndicator(),);}
-          else{
-
-            final liveMatchesData = snapshot.data.docs;
-
-            for (var liveMatchData in liveMatchesData) {
-              matchUID = liveMatchData.data()['matchId'];
-              creatorUID= liveMatchData.data()['userId'];
-            }
-
-            return StreamBuilder<QuerySnapshot>(
+   StreamBuilder<QuerySnapshot>(
                 stream: usersRef.doc(creatorUID).collection('createdMatches').snapshots(),
                 builder: (context,snapshot){
 
@@ -70,10 +57,9 @@ class _AdminAccessPageState extends State<AdminAccessPage> {
 
                       cricketMatch.setTeam1Name(team1Name);
                       cricketMatch.setTeam2Name(team2Name);
-                      cricketMatch.isMatchLive = false;
+                      cricketMatch.isMatchLive = isLive;
 
                       listOfAllMatches.add(AdminCard(match: cricketMatch,creatorUID: creatorUID,matchUID: matchUID,));
-
                     });
 
                     return ListView.builder(
@@ -83,7 +69,5 @@ class _AdminAccessPageState extends State<AdminAccessPage> {
                         });
                   }
                 });
-          }
-        });
   }
 }

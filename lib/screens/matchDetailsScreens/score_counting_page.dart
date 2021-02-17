@@ -112,13 +112,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
     super.initState();
 
-    print("Init State called");
-
-    // wonImage=Image.network(gifUrlMap["wonUrl"],height: 100,width: 100,);
-    // Random random = new Random();
-    // int randomNumber = random.nextInt(4);
-    // gifPath = gifPaths[randomNumber];
-
     _scrollController = ScrollController(keepScrollOffset: true);
     dataStreams = DataStreams(
         userUID: widget.user.uid, matchId: widget.match.getMatchId());
@@ -514,10 +507,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   } else {
                     final currentBothBatsmenData = snapshot.data.docs;
 
-                    print("LENGTH: ${currentBothBatsmenData.length}");
+                    // print("LENGTH: ${currentBothBatsmenData.length}");
 
                     currentBothBatsmenData.forEach((playerData) {
-                      print("DATA::  ${playerData.data()}");
+                      // print("DATA::  ${playerData.data()}");
                       final ballsPlayed = playerData.data()['balls'];
                       final noOf4s = playerData.data()['noOf4s'];
                       final noOf6s = playerData.data()['noOf6s'];
@@ -527,13 +520,11 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
                       double SR = 0;
                       try {
-                        print(
-                            "tryinggggggggggggggggggggggggggggggggggggggggggggggggggg");
+                        // print("tryinggggggggggggggggggggggggggggggggggggggggggggggggggg");
                         SR = ((runs / ballsPlayed) * 100);
-                        print(
-                            "tryinggggggggggggggggggggggggggggggggggggggggggggggggggg ;;SR== $SR");
+                        // print("tryinggggggggggggggggggggggggggggggggggggggggggggggggggg ;;SR== $SR");
                       } catch (e) {
-                        print("Failedddddddddddddddddddddd");
+                        // print("Failedddddddddddddddddddddd");
                         SR = 0;
                       }
 
@@ -694,7 +685,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                 } else {
                   final currentBowlerData = snapshot.data.docs;
 
-                  print("LENGTH:BOWL ${currentBowlerData.length}");
+                  // print("LENGTH:BOWL ${currentBowlerData.length}");
 
                   currentBowler = dummyBowler;
 
@@ -711,9 +702,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                     final totalBalls = playerData.data()['totalBalls'];
                     overLengthToFinishTheOver = playerData.data()['overLength'];
 
-                    int eco = 0;
+                    double eco = 0;
                     try {
-                      eco = (runs / overs) * 100;
+                      eco = (runs / ((overs) +(ballOfThatOver/6)));
                     } catch (e) {
                       eco = 0;
                     }
@@ -736,7 +727,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   if (currentBowler != dummyBowler) {
                     updateBowlerDataToGeneralMatchData(
                         currentBowler.playerName);
-                    print("CURRENT B:: ${currentBowler.playerName}");
+                    // print("CURRENT B:: ${currentBowler.playerName}");
                   }
 
                   ///this is checking if the over is done or not
@@ -768,7 +759,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     await updateDataInScoreBoard();
     // sleep(Duration(milliseconds: 500));
     //TODO: checking if sleep is required or not
-    print("CHANGING OVER ||||||| I REPEAT CHANGING OVER");
+    // print("CHANGING OVER ||||||| I REPEAT CHANGING OVER");
   }
 
   updateIsBowling({String bowlerName, bool setTo}) {
@@ -825,7 +816,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
       BallWidget(),
       BallWidget(),
     ];
-    print("OVER CARD NO::: $overNoOnCard");
+    // print("OVER CARD NO::: $overNoOnCard");
 
     Ball currentBall = null;
 
@@ -883,7 +874,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                           currentBall: ball,
                         );
                       } else {
-                        print("Ball??????????  $runsScored");
+                        // print("Ball??????????  $runsScored");
                         balls[int.parse(ballNo) - 1] = BallWidget(
                           currentBall: currentBall,
                         );
@@ -896,7 +887,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                           children: [
                             Text("OVER NO: $overNoOnCard"),
                             SizedBox(
-                              width: 30,
+                              width: 30*SizeConfig.oneW,
                             ),
                             bowlerOfThisOver == null
                                 ? Container()
@@ -1339,7 +1330,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     String btnText,
     Function whatToUpdateFunction,
   }) {
-    TextStyle textStyle = TextStyle(fontSize: 16);
+    TextStyle textStyle = TextStyle(fontSize: (16*SizeConfig.oneW).roundToDouble());
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -1463,8 +1454,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
       children: [
         Image.network(
           gifPathMap["wonUrl"],
-          height: 100,
-          width: 100,
+          height: (100*SizeConfig.oneH).roundToDouble(),
+          width: (100*SizeConfig.oneW).roundToDouble(),
         ),
         // Image.asset(gifPaths[0],width: 100,height: 100,),
         Text(
@@ -1502,8 +1493,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         children: [
           Image.asset(
             gifPaths[3],
-            height: 190,
-            width: 190,
+            height: (190*SizeConfig.oneH).roundToDouble(),
+            width: (190*SizeConfig.oneW).roundToDouble(),
           ),
           Text(
             "Updating Data..",

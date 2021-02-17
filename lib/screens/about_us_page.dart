@@ -21,7 +21,7 @@ class AboutUsPage extends StatelessWidget {
             Center(child: Text("Made with ♥ at",style: TextStyle(fontSize: (SizeConfig.oneW*13).roundToDouble()),)),
             Center(
               child: Container(
-                margin: EdgeInsets.only(top: 6),
+                margin: EdgeInsets.only(top: (6*SizeConfig.oneW).roundToDouble()),
                 height: (SizeConfig.oneH*100).roundToDouble(),
                 width: (SizeConfig.oneW*100).roundToDouble(),
                 child: Image.asset('assets/images/aboutUs.png'),
@@ -44,30 +44,30 @@ class AboutUsPage extends StatelessWidget {
   }
 
   //credit thing for Freepik
-  creditThing({String webSiteName, String msg,String url}){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("> Thanks ",style: TextStyle(fontSize: (SizeConfig.oneW*13).roundToDouble()),),
-        TextButton(
-          // padding: EdgeInsets.zero,
-          onPressed: (){
-            launchFreepikURL(url);
-          },
-          child: Text(webSiteName,style: TextStyle(fontSize: (SizeConfig.oneW*13).roundToDouble()),),),
-        Text(msg,style: TextStyle(fontSize: (SizeConfig.oneW*13).roundToDouble()),),
-      ],
-    );
-  }
-
-  launchFreepikURL(String webUrl) async {
-    final url = webUrl;
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // creditThing({String webSiteName, String msg,String url}){
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       Text("> Thanks ",style: TextStyle(fontSize: (SizeConfig.oneW*13).roundToDouble()),),
+  //       TextButton(
+  //         // padding: EdgeInsets.zero,
+  //         onPressed: (){
+  //           launchFreepikURL(url);
+  //         },
+  //         child: Text(webSiteName,style: TextStyle(fontSize: (SizeConfig.oneW*13).roundToDouble(),),),),
+  //       Text(msg,style: TextStyle(fontSize: (SizeConfig.oneW*13).roundToDouble()),),
+  //     ],
+  //   );
+  // }
+  //
+  // launchFreepikURL(String webUrl) async {
+  //   final url = webUrl;
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   _launchEmail() async{
     final Uri _emailLaunchUri = Uri(
@@ -77,7 +77,6 @@ class AboutUsPage extends StatelessWidget {
       //   'subject': 'Example Subject & Symbols are allowed!'
       // }
     );
-// mailto:smith@example.com?subject=Example+Subject+%26+Symbols+are+allowed%21
     launch(_emailLaunchUri.toString());
   }
 }

@@ -49,7 +49,7 @@ class CricketMatch{
   List<String> team2List=[];
 
   String getCurrentBattingTeam(){
-    if(_inningNumber==1){
+    if(getInningNo()==1){
       return firstBattingTeam;
     } else{
       return secondBattingTeam;

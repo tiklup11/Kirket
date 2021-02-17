@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/UpcomingTournament.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/Upcoming_tournament_entry_page.dart';
 import 'package:umiperer/widgets/upcoming_tour_card_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+///mqr
 class UpcomingMatchesScreen extends StatefulWidget {
 
   UpcomingMatchesScreen({this.user});
@@ -91,8 +93,8 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
         context: context,
         builder: (builder) {
           return Container(
-            padding: EdgeInsets.all(20),
-            height: 350.0,
+            padding: EdgeInsets.all((20*SizeConfig.oneW).roundToDouble()),
+            height: (350.0*SizeConfig.oneH).roundToDouble(),
             color: Colors.transparent,
             child: Column(
               children: [
@@ -101,7 +103,7 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
                   children: [
                     Text(
                       upcomingTournament.tournamentName.toUpperCase(),
-                      style: TextStyle(fontSize: 30, color: Colors.black),
+                      style: TextStyle(fontSize: (30*SizeConfig.oneW).roundToDouble(), color: Colors.black),
                     ),
                     customListTile(text: "Location",data: upcomingTournament.matchLocation,iconData: Icons.location_on),
                     customListTile(text: "Entry Fee",data: upcomingTournament.entryFees.toString(),iconData: Icons.attach_money_rounded),
@@ -113,7 +115,7 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
                     //Remove Btn
                 MaterialButton(
                     minWidth: double.infinity,
-                    animationDuration: Duration(milliseconds: 1),
+                    // animationDuration: Duration(milliseconds: 1),
                     elevation: 0,
                     highlightElevation: 0,
                     color: Colors.blueGrey.shade400,
@@ -125,7 +127,7 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
                   children: [
                     MaterialButton(
                         minWidth: double.infinity,
-                        animationDuration: Duration(milliseconds: 1),
+                        // animationDuration: Duration(milliseconds: 1),
                         elevation: 0,
                         highlightElevation: 0,
                         color: Colors.blueGrey.shade400,
@@ -136,7 +138,7 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
                         }),
                     MaterialButton(
                         minWidth: double.infinity,
-                        animationDuration: Duration(milliseconds: 1),
+                        // animationDuration: Duration(milliseconds: 1),
                         elevation: 0,
                         highlightElevation: 0,
                         color: Colors.blueGrey.shade400,
@@ -158,9 +160,9 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
   }
 
   customListTile({String text,String data,IconData iconData}){
-    final space = SizedBox(width: 8,);
+    final space = SizedBox(width: (8*SizeConfig.oneW).roundToDouble(),);
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: (4*SizeConfig.oneH).roundToDouble()),
       child: Row(
         children: [
           Icon(iconData),

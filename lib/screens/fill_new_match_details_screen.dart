@@ -184,10 +184,9 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
   @override
   Widget build(BuildContext context) {
-     final sizedBoxSpace = SizedBox(height: 24);
+     final sizedBoxSpace = SizedBox(height: (24*SizeConfig.oneH).roundToDouble());
 
     return Scaffold(
-
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text("Match Details"),
@@ -213,7 +212,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                     "Team 1",
                   ),
                   onChanged: (value) {
-                    // person.name = value;
                     newMatch.setTeam1Name(value);
                   },
                   validator: (value){
@@ -230,14 +228,10 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                     icon: const Icon(Icons.sports_baseball_sharp),
                     hintText: "Enter team 2 name",
                     labelText: "Team 2",
-                    // prefixText: '+1 ',
                   ),
-                  // keyboardType: TextInputType.phone,
-
                   onChanged: (value) {
                     newMatch.setTeam2Name(value);
                   },
-                  // TextInputFormatters are applied in sequence.
                 ),
                 sizedBoxSpace,
                 TextFormField(

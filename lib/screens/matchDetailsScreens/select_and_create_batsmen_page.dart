@@ -55,7 +55,6 @@ class _SelectAndCreateBatsmenPageState
   }
 
   Widget batsmensList() {
-
     return StreamBuilder<QuerySnapshot>(
       stream:
           _dataStreams.batsmenData(inningNumber: widget.match.getInningNo()),

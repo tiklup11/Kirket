@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/screens/matchDetailsScreens/custom_dialog.dart';
+import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/screens/matchDetailsScreens/dialog_custom.dart';
 
 class AdminCard extends StatefulWidget {
 
   AdminCard({this.match,this.creatorUID,this.matchUID});
-  CricketMatch match;
-  String creatorUID;
-  String matchUID;
+  final CricketMatch match;
+  final String creatorUID;
+  final String matchUID;
 
   @override
   _AdminCardState createState() => _AdminCardState();
@@ -17,12 +18,12 @@ class _AdminCardState extends State<AdminCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.all(8),
-      height: 100,
+      padding: EdgeInsets.all((10*SizeConfig.oneW).roundToDouble()),
+      margin: EdgeInsets.all((8*SizeConfig.oneH).roundToDouble()),
+      height: (100*SizeConfig.oneH).roundToDouble(),
       decoration: BoxDecoration(
         color: Colors.blueGrey.shade50,
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
       ),
       child: Column(
         children: [

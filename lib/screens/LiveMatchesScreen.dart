@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/screens/matchDetailsScreens/custom_dialog.dart';
-import 'package:umiperer/widgets/match_card_view.dart';
+import 'package:umiperer/widgets/live_match_card.dart';
 
+import 'matchDetailsScreens/dialog_custom.dart';
+///mqd
 final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
 
 class LiveMatchesScreen extends StatefulWidget {
@@ -19,36 +20,22 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
   }
 
   buildCards(){
-    return StreamBuilder<QuerySnapshot>(
-        stream:liveMatchesRef.snapshots(),
-        builder: (context,snapshot){
-
-          if(!snapshot.hasData){return Container(child: CircularProgressIndicator(),);}
-          else{
-
-            final liveMatchesData = snapshot.data.docs;
-
-            String matchId;
-            String userId;
-
-            for (var liveMatchData in liveMatchesData) {
-              matchId = liveMatchData.data()['matchId'];
-              userId = liveMatchData.data()['userId'];
-            }
+    final userId = "V3lwRvXi2pXYFOnaA9JAC2lgvY42";
 
             return StreamBuilder<QuerySnapshot>(
-                stream: usersRef.doc(userId).collection('createdMatches').where("isLive",isEqualTo: true).snapshots(),
+                stream: usersRef.doc(userId).collection('createdMatches').where('isLive',isEqualTo: true).snapshots(),
                 builder: (context,snapshot){
 
                   if(!snapshot.hasData){
                     return Container(child: CircularProgressIndicator(),);
                   }else{
-
                     List<LiveMatchCard> listOfLiveMatches = [];
 
                     final allMatchData = snapshot.data.docs;
 
                     allMatchData.forEach((match) {
+
+                      final matchId = match.id;
                       CricketMatch cricketMatch = CricketMatch();
 
                       final matchData = match.data();
@@ -57,7 +44,7 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                     final team1Name = matchData['team1name'];
                     final team2Name = matchData['team2name'];
                     final oversCount = matchData['overCount'];
-                    final matchId = matchData['matchId'];
+                    // final matchId = matchData['matchId'];
                     final playerCount = matchData['playerCount'];
                     final tossWinner = matchData['tossWinner'];
                     final batOrBall = matchData['whatChoose'];
@@ -80,6 +67,7 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                     final nonStriker = matchData['nonStrikerBatsmen'];
                     final striker = matchData['strikerBatsmen'];
                     final inningNo = matchData['inningNumber'];
+                    final currentBallNo = matchData['currentBallNo'];
 
                     cricketMatch.nonStrikerBatsmen = nonStriker;
                     cricketMatch.strikerBatsmen = striker;
@@ -99,6 +87,7 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                     cricketMatch.secondBattingTeam = secondBattingTeam;
                     cricketMatch.secondBowlingTeam = secondBowlingTeam;
                     cricketMatch.setInningNo(inningNo);
+                    cricketMatch.setMatchId(matchId);
 
 
                     final totalRuns = matchData['totalRuns'];
@@ -115,6 +104,7 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                     }
 
                     cricketMatch.currentOver.setCurrentOverNo(currentOverNumber);
+                    cricketMatch.currentOver.setCurrentBallNo(currentBallNo);
                     cricketMatch.setTeam1Name(team1Name);
                     cricketMatch.setTeam2Name(team2Name);
                     cricketMatch.setMatchId(matchId);
@@ -137,14 +127,7 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
 
                 });
           }
-
-        });
   }
-
-
-
-
-}
 
 
 
