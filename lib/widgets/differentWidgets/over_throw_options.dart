@@ -109,7 +109,7 @@ class _OverThrowOptionsState extends State<OverThrowOptions> {
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
-          runUpdater.updateRun(thisBallData: widget.ball);
+          runUpdater.updateWideAndOverThrowRuns(ballData: widget.ball);
         },
         child: Text(btnText));
   }

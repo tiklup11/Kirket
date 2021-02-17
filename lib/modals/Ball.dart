@@ -8,6 +8,7 @@ class Ball{
   bool isNormalRun; //this contains 0,1,2,3,4,6
   String batsmenName;
   String nonStrikerName;
+  String strikerName;
   String bowlerName;
   String runKey; //this key will tell whether the ball is NOBALL or LEGBYE or ...etc
 
@@ -22,6 +23,7 @@ class Ball{
         this.runKey,
         this.isNormalRun,
         this.runToShowOnUI,
-        this.nonStrikerName
+        this.nonStrikerName,
+        this.strikerName
       });
 }

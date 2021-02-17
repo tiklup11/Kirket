@@ -37,6 +37,8 @@ class _RunOutOptionsState extends State<RunOutOptions> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    widget.ball.strikerName = widget.match.strikerBatsmen;
+    widget.ball.nonStrikerName = widget.match.nonStrikerBatsmen;
     runUpdater = RunUpdater(
       matchId: widget.match.getMatchId(),userUID: widget.userUID,
       context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse,
@@ -162,7 +164,7 @@ class _RunOutOptionsState extends State<RunOutOptions> {
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
           widget.ball.batsmenName=runOutBatsmenName;
-          runUpdater.updateOut(thisBallData: widget.ball);
+          runUpdater.updateWicket(ballData: widget.ball);
           // widget.setIsWideToFalse();
         },
         child: Text(btnText));

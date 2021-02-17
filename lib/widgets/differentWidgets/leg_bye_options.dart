@@ -115,7 +115,7 @@ class _LegByeOptionsState extends State<LegByeOptions> {
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
-          runUpdater.updateRun(thisBallData: widget.ball);
+          runUpdater.updateLegByeAndBye(ballData: widget.ball);
         },
         child: Text(btnText));
   }

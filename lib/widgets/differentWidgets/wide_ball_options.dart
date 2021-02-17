@@ -86,6 +86,22 @@ class _WideBallOptionsState extends State<WideBallOptions> {
                       customButton(runScored: 5,btnText: "Wide+4",toShowOnUI: "Wd+4"),
                     ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                      color: btnColor,
+                      minWidth: buttonWidth,
+                      onPressed: () {
+                        widget.setUpdatingDataToTrue();
+                        widget.ball.runScoredOnThisBall=1;
+                        widget.ball.runToShowOnUI="Wd+W";
+                        runUpdater.updateWidePlusStump(ballData: widget.ball);
+                        // widget.setIsWideToFalse();
+                      },
+                      child: Text("Wide+Stump")),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -109,7 +125,7 @@ class _WideBallOptionsState extends State<WideBallOptions> {
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
-          runUpdater.updateRun(thisBallData: widget.ball);
+          runUpdater.updateWideAndOverThrowRuns(ballData: widget.ball);
           // widget.setIsWideToFalse();
         },
         child: Text(btnText));

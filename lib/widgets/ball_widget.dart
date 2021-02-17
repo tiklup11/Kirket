@@ -51,7 +51,7 @@ class BallWidget extends StatelessWidget {
             currentBall.runToShowOnUI,
             style: TextStyle(color: Colors.black),
           ),
-          radius: (20*SizeConfig.oneW).roundToDouble(),
+          radius: ballRadius,
           backgroundColor
               : Colors.blueGrey.shade400,
         ));

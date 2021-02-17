@@ -39,6 +39,8 @@ class CricketMatch{
   String nonStrikerBatsmen;
   String strikerBatsmen;
 
+  String winningMsg;
+
   bool isFirstInningEnd;
   bool isFirstInningStartedYet;
   bool isSecondInningStartedYet;
@@ -47,6 +49,34 @@ class CricketMatch{
 
   List<String> team1List=[];
   List<String> team2List=[];
+
+  int getTotalRunsOf1stInning(){return totalRunsOf1stInning;}
+  int getTotalRunsOf2ndInning(){return totalRunsOf2ndInning;}
+
+  int getTotalWicketsOf1stInning(){return totalWicketsOf1stInning;}
+  int getTotalWicketsOf2ndInning(){return totalWicketsOf2ndInning;}
+
+  String getFinalResult(){
+
+    String resultLine;
+
+    if(totalRunsOf1stInning!=null && totalWicketsOf2ndInning!=null) {
+      if (totalRunsOf1stInning > totalRunsOf2ndInning) {
+        resultLine =
+        "${firstBattingTeam.toUpperCase()} won by ${totalRunsOf1stInning -
+            totalRunsOf2ndInning} runs";
+        return resultLine;
+      }
+      if (totalRunsOf1stInning < totalRunsOf2ndInning) {
+        resultLine =
+        "${secondBattingTeam.toUpperCase()} won by ${getPlayerCount() - 1 -
+            totalWicketsOf2ndInning} wickets";
+        return resultLine;
+      }
+    }
+    return null;
+  }
+
 
   String getCurrentBattingTeam(){
     if(getInningNo()==1){

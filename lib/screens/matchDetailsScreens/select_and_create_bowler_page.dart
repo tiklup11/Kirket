@@ -62,13 +62,15 @@ class _SelectAndCreateBowlerPageState
       builder: (context, snapshot) {
         selectedCheckBox=0;
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return Container(child: Center(child: CircularProgressIndicator()));
         } else {
           final playersData = snapshot.data.docs;
           List<Widget> playerNames = [];
           if (playersData.isEmpty) {
             return addNewPlayerText();
           }
+
+          // updatetotalRunsOfInning1 after everyball
 
           ///getting isBatting data and filling checkboxes depending upon them
           playersData.forEach((player) {

@@ -110,7 +110,7 @@ class _ByeOptionsState extends State<ByeOptions> {
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
-          runUpdater.updateRun(thisBallData: widget.ball);
+          runUpdater.updateLegByeAndBye(ballData: widget.ball);
         },
         child: Text(btnText));
   }

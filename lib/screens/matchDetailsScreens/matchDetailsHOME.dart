@@ -57,10 +57,6 @@ class MatchDetails extends StatelessWidget {
               itemBuilder: (context){
                 return <PopupMenuItem<String>>[
 
-                  // PopupMenuItem<String>(
-                  //   value: "Restart Match",
-                  //   child: Text("Restart Match"),),
-
                   PopupMenuItem<String>(
                     value: "Delete Match",
                     child: Text("Delete Match"),),

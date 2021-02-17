@@ -110,7 +110,7 @@ class _OutOptionsState extends State<OutOptions> {
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
-          runUpdater.updateOut(thisBallData: widget.ball);
+          runUpdater.updateWicket(ballData: widget.ball);
           // widget.setIsWideToFalse();
         },
         child: Text(btnText));

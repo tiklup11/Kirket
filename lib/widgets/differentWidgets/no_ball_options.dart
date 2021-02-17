@@ -113,7 +113,7 @@ class _NoBallOptionsState extends State<NoBallOptions> {
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
-          runUpdater.updateRun(thisBallData: widget.ball);
+          runUpdater.updateNoBallRuns(ballData: widget.ball);
         },
         child: Text(btnText));
   }

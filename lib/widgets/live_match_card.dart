@@ -72,6 +72,10 @@ class LiveMatchCard extends StatelessWidget {
                   ],
                 ),
               ),
+              match.getFinalResult()==null?
+                  Container():Container(child: Text(match.getFinalResult()),),
+              match.isSecondInningEnd?
+                  Container(child: Center(child: Text("Match End"),),):Container()
             ],
           ),
         ),

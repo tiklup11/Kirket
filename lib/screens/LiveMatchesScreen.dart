@@ -68,9 +68,12 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                     final striker = matchData['strikerBatsmen'];
                     final inningNo = matchData['inningNumber'];
                     final currentBallNo = matchData['currentBallNo'];
+                    final winningMsg = matchData['winningMsg'];
 
                     cricketMatch.nonStrikerBatsmen = nonStriker;
                     cricketMatch.strikerBatsmen = striker;
+
+                    cricketMatch.winningMsg = winningMsg;
 
                     cricketMatch.isSecondInningEnd = isSecondInningEnd;
                     cricketMatch.isSecondInningStartedYet = isSecondStartedYet;

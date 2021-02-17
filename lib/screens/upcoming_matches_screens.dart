@@ -39,7 +39,7 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
         stream: upcomingTournamentCollectionRef.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Container(child: CircularProgressIndicator());
+            return Container(child: Center(child: CircularProgressIndicator()));
           } else {
             //ut  = upcomingTournaments
             final utDocList = snapshot.data.docs;
