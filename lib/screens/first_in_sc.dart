@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/ScoreBoardData.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
+import 'package:umiperer/widgets/headline_widget.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -23,6 +25,8 @@ class FirstInningScoreCard extends StatefulWidget {
 class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
   List<Batsmen> currentBothBatsmen;
   DataStreams dataStreams;
+
+  ScoreBoardData firstInningScoreBoard = ScoreBoardData();
   @override
   Widget build(BuildContext context) {
 
@@ -32,10 +36,13 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           // shrinkWrap: true,
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            teamName(teamName: widget.match.getCurrentBattingTeam()),
+            widget.match.isFirstInningEnd?
+            HeadLineWidget(headLineString: "First inning ended"):Container(),
+            miniScoreCard(),
+            HeadLineWidget(headLineString: widget.match.firstBattingTeam),
             batsmenList(),
-            teamName(teamName: widget.match.getCurrentBowlingTeam()),
-            bowlersList()
+            HeadLineWidget(headLineString: widget.match.firstBowlingTeam),
+            bowlersList(),
           ],
         ),
       ),
@@ -128,12 +135,8 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                 if(allBowlersList.isEmpty){
                   return zeroData(iconData: Icons.sports_handball,msg: "Bowlers data is shown here");
                 }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: allBowlersList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return allBowlersList[index];
-                  },
+                return Column(
+                  children: allBowlersList,
                 );
               })
         ],
@@ -231,17 +234,97 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                 if(listOfBatsmen.isEmpty){
                   return zeroData(iconData: Icons.sports_cricket_outlined,msg: "Batsmen data is shown here");
                 }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: listOfBatsmen.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return listOfBatsmen[index];
-                  },
+                return Column(
+                  children: listOfBatsmen,
                 );
               })
         ],
       ),
     );
+  }
+
+  ///upper scorecard with team runs and stuff
+  miniScoreCard() {
+    Stream<DocumentSnapshot> stream;
+    stream = userRef.doc(widget.creatorUID)
+        .collection('createdMatches')
+        .doc(widget.match.getMatchId())
+        .collection('FirstInning')
+        .doc("scoreBoardData").snapshots();
+
+    return StreamBuilder<DocumentSnapshot>(
+        stream: stream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container(child: Center(child: CircularProgressIndicator()));
+          } else {
+            final scoreBoardData = snapshot.data.data();
+            final ballOfTheOver = scoreBoardData['ballOfTheOver'];
+            final currentOverNo = scoreBoardData['currentOverNo'];
+            final totalRuns = scoreBoardData['totalRuns'];
+            final wicketsDown = scoreBoardData['wicketsDown'];
+
+            firstInningScoreBoard.currentBallNo=ballOfTheOver;
+            firstInningScoreBoard.currentOverNo = currentOverNo;
+            firstInningScoreBoard.totalRuns = totalRuns;
+            firstInningScoreBoard.totalWicketsDown = wicketsDown;
+            firstInningScoreBoard.battingTeamName = widget.match.firstBattingTeam;
+
+            return Column(
+              children: [
+                // tossLineWidget(),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+                      vertical: (10 * SizeConfig.oneH).roundToDouble()),
+                  margin: EdgeInsets.symmetric(
+                      horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+                      vertical: (10 * SizeConfig.oneH).roundToDouble()),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(
+                        (4 * SizeConfig.oneW).roundToDouble()),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                firstInningScoreBoard.battingTeamName
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                    fontSize:
+                                    (24 * SizeConfig.oneW).roundToDouble()),
+                              ),
+                              Text(
+                                // runs/wickets (currentOverNumber.currentBallNo)
+                                // "65/3  (13.2)",
+                                firstInningScoreBoard.getFormatedRunsString(),
+                                style: TextStyle(
+                                    fontSize:
+                                    (16 * SizeConfig.oneW).roundToDouble()),
+                              )
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text("CRR"),
+                              Text(firstInningScoreBoard.getCrr()),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }
+        });
   }
 
   loadingData({String msg}){
@@ -264,14 +347,5 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
     );
   }
 
-  teamName({String teamName}){
-    return  Container(
-      margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble(),bottom: (2*SizeConfig.oneH).roundToDouble()),
-      padding: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),
-      ),
-      child: Text(
-        teamName.toUpperCase(),
-      ),
-    );
-  }
+
 }

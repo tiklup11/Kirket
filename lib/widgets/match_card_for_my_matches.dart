@@ -42,7 +42,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                           scale: (17*SizeConfig.oneW).roundToDouble(),
                         ),
                       ),
-                      Text(widget.match.getTeam1Name())
+                      Text(widget.match.getTeam1Name().toUpperCase(),maxLines: 2,)
                     ],
                   ),
                   Text(
@@ -61,7 +61,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                         ),
                       ),
                       Text(
-                        widget.match.getTeam2Name(),
+                        widget.match.getTeam2Name().toUpperCase(),maxLines: 2,
                       ),
                     ],
                   ),
@@ -76,9 +76,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                 color: Colors.black12,
                 minWidth: double.infinity,
                 child:
-                widget.match.getIsMatchStarted()?
-                    Text("Continue.."):
-                Text("Start Match"),
+                btnLogic(),
                 onPressed: () {
                   if (widget.match.getTossWinner() == null &&
                       widget.match.getChoosedOption() == null) {
@@ -113,5 +111,17 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
         ),
       ),
     );
+  }
+
+  btnLogic(){
+
+    if(widget.match.isSecondInningEnd){
+      return Text("Match Ended - View Score");
+    }
+    if(widget.match.getIsMatchStarted()){
+      return Text("Continue..");
+    }else{
+      Text("Start Match");
+    }
   }
 }

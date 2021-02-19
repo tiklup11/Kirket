@@ -67,6 +67,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
               final location = matchData.data()['matchLocation'];
               final isMatchStarted = matchData.data()['isMatchStarted'];
               final currentOverNumber = matchData.data()['currentOverNumber'];
+              final isSecondInningEnd = matchData.data()['isSecondInningEnd'];
 
               final firstBattingTeam = matchData.data()['firstBattingTeam'];
               final firstBowlingTeam = matchData.data()['firstBowlingTeam'];
@@ -78,6 +79,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
               match.firstBowlingTeam=firstBowlingTeam;
               match.secondBattingTeam=secondBattingTeam;
               match.secondBowlingTeam=secondBowlingTeam;
+              match.isSecondInningEnd =isSecondInningEnd;
 
               if(firstBattingTeam!=null && firstBowlingTeam!=null && secondBattingTeam!=null && secondBowlingTeam!=null)
               {

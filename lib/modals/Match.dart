@@ -3,7 +3,6 @@ import 'package:umiperer/modals/CricketOver.dart';
 
 class CricketMatch{
 
-
   String _team1Name;
   String _team2Name;
   int _oversCount;

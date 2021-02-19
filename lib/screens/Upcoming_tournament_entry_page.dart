@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/widgets/headline_widget.dart';
 import 'package:uuid/uuid.dart';
 import 'package:umiperer/modals/UpcomingTournament.dart';
 
@@ -120,6 +121,7 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // HeadLineWidget(headLineString: "ANNOUNCE YOUR UP-COMING TOURNAMENT",),
                 sizedBoxSpace,
                 TextFormField(
                   textCapitalization: TextCapitalization.words,

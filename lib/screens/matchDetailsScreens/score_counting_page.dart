@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class ScoreCountingPage extends StatefulWidget {
 class _ScoreCountingPageState extends State<ScoreCountingPage> {
   DataStreams dataStreams;
   ScrollController _scrollController;
+  Random random = new Random();
   RunUpdater runUpdater;
   final scoreSelectionAreaLength = (220 * SizeConfig.oneH).roundToDouble();
   bool isBatsmen1OnStrike = true;
@@ -63,11 +65,25 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
   ///
   /// gif url in map
-  Map<String, String> gifPathMap = {
-    'wonUrl': "assets/gifs/tenor_10.gif",
-    'sixUrl': "assets/gifs/tenor_8.gif",
-    'fourUrl': "",
-  };
+  List<String> loadingGifPaths = [
+    "assets/gifs/load1.gif",
+    "assets/gifs/load2.gif",
+  ];
+
+  List<String> loadingSixGifs = [
+    "assets/gifs/six.gif",
+    "assets/gifs/six2.gif",
+  ];
+  List<String> loadingFourGifs = [
+    "assets/gifs/four.gif",
+  ];
+  List<String> loadingWicketGifs = [
+    "assets/gifs/wicket1.gif",
+  ];
+  List<String> loadingWinGifs = [
+    "assets/gifs/win.gif",
+  ];
+
 
   // Image wonImage = Image.network("https://media1.tenor.com/images/d24f5c8aea51cd131083e7ecc52cf357/tenor.gif?itemid=18918106",height: 100,width: 100,);
 
@@ -104,7 +120,14 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     });
   }
 
-  String gifPath;
+  int getRandomIntBelow(int value){
+    //give a random int from 0-value
+    int randomNumber = random.nextInt(value);
+    return randomNumber;
+  }
+
+
+  String loadingGifPath;
 
   @override
   void initState() {
@@ -121,6 +144,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         context: context,
         setIsUploadingDataToFalse: setIsUploadingDataToFalse);
     currentBothBatsmen = [];
+
+    if(loadingGifPath==null){
+      loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
+    }
   }
 
   @override
@@ -795,6 +822,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   }
 
   thingsToDoAfterOverIsComplete({String bowlerName}) async {
+
     ///update isBowling to false
     await updateIsBowling(bowlerName: bowlerName, setTo: false);
 
@@ -1006,7 +1034,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall = 0;
                               thisBall.isNormalRun = true;
                               thisBall.runToShowOnUI = "0";
-                              gifPath = gifPaths[3];
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               setIsUploadingDataToTrue();
                               runUpdater.updateNormalRuns(ballData: thisBall);
                             },
@@ -1019,7 +1047,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall = 1;
                               thisBall.isNormalRun = true;
                               thisBall.runToShowOnUI = "1";
-                              gifPath = gifPaths[0];
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               setIsUploadingDataToTrue();
                               runUpdater.updateNormalRuns(ballData: thisBall);
                             },
@@ -1032,6 +1060,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall = 2;
                               thisBall.isNormalRun = true;
                               thisBall.runToShowOnUI = "2";
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               setIsUploadingDataToTrue();
                               runUpdater.updateNormalRuns(ballData: thisBall);
                             },
@@ -1044,6 +1073,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall = 3;
                               thisBall.isNormalRun = true;
                               thisBall.runToShowOnUI = '3';
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               setIsUploadingDataToTrue();
                               runUpdater.updateNormalRuns(ballData: thisBall);
                             },
@@ -1056,6 +1086,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall = 4;
                               thisBall.isNormalRun = true;
                               thisBall.runToShowOnUI = "4";
+                              loadingGifPath = loadingFourGifs[0];
                               setIsUploadingDataToTrue();
                               runUpdater.updateNormalRuns(ballData: thisBall);
                             },
@@ -1074,7 +1105,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               thisBall.runScoredOnThisBall = 6;
                               thisBall.isNormalRun = true;
                               thisBall.runToShowOnUI = "6";
-                              gifPath = gifPaths[4];
+                              loadingGifPath = loadingSixGifs[getRandomIntBelow(2)];
                               setIsUploadingDataToTrue();
                               runUpdater.updateNormalRuns(ballData: thisBall);
                             },
@@ -1084,6 +1115,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             color: btnColor,
                             minWidth: buttonWidth,
                             onPressed: () {
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               setState(() {
                                 isWideBall = true;
                               });
@@ -1095,6 +1127,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: out btn clicked
                             onPressed: () {
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               thisBall.runKey = K_BYE;
                               thisBall.isNormalRun = false;
                               setState(() {
@@ -1108,6 +1141,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: legBye runs need to updated [open new run set]
                             onPressed: () {
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               thisBall.runKey = K_LEGBYE;
                               thisBall.isNormalRun = false;
                               setState(() {
@@ -1121,6 +1155,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: no-ball -- open new no-ball set
                             onPressed: () {
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               thisBall.runKey = K_NOBALL;
                               thisBall.isNormalRun = false;
                               setState(() {
@@ -1139,6 +1174,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: out btn clicked
                             onPressed: () {
+                              loadingGifPath = loadingWicketGifs[0];
                               thisBall.runKey = K_OUT;
                               thisBall.isNormalRun = false;
                               setState(() {
@@ -1152,6 +1188,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: over throw
                             onPressed: () {
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               thisBall.runKey = K_OVERTHROW;
                               thisBall.isNormalRun = false;
                               setState(() {
@@ -1165,6 +1202,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: over throw
                             onPressed: () {
+                              loadingGifPath = loadingGifPaths[getRandomIntBelow(2)];
                               thisBall.runKey = K_RUNOUT;
                               thisBall.isNormalRun = false;
                               setState(() {
@@ -1178,6 +1216,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             minWidth: buttonWidth,
                             //TODO: over throw
                             onPressed: () {
+                              loadingGifPath = loadingWinGifs[0];
                               updateInningNumberAndOtherStuff();
                             },
                             child: Text("EndInn")),
@@ -1456,7 +1495,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             left: (12 * SizeConfig.oneW).roundToDouble(),
             top: (12 * SizeConfig.oneH).roundToDouble()),
         child: Text(
-            "${widget.match.getTossWinner()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()} (Inning: ${widget.match.getInningNo()}) "));
+            "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()} (Inning: ${widget.match.getInningNo()}) ",
+        maxLines: 2,
+        ));
   }
 
   ///updateDataInScoreBoard when Over is finished
@@ -1498,9 +1539,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.network(
-          gifPathMap["wonUrl"],
-          height: (100*SizeConfig.oneH).roundToDouble(),
+        Image.asset(
+    loadingGifPath = loadingWinGifs[0],
+    height: (100*SizeConfig.oneH).roundToDouble(),
           width: (100*SizeConfig.oneW).roundToDouble(),
         ),
         // Image.asset(gifPaths[0],width: 100,height: 100,),
@@ -1510,7 +1551,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
           style: textStyle,
         ):Text(""),
         startNewInningBtn(
-            btnText: "End Game",
+            btnText: "Go Home",
             whatToUpdateFunction: () {
               Navigator.pop(context);
             })
@@ -1537,13 +1578,14 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            gifPaths[3],
+            loadingGifPath,
+            // gifPaths[3],
             height: (190*SizeConfig.oneH).roundToDouble(),
             width: (190*SizeConfig.oneW).roundToDouble(),
           ),
           Text(
             "Updating Data..",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 15),
           )
         ],
       ),

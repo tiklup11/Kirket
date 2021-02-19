@@ -269,7 +269,9 @@ class _LiveScorePageState extends State<LiveScorePage> {
             left: (12 * SizeConfig.oneW).roundToDouble(),
             top: (12 * SizeConfig.oneH).roundToDouble()),
         child: Text(
-            "${widget.match.getTossWinner()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()} (Inning: ${widget.match.getInningNo()}) "));
+            "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()} (Inning: ${widget.match.getInningNo()}) ",
+        maxLines: 2,
+        ));
   }
 
   buildOversList() {

@@ -76,15 +76,6 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
             _scoreBoardData.totalRuns = totalRuns;
             _scoreBoardData.totalWicketsDown = wicketsDown;
 
-            ///setting scoreBoardData
-            final String runsFormat =
-                "$totalRuns/$wicketsDown ($currentOverNo.$ballOfTheOver)";
-            double CRR = 0.0;
-            try {
-              CRR = totalRuns / (currentOverNo + ballOfTheOver / 6);
-            } catch (e) {
-              CRR = 0.0;
-            }
             return liveCardUI(scoreBoardData: _scoreBoardData);
           }
         });
@@ -137,7 +128,7 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
                           'assets/images/team1.png',
                           scale: (17*SizeConfig.oneW).roundToDouble(),
                         ),
-                        Text(scoreBoardData.team1name)
+                        Text(scoreBoardData.team1name.toUpperCase(),maxLines: 2,)
                       ],
                     ),
                     Text(
@@ -154,7 +145,7 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
                           scale: (17*SizeConfig.oneW).roundToDouble(),
                         ),
                         Text(
-                          scoreBoardData.team2name,
+                          scoreBoardData.team2name.toUpperCase(),maxLines: 2,
                         ),
                       ],
                     ),

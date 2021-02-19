@@ -60,6 +60,7 @@ class BatsmenScoreRow extends StatelessWidget {
               child: Text(
                 batsmen.balls,
                 style: textStyle,
+                  maxLines: 2
               )),
           Container(
               width: (30*SizeConfig.oneW).roundToDouble(),

@@ -284,7 +284,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                   child: MaterialButton(
                     elevation: 0,
                     highlightElevation: 0,
-                    color: Colors.black12,
+                    color: Colors.blueGrey.shade400,
                     child: Text(
                         "Create Match"),
                     onPressed: (){

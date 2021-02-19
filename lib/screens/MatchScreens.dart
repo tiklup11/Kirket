@@ -89,7 +89,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
               _launchAppOnPS();
             }),
             space,
-            customTile(iconData:Icons.alternate_email_rounded,text: "About us",
+            customTile(iconData:Icons.person,text: "About us",
                 onTab:(){
                   Navigator.push(context, MaterialPageRoute(builder: (context){
                     return AboutUsPage();
@@ -177,7 +177,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
   adminTile(){
     return ListTile(
       tileColor: Colors.blueGrey.shade50,
-      leading: Icon(Icons.person_sharp),
+      leading: Icon(Icons.lock_rounded),
       title: Text('Admin Access'),
       onTap: () {
         // Update the state of the app.
