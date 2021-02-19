@@ -26,12 +26,18 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-      child: Column(
-        children: [
-          batsmenList(),
-          bowlersList()
-        ],
+    return Expanded(
+      child: Container(
+        child: ListView(
+          // shrinkWrap: true,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            teamName(teamName: widget.match.getCurrentBattingTeam()),
+            batsmenList(),
+            teamName(teamName: widget.match.getCurrentBowlingTeam()),
+            bowlersList()
+          ],
+        ),
       ),
     );
   }
@@ -92,9 +98,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                     final ballOfThatOver = playerData.data()['ballOfTheOver'];
                     final playerName = playerData.data()['name'];
                     final runs = playerData.data()['runs'];
-                    final isBowling = playerData.data()['isBowling'];
                     final totalBalls = playerData.data()['totalBalls'];
-                    final overLengthToFinishTheOver = playerData.data()['overLength'];
 
                     double eco = 0;
                     try {
@@ -178,7 +182,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                   .collection('createdMatches')
                   .doc(widget.match.getMatchId())
                   .collection('1InningBattingData')
-                  .where('isOut', isEqualTo: true)
+                  // .where('isOut', isEqualTo: true)
                   .snapshots(),
 
               builder: (context, snapshot) {
@@ -190,23 +194,18 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                   final batsmenData = snapshot.data.docs;
 
                   batsmenData.forEach((playerData) {
-                    print("DATA::  ${playerData.data()}");
+                    // print("DATA::  ${playerData.data()}");
                     final ballsPlayed = playerData.data()['balls'];
                     final noOf4s = playerData.data()['noOf4s'];
                     final noOf6s = playerData.data()['noOf6s'];
                     final playerName = playerData.data()['name'];
                     final runs = playerData.data()['runs'];
-                    final isOnStrike = playerData.data()['isOnStrike'];
+                    // final isOnStrike = playerData.data()['isOnStrike'];
 
                     double SR = 0;
                     try {
-                      print(
-                          "tryinggggggggggggggggggggggggggggggggggggggggggggggggggg");
                       SR = ((runs / ballsPlayed) * 100);
-                      print(
-                          "tryinggggggggggggggggggggggggggggggggggggggggggggggggggg ;;SR== $SR");
                     } catch (e) {
-                      print("Failedddddddddddddddddddddd");
                       SR = 0;
                     }
 
@@ -215,7 +214,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                     }
 
                     listOfBatsmen.add(BatsmenScoreRow(
-                      isOnStrike: isOnStrike,
+                      isOnStrike: false,
                       isThisSelectBatsmenBtn: false,
                       batsmen: Batsmen(
                           isClickable: false,
@@ -225,7 +224,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                           sR: SR.toStringAsFixed(0),
                           playerName: playerName,
                           runs: runs.toString(),
-                          isOnStrike: isOnStrike),
+                          isOnStrike: false),
                     ));
                   });
                 }
@@ -261,6 +260,17 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           SizedBox(width: (4*SizeConfig.oneW).roundToDouble(),),
           Text(msg),
         ],
+      ),
+    );
+  }
+
+  teamName({String teamName}){
+    return  Container(
+      margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble(),bottom: (2*SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),
+      ),
+      child: Text(
+        teamName.toUpperCase(),
       ),
     );
   }

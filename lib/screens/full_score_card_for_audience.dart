@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'file:///C:/Users/tiklu/AndroidStudioProjects/umiperer/lib/screens/first_in_sc.dart';
-import 'file:///C:/Users/tiklu/AndroidStudioProjects/umiperer/lib/screens/second_inn_sc.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/screens/first_in_sc.dart';
+import 'package:umiperer/screens/second_inn_sc.dart';
 
 ///mqd
 class ScoreCard extends StatefulWidget {
@@ -28,11 +28,14 @@ class _ScoreCardState extends State<ScoreCard> {
   @override
   void initState() {
     super.initState();
+    print("Inning ${widget.match2.getInningNo()}");
     leftColor = activeTabColor;
     rightColor = inActiveTabColor;
     tabBarView = [
       FirstInningScoreCard(creatorUID: widget.creatorUID, match: widget.match2),
-      SecondInningScoreCard(creatorUID: widget.creatorUID, match: widget.match2)
+      widget.match2.getInningNo()==1?
+    Container(child: Center(child: zeroData(msg: "2nd Inning not started yet",iconData: Icons.sports_cricket_outlined),),):
+    SecondInningScoreCard(creatorUID: widget.creatorUID, match: widget.match2)
     ];
   }
 
@@ -62,7 +65,7 @@ class _ScoreCardState extends State<ScoreCard> {
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [leftColor,rightColor], ),
         color: Colors.blueGrey.shade400,
-        borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
+        borderRadius: BorderRadius.circular((4*SizeConfig.oneW).roundToDouble())
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -100,6 +103,20 @@ class _ScoreCardState extends State<ScoreCard> {
           ),
         )
       ],
+      ),
+    );
+  }
+
+  zeroData({String msg, IconData iconData}){
+    return Container(
+      height: (80*SizeConfig.oneH).roundToDouble(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(iconData),
+          SizedBox(width: (4*SizeConfig.oneW).roundToDouble(),),
+          Text(msg),
+        ],
       ),
     );
   }

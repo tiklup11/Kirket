@@ -16,7 +16,6 @@ class SecondInningScoreCard extends StatefulWidget {
   SecondInningScoreCard({this.creatorUID, this.match});
   final String creatorUID;
   final CricketMatch match;
-  // final String matchUID;
   @override
   _SecondInningScoreCardState createState() => _SecondInningScoreCardState();
 }
@@ -26,6 +25,10 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
   DataStreams dataStreams;
   @override
   Widget build(BuildContext context) {
+
+    print("Inning ${widget.match.getInningNo()}");
+
+
     final Batsmen dummyBatsmen = Batsmen(
         isClickable: false,
         isOnStrike: false,
@@ -36,15 +39,19 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
         noOf4s: "-",
         balls: "-");
 
-    return Container(
-      child: Column(
-        children: [
-          batsmenList(),
-          bowlersList()
-        ],
-      ),
-    );
+    return
+      // widget.match.getInningNo()==2?
+      Expanded(
+        child: Container(
+        child: ListView(
+          children: [
+            batsmenList(),
+            bowlersList()
+          ],
+        )),
+      );
   }
+
   bowlersList(){
     return Container(
       padding: EdgeInsets.symmetric(
@@ -70,12 +77,10 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                 median: "M",
                 economy: "E"),
           ),
-
           Container(
             color: Colors.black12,
             height: (4 * SizeConfig.oneH).roundToDouble(),
           ),
-
           //Batsman's data
           StreamBuilder<QuerySnapshot>(
               stream: usersRef
@@ -188,7 +193,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                   .collection('createdMatches')
                   .doc(widget.match.getMatchId())
                   .collection('2InningBattingData')
-                  .where('isOut', isEqualTo: true)
+                  // .where('isOut', isEqualTo: true).where('isBatting',isEqualTo: true)
                   .snapshots(),
 
               builder: (context, snapshot) {
@@ -196,27 +201,25 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
 
                 if (!snapshot.hasData) {
                   return loadingData(msg: "Loading batsmen data");
-                } else {
+                } else if(widget.match.getInningNo()==1){
+                  loadingData(msg: "2nd Inning not started yet");
+                }
+                  else{
                   final batsmenData = snapshot.data.docs;
 
                   batsmenData.forEach((playerData) {
-                    print("DATA::  ${playerData.data()}");
+                    // print("DATA::  ${playerData.data()}");
                     final ballsPlayed = playerData.data()['balls'];
                     final noOf4s = playerData.data()['noOf4s'];
                     final noOf6s = playerData.data()['noOf6s'];
                     final playerName = playerData.data()['name'];
                     final runs = playerData.data()['runs'];
-                    final isOnStrike = playerData.data()['isOnStrike'];
+                    // final isOnStrike = playerData.data()['isOnStrike'];
 
                     double SR = 0;
                     try {
-                      print(
-                          "tryinggggggggggggggggggggggggggggggggggggggggggggggggggg");
                       SR = ((runs / ballsPlayed) * 100);
-                      print(
-                          "tryinggggggggggggggggggggggggggggggggggggggggggggggggggg ;;SR== $SR");
                     } catch (e) {
-                      print("Failedddddddddddddddddddddd");
                       SR = 0;
                     }
 
@@ -225,7 +228,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                     }
 
                     listOfBatsmen.add(BatsmenScoreRow(
-                      isOnStrike: isOnStrike,
+                      isOnStrike: false,
                       isThisSelectBatsmenBtn: false,
                       batsmen: Batsmen(
                           isClickable: false,
@@ -235,10 +238,11 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                           sR: SR.toStringAsFixed(0),
                           playerName: playerName,
                           runs: runs.toString(),
-                          isOnStrike: isOnStrike),
+                          isOnStrike: false),
                     ));
                   });
                 }
+                  print("LIST:: ${listOfBatsmen.length}");
                 if(listOfBatsmen.isEmpty){
                   return zeroData(iconData: Icons.sports_cricket_outlined,msg: "Batsmen data is shown here");
                 }
@@ -271,6 +275,17 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           SizedBox(width: (4*SizeConfig.oneW).roundToDouble(),),
           Text(msg),
         ],
+      ),
+    );
+  }
+
+  teamName({String teamName}){
+    return  Container(
+      margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble(),bottom: (2*SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),
+      ),
+      child: Text(
+        teamName.toUpperCase(),
       ),
     );
   }

@@ -255,6 +255,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   }
 
   settingBowlerNameInOverDoc({String bowlerName, int overNo}) async {
+    // setIsUploadingDataToTrue();
     await usersRef
         .doc(widget.user.uid)
         .collection('createdMatches')
@@ -262,6 +263,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         .collection("inning${widget.match.getInningNo()}overs")
         .doc("over$overNo")
         .update({"bowlerName": bowlerName});
+    // setIsUploadingDataToFalse();
   }
 
   updateInningNumberAndOtherStuff() async {
@@ -283,6 +285,28 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         "totalRuns": 0,
         "wicketsDown": 0,
       });
+
+      await usersRef
+          .doc(widget.user.uid)
+          .collection('createdMatches')
+          .doc(widget.match.getMatchId())
+      .collection("${widget.match.getInningNo()}InningBattingData").doc(widget.match.strikerBatsmen).update(
+          {
+            "isOut":true,
+            "isOnStrike":false,
+            "isBatting":false,
+          });
+
+      await usersRef
+          .doc(widget.user.uid)
+          .collection('createdMatches')
+          .doc(widget.match.getMatchId())
+          .collection("${widget.match.getInningNo()}InningBattingData").doc(widget.match.nonStrikerBatsmen).update(
+          {
+            "isOut":true,
+            "isOnStrike":false,
+            "isBatting":false,
+          });
       return;
     }
 
@@ -414,8 +438,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         });
   }
 
-  void toogleStrikeOnFirebase({String playerName, bool value}) {
-    usersRef
+  void toogleStrikeOnFirebase({String playerName, bool value}) async{
+    await usersRef
         .doc(widget.user.uid)
         .collection('createdMatches')
         .doc(widget.match.getMatchId())
@@ -427,15 +451,15 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   }
 
   ///      ///     ///
-  void updateStrikerToGeneralMatchData(String playerName) {
-    usersRef
+  void updateStrikerToGeneralMatchData(String playerName) async{
+    await usersRef
         .doc(widget.user.uid)
         .collection('createdMatches')
         .doc(widget.match.getMatchId())
         .update({"strikerBatsmen": playerName});
   }
 
-  void updateNonStrikerToGeneralMatchData(String playerName) {
+  void updateNonStrikerToGeneralMatchData(String playerName) async{
     usersRef
         .doc(widget.user.uid)
         .collection('createdMatches')
@@ -443,8 +467,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         .update({"nonStrikerBatsmen": playerName});
   }
 
-  void updateBowlerDataToGeneralMatchData(String playerName) {
-    usersRef
+  void updateBowlerDataToGeneralMatchData(String playerName) async{
+    await usersRef
         .doc(widget.user.uid)
         .collection('createdMatches')
         .doc(widget.match.getMatchId())
@@ -780,11 +804,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     await updateDataInScoreBoard();
     // sleep(Duration(milliseconds: 500));
     //TODO: checking if sleep is required or not
-    // print("CHANGING OVER ||||||| I REPEAT CHANGING OVER");
   }
 
-  updateIsBowling({String bowlerName, bool setTo}) {
-    usersRef
+  updateIsBowling({String bowlerName, bool setTo}) async{
+    await usersRef
         .doc(widget.user.uid)
         .collection('createdMatches')
         .doc(widget.match.getMatchId())
@@ -797,8 +820,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     });
   }
 
-  updateBowlerDataToGeneralDoc() {
-    usersRef
+  updateBowlerDataToGeneralDoc() async{
+    await usersRef
         .doc(widget.user.uid)
         .collection('createdMatches')
         .doc(widget.match.getMatchId())
@@ -938,7 +961,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     final spaceBtwn = SizedBox(
       width: (4 * SizeConfig.oneW).roundToDouble(),
     );
-
     return Container(
       height: scoreSelectionAreaLength.toDouble(),
       color: Colors.blueGrey.shade400,
@@ -1438,9 +1460,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   }
 
   ///updateDataInScoreBoard when Over is finished
-  updateDataInScoreBoard() {
+  updateDataInScoreBoard() async{
     if (widget.match.getInningNo() == 1) {
-      usersRef
+      await usersRef
           .doc(widget.user.uid)
           .collection('createdMatches')
           .doc(widget.match.getMatchId())
@@ -1451,7 +1473,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     }
 
     if (widget.match.getInningNo() == 2) {
-      usersRef
+      await usersRef
           .doc(widget.user.uid)
           .collection('createdMatches')
           .doc(widget.match.getMatchId())
@@ -1471,14 +1493,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
     String resultLine = widget.match.getFinalResult();
 
-    // if (widget.match.totalRunsOf1stInning > widget.match.totalRunsOf2ndInning) {
-    //   resultLine =
-    //       "${widget.match.firstBattingTeam.toUpperCase()} won by ${widget.match.totalRunsOf1stInning - widget.match.totalRunsOf2ndInning} runs";
-    // }
-    // if (widget.match.totalRunsOf1stInning < widget.match.totalRunsOf2ndInning) {
-    //   resultLine =
-    //       "${widget.match.secondBattingTeam.toUpperCase()} won by ${widget.match.getPlayerCount() - 1 - widget.match.totalWicketsOf2ndInning} wickets";
-    // }
     //TODO: MatchTied function when runs EQUAL
 
     return Column(
@@ -1506,11 +1520,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
   ///
   Widget miniScoreLoadingScreen() {
-    return Expanded(
-      child: Container(
-        child: Center(
-          child: Text("Loading.."),
-        ),
+    return Container(
+      child: Center(
+        child: Text("Loading.."),
       ),
     );
   }

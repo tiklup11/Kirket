@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/modals/UpcomingTournament.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/Upcoming_tournament_entry_page.dart';
+import 'package:umiperer/screens/zero_doc_screen.dart';
 import 'package:umiperer/widgets/upcoming_tour_card_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,6 +44,10 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
           } else {
             //ut  = upcomingTournaments
             final utDocList = snapshot.data.docs;
+
+            if(utDocList.isEmpty){
+              return ZeroDocScreen(textMsg: "Tab + to announce your Upcoming Tournament",iconData: Icons.sports_cricket_outlined,);
+            }
 
             List<UpcomingTournamentCard> upcomingTournamentsCardList = [];
 
@@ -233,19 +238,4 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
     );
   }
 
-
-  ///press + text
-  tabPlusWidget() {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.sports_handball),
-          // Text("Upcoming Tournaments are shown here"),
-          Text("Tab + to announce your Upcoming Tournament")
-        ],
-      ),
-    );
-  }
 }

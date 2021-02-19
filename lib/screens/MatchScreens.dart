@@ -8,6 +8,7 @@ import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/about_us_page.dart';
 import 'package:umiperer/screens/admin_access_page.dart';
 import 'package:umiperer/screens/upcoming_matches_screens.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 ///This is BottomNavigationBar
 
@@ -65,6 +66,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
   Widget build(BuildContext context) {
 
     String title = titleList[_selectedIndex];
+    final space =SizedBox(height: (4*SizeConfig.oneH).roundToDouble(),);
 
     return Scaffold(
       drawer: Drawer(
@@ -81,26 +83,23 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
             ),
             widget.user.uid=="4VwUugdc6XVPJkR2yltZtFGh4HN2" || widget.user.uid=="V3lwRvXi2pXYFOnaA9JAC2lgvY42"?
                 adminTile():Container(),
-            SizedBox(height: (4*SizeConfig.oneH).roundToDouble(),),
-            ListTile(
-              tileColor: Colors.blueGrey.shade50,
-              leading: Icon(Icons.alternate_email_rounded),
-              title: Text('About Us'),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context){
-                  return AboutUsPage();
-                }));
-              },
-            ),
-            SizedBox(height: (4*SizeConfig.oneH).roundToDouble(),),
-            ListTile(
-              tileColor: Colors.blueGrey.shade50,
-              leading: Icon(Icons.login_rounded),
-              title: Text('Logout'),
-              onTap: () {
-                showAlertDialog(context: context);
-              },
-            ),
+            space,
+            customTile(iconData: Icons.update,text: "Update app",
+            onTab: (){
+              _launchAppOnPS();
+            }),
+            space,
+            customTile(iconData:Icons.alternate_email_rounded,text: "About us",
+                onTab:(){
+                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                    return AboutUsPage();
+                  }));
+                }),
+            space,
+            customTile(iconData:Icons.login_rounded,text: "Logout",
+            onTab: (){
+              showAlertDialog(context: context);
+            }),
           ],
         ),
       ),
@@ -131,6 +130,16 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       ),
     );
   }
+
+  _launchAppOnPS() async {
+    final url = 'https://play.google.com/store/apps/details?id=com.okays.umiperer';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
 
   showAlertDialog({BuildContext context}) {
     Widget cancelButton = TextButton(
@@ -176,6 +185,15 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
           return AdminAccessPage();
         }));
       },
+    );
+  }
+
+  customTile({String text,IconData iconData,Function onTab}){
+    return ListTile(
+      tileColor: Colors.blueGrey.shade50,
+      leading: Icon(iconData),
+      title: Text(text),
+      onTap: onTab,
     );
   }
 }

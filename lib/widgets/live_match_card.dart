@@ -1,32 +1,119 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsHome_forAudience.dart';
+import 'package:umiperer/modals/ScoreBoardData.dart';
 
 ///mqd
-class LiveMatchCard extends StatelessWidget {
+class LiveMatchCard extends StatefulWidget {
   LiveMatchCard({this.match,this.creatorUID,this.matchUID});
 
-  final CricketMatch match;
+  CricketMatch match;
   String creatorUID;
   String matchUID;
 
   @override
+  _LiveMatchCardState createState() => _LiveMatchCardState();
+}
+
+class _LiveMatchCardState extends State<LiveMatchCard> {
+
+  DataStreams _dataStreams;
+  ScoreBoardData _scoreBoardData;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _dataStreams = DataStreams(userUID: widget.creatorUID,matchId: widget.matchUID);
+    _scoreBoardData = ScoreBoardData(
+        inningNo: widget.match.getInningNo(),
+      battingTeamName: widget.match.getCurrentBattingTeam(),
+      bowlingTeam: widget.match.getCurrentBowlingTeam(),
+      team1name: widget.match.getTeam1Name(),
+      team2name: widget.match.getTeam2Name(),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    // widget.creatorUID = '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
+    Stream<DocumentSnapshot> stream;
+
+    if(widget.match.getInningNo()==1){
+
+      stream = userRef.doc(widget.creatorUID)
+          .collection('createdMatches')
+          .doc(widget.matchUID)
+          .collection('FirstInning')
+          .doc("scoreBoardData").snapshots();
+
+    } else if(widget.match.getInningNo()==2){
+      stream = userRef.doc(widget.creatorUID)
+          .collection('createdMatches')
+          .doc(widget.matchUID)
+          .collection('SecondInning')
+          .doc("scoreBoardData").snapshots();
+    }
+
+    return StreamBuilder<DocumentSnapshot>(
+        stream: stream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return miniScoreLoadingScreen();
+          } else {
+            final scoreBoardData = snapshot.data.data();
+            final ballOfTheOver = scoreBoardData['ballOfTheOver'];
+            final currentOverNo = scoreBoardData['currentOverNo'];
+            final totalRuns = scoreBoardData['totalRuns'];
+            final wicketsDown = scoreBoardData['wicketsDown'];
+
+            _scoreBoardData.currentBallNo=ballOfTheOver;
+            _scoreBoardData.currentOverNo = currentOverNo;
+            _scoreBoardData.totalRuns = totalRuns;
+            _scoreBoardData.totalWicketsDown = wicketsDown;
+
+            ///setting scoreBoardData
+            final String runsFormat =
+                "$totalRuns/$wicketsDown ($currentOverNo.$ballOfTheOver)";
+            double CRR = 0.0;
+            try {
+              CRR = totalRuns / (currentOverNo + ballOfTheOver / 6);
+            } catch (e) {
+              CRR = 0.0;
+            }
+            return liveCardUI(scoreBoardData: _scoreBoardData);
+          }
+        });
+  }
+
+  Widget miniScoreLoadingScreen() {
+    return Container(
+      height: (220*SizeConfig.oneH).roundToDouble(),
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  liveCardUI({ScoreBoardData scoreBoardData}){
     return Container(
       margin: EdgeInsets.only(top: (4*SizeConfig.oneH).roundToDouble(),
           left: (10*SizeConfig.oneW).roundToDouble(),
           right: (10*SizeConfig.oneW).roundToDouble()),
-      height:match.getIsMatchStarted()?
-      (190*SizeConfig.oneH).roundToDouble():
-      (120*SizeConfig.oneH).roundToDouble()
-      ,
+      height:widget.match.getIsMatchStarted()?
+      (220*SizeConfig.oneH).roundToDouble():
+      (120*SizeConfig.oneH).roundToDouble(),
       child: Card(
         child: MaterialButton(
+          padding: EdgeInsets.only(top: 10*SizeConfig.oneH),
           onPressed: () {
-            if(match.getIsMatchStarted()){
+            if(widget.match.getIsMatchStarted()){
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return MatchDetailsHomeForAudience(match: match,creatorUID: creatorUID,matchUID: matchUID,);
+                return MatchDetailsHomeForAudience(match: widget.match,creatorUID: widget.creatorUID,matchUID: widget.matchUID,);
               }));
             }else{
               showAlertDialog(context: context);
@@ -34,8 +121,10 @@ class LiveMatchCard extends StatelessWidget {
           },
           child: Column(
             children: [
-              match.getIsMatchStarted()?
-              liveScore():Container(),
+              widget.match.getIsMatchStarted()?
+              Text("Inning ${widget.match.getInningNo()}"):Container(),
+              widget.match.getIsMatchStarted()?
+              liveScore(scoreBoardData: scoreBoardData):Container(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble()),
                 child: Row(
@@ -48,7 +137,7 @@ class LiveMatchCard extends StatelessWidget {
                           'assets/images/team1.png',
                           scale: (17*SizeConfig.oneW).roundToDouble(),
                         ),
-                        Text(match.getTeam1Name())
+                        Text(scoreBoardData.team1name)
                       ],
                     ),
                     Text(
@@ -65,17 +154,17 @@ class LiveMatchCard extends StatelessWidget {
                           scale: (17*SizeConfig.oneW).roundToDouble(),
                         ),
                         Text(
-                          match.getTeam2Name(),
+                          scoreBoardData.team2name,
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-              match.getFinalResult()==null?
-                  Container():Container(child: Text(match.getFinalResult()),),
-              match.isSecondInningEnd?
-                  Container(child: Center(child: Text("Match End"),),):Container()
+              widget.match.getFinalResult()!=null && widget.match.isSecondInningEnd?
+              Container(child: Text(widget.match.getFinalResult()),):Container(),
+              widget.match.isSecondInningEnd && widget.match.getFinalResult()==null?
+              Container(child: Center(child: Text("Match End"),),):Container()
             ],
           ),
         ),
@@ -83,17 +172,8 @@ class LiveMatchCard extends StatelessWidget {
     );
   }
 
-  liveScore(){
+  liveScore({ScoreBoardData scoreBoardData}){
 
-    final String runsFormat =
-        "${match.totalRuns} / ${match.wicketDown} (${match.currentOver.getCurrentOverNo()-1}.${match.currentOver.getCurrentBallNo()})";
-    double CRR = 0.0;
-    try {
-      // CRR = totalRuns / (currentOverNo + currentBallNo / 6);
-      CRR = match.totalRuns / ((match.currentOver.getCurrentOverNo()-1)+(match.currentOver.getCurrentBallNo()/ 6));
-    } catch (e) {
-      CRR = 0.0;
-    }
     return Column(
       children: [
         // tossLineWidget(),
@@ -118,8 +198,7 @@ class LiveMatchCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        match
-                            .getCurrentBattingTeam()
+                        scoreBoardData.battingTeamName
                             .toUpperCase(),
                         style: TextStyle(
                             fontSize:
@@ -128,19 +207,17 @@ class LiveMatchCard extends StatelessWidget {
                       Text(
                         // runs/wickets (currentOverNumber.currentBallNo)
                         // "65/3  (13.2)",
-                        runsFormat,
+                        scoreBoardData.getFormatedRunsString(),
                         style: TextStyle(
                             fontSize:
                             (16 * SizeConfig.oneW).roundToDouble()),
-                      )
+                      ),
                     ],
                   ),
                   Column(
                     children: [
                       Text("CRR"),
-                      CRR.isNaN
-                          ? Text("0.0")
-                          : Text(CRR.toStringAsFixed(2)),
+                      Text(scoreBoardData.getCrr()),
                     ],
                   ),
                 ],
@@ -180,5 +257,4 @@ class LiveMatchCard extends StatelessWidget {
       },
     );
   }
-
 }

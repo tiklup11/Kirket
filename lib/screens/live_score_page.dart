@@ -5,10 +5,10 @@ import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/ball_widget.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
-import 'matchDetailsScreens/dialog_custom.dart';
 
 //remove scaffold
 //add into tabBarView along with other shit
@@ -114,7 +114,6 @@ class _LiveScorePageState extends State<LiveScorePage> {
               widget.match.setInningNo(inningNo);
               // widget.match.setMatchId(matchId);
 
-
               final totalRuns = matchData['totalRuns'];
               final wicketsDown = matchData['wicketsDown'];
 
@@ -199,7 +198,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
             }
             return Column(
               children: [
-                // tossLineWidget(),
+                tossLineWidget(),
                 Container(
                   padding: EdgeInsets.symmetric(
                       horizontal: (10 * SizeConfig.oneW).roundToDouble(),
@@ -262,6 +261,15 @@ class _LiveScorePageState extends State<LiveScorePage> {
             );
           }
         });
+  }
+
+  tossLineWidget() {
+    return Container(
+        padding: EdgeInsets.only(
+            left: (12 * SizeConfig.oneW).roundToDouble(),
+            top: (12 * SizeConfig.oneH).roundToDouble()),
+        child: Text(
+            "${widget.match.getTossWinner()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()} (Inning: ${widget.match.getInningNo()}) "));
   }
 
   buildOversList() {

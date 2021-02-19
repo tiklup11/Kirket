@@ -60,7 +60,7 @@ class CricketMatch{
 
     String resultLine;
 
-    if(totalRunsOf1stInning!=null && totalWicketsOf2ndInning!=null) {
+    if(totalRunsOf1stInning!=null && totalWicketsOf2ndInning!=null && getInningNo()==2) {
       if (totalRunsOf1stInning > totalRunsOf2ndInning) {
         resultLine =
         "${firstBattingTeam.toUpperCase()} won by ${totalRunsOf1stInning -

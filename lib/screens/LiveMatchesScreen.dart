@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/screens/MyMatchesScreen.dart';
+import 'package:umiperer/screens/zero_doc_screen.dart';
 import 'package:umiperer/widgets/live_match_card.dart';
 
-import 'matchDetailsScreens/dialog_custom.dart';
 ///mqd
 final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
 
@@ -20,8 +21,9 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
   }
 
   buildCards(){
-    final userId = "V3lwRvXi2pXYFOnaA9JAC2lgvY42";
 
+    final userId ="V3lwRvXi2pXYFOnaA9JAC2lgvY42";
+    //  '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
             return StreamBuilder<QuerySnapshot>(
                 stream: usersRef.doc(userId).collection('createdMatches').where('isLive',isEqualTo: true).snapshots(),
                 builder: (context,snapshot){
@@ -32,6 +34,10 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                     List<LiveMatchCard> listOfLiveMatches = [];
 
                     final allMatchData = snapshot.data.docs;
+
+                    if(allMatchData.isEmpty){
+                      return ZeroDocScreen(iconData: Icons.live_tv_rounded,textMsg: "Live matches score will be displayed here",);
+                    }
 
                     allMatchData.forEach((match) {
 
@@ -55,7 +61,6 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                     final firstBowlingTeam = matchData['firstBowlingTeam'];
                     final secondBattingTeam = matchData['secondBattingTeam'];
                     final secondBowlingTeam = matchData['secondBowlingTeam'];
-                    final currentBattingTeam = matchData['currentBattingTeam'];
                     final isFirstInningStarted = matchData['isFirstInningStarted'];
                     final isFirstInningEnd = matchData['isFirstInningEnd'];
                     final isSecondStartedYet = matchData['isSecondStartedYet'];

@@ -124,8 +124,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'totalRunsOfInning1':0,
       'totalRunsOfInning2':0,
       'currentBallNo': 0,
+      'winningMsg':null,
       'isLive':true,
-      'winningMsg':null
     });
 
     ///making everyOver doc inside Overs Collections inside first innings collections

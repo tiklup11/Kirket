@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/fill_new_match_details_screen.dart';
+import 'package:umiperer/screens/zero_doc_screen.dart';
 import 'package:umiperer/widgets/match_card_for_my_matches.dart';
 
 ///MQD
@@ -47,6 +48,11 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
           } else{
             final List<MatchCardForCounting> matchCards = [];
             final matchesData = snapshot.data.docs;
+
+            if(matchesData.isEmpty){
+              return ZeroDocScreen(textMsg: "Tab + to create your own match to count runs and that will be live",iconData: Icons.calculate_outlined,);
+            }
+
             for(var matchData in matchesData){
 
               final CricketMatch match = CricketMatch();
@@ -67,7 +73,6 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
               final secondBattingTeam = matchData.data()['secondBattingTeam'];
               final secondBowlingTeam = matchData.data()['secondBowlingTeam'];
 
-              final currentBattingTeam = matchData.data()['currentBattingTeam'];
 
               match.firstBattingTeam=firstBattingTeam;
               match.firstBowlingTeam=firstBowlingTeam;

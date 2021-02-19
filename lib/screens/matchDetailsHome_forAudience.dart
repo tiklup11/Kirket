@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/screens/full_score_card_for_audience.dart';
 import 'package:umiperer/screens/live_score_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
-import 'file:///C:/Users/tiklu/AndroidStudioProjects/umiperer/lib/screens/full_score_card_for_audience.dart';
 
 ///this contains 3-4 tabs and show to audience
 class MatchDetailsHomeForAudience extends StatefulWidget {
