@@ -85,7 +85,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                   .doc(widget.creatorUID)
                   .collection('createdMatches')
                   .doc(widget.match.getMatchId())
-                  .collection('1InningBowlingData')
+                  .collection('1InningBowlingData').where('overs',isGreaterThan: 0).orderBy("overs",descending: true)
                   .snapshots(),
 
               builder: (context, snapshot) {
@@ -94,7 +94,6 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                 if (!snapshot.hasData) {
                   return loadingData(msg: "Loading bowlers data");
                 } else {
-
 
                   final bowlersData = snapshot.data.docs;
 
@@ -184,7 +183,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                   .doc(widget.creatorUID)
                   .collection('createdMatches')
                   .doc(widget.match.getMatchId())
-                  .collection('1InningBattingData')
+                  .collection('1InningBattingData').orderBy('balls',descending: true).where('balls',isGreaterThan: 0)
                   // .where('isOut', isEqualTo: true)
                   .snapshots(),
 

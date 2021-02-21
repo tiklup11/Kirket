@@ -26,6 +26,7 @@ class _SelectAndCreateBatsmenPageState
   HashMap<String,bool> checkBoxMap = HashMap();
   int maximumCheckBox=2;
   int selectedCheckBox;
+  // bool isStrikerSelected  = false;
 
   @override
   void initState() {
@@ -73,6 +74,7 @@ class _SelectAndCreateBatsmenPageState
 
           ///getting isBatting data and filling checkboxes depending upon them
           playersData.forEach((player) {
+
 
             if(player.data()['isBatting']==false){
               checkBoxMap[player.id]=false;
@@ -143,6 +145,10 @@ class _SelectAndCreateBatsmenPageState
         "isOnStrike":true,
       });
 
+      usersRef.doc(widget.user.uid).collection('createdMatches')
+          .doc(widget.match.getMatchId()).update({
+        "strikerBatsmen":playerName
+      });
     }
 
     if(selectedCheckBox==1){
@@ -153,6 +159,10 @@ class _SelectAndCreateBatsmenPageState
           .update({
         "isBatting":value,
         // "isOnStrike":true,
+      });
+      usersRef.doc(widget.user.uid).collection('createdMatches')
+          .doc(widget.match.getMatchId()).update({
+        "nonStrikerBatsmen":playerName
       });
     }
 
@@ -165,7 +175,6 @@ class _SelectAndCreateBatsmenPageState
         "isBatting":value,
         "isOnStrike":value,
       });
-
     }
 
   }

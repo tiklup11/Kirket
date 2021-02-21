@@ -4,6 +4,8 @@ import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/ScoreBoardData.dart';
+import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
@@ -31,6 +33,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
   final scoreSelectionAreaLength = (220 * SizeConfig.oneH).roundToDouble();
   List<Batsmen> currentBothBatsmen;
   ScrollController _scrollController;
+  ScoreBoardData _scoreBoardData;
 
   Bowler dummyBowler = Bowler(
       playerName: "-------",
@@ -48,6 +51,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _scoreBoardData = new ScoreBoardData();
     currentBothBatsmen=[];
     _scrollController = ScrollController(keepScrollOffset: true);
   }
@@ -171,12 +175,28 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
   ///upper scorecard with team runs and stuff
   miniScoreCard() {
+
+    // widget.creatorUID = '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
+    Stream<DocumentSnapshot> stream;
+
+    if(widget.match.getInningNo()==1){
+
+      stream = userRef.doc(widget.creatorUID)
+          .collection('createdMatches')
+          .doc(widget.matchUID)
+          .collection('FirstInning')
+          .doc("scoreBoardData").snapshots();
+
+    } else if(widget.match.getInningNo()==2){
+      stream = userRef.doc(widget.creatorUID)
+          .collection('createdMatches')
+          .doc(widget.matchUID)
+          .collection('SecondInning')
+          .doc("scoreBoardData").snapshots();
+    }
+
     return StreamBuilder<DocumentSnapshot>(
-        stream: usersRef.doc(widget.creatorUID)
-            .collection('createdMatches')
-            .doc(widget.matchUID)
-            .collection('FirstInning')
-            .doc("scoreBoardData").snapshots(),
+        stream: stream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return miniScoreLoadingScreen();
@@ -187,15 +207,10 @@ class _LiveScorePageState extends State<LiveScorePage> {
             final totalRuns = scoreBoardData['totalRuns'];
             final wicketsDown = scoreBoardData['wicketsDown'];
 
-            ///setting scoreBoardData
-            final String runsFormat =
-                "$totalRuns/$wicketsDown ($currentOverNo.$ballOfTheOver)";
-            double CRR = 0.0;
-            try {
-              CRR = totalRuns / (currentOverNo + ballOfTheOver/ 6);
-            } catch (e) {
-              CRR = 0.0;
-            }
+            _scoreBoardData.currentBallNo=ballOfTheOver;
+            _scoreBoardData.currentOverNo = currentOverNo;
+            _scoreBoardData.totalRuns = totalRuns;
+            _scoreBoardData.totalWicketsDown = wicketsDown;
             return Column(
               children: [
                 tossLineWidget(),
@@ -230,7 +245,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
                               Text(
                                 // runs/wickets (currentOverNumber.currentBallNo)
                                 // "65/3  (13.2)",
-                                runsFormat,
+                                _scoreBoardData.getFormatedRunsString(),
                                 style: TextStyle(
                                     fontSize:
                                     (16 * SizeConfig.oneW).roundToDouble()),
@@ -240,9 +255,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
                           Column(
                             children: [
                               Text("CRR"),
-                              CRR.isNaN
-                                  ? Text("0.0")
-                                  : Text(CRR.toStringAsFixed(2)),
+                              Text(_scoreBoardData.getCrr()),
                             ],
                           ),
                         ],

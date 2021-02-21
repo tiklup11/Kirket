@@ -33,8 +33,9 @@ class _AdminAccessPageState extends State<AdminAccessPage> {
   }
 
   Widget matchesData(){
+     //sourabhUID
 
-   StreamBuilder<QuerySnapshot>(
+   return StreamBuilder<QuerySnapshot>(
                 stream: usersRef.doc(creatorUID).collection('createdMatches').snapshots(),
                 builder: (context,snapshot){
 
@@ -47,8 +48,10 @@ class _AdminAccessPageState extends State<AdminAccessPage> {
                     final allMatchData = snapshot.data.docs;
 
                     allMatchData.forEach((match) {
+                      print("Admin ");
                       CricketMatch cricketMatch = CricketMatch();
 
+                      cricketMatch.setMatchId(match.id);
                       final matchData = match.data();
 
                       final team1Name = matchData['team1name'];
@@ -59,7 +62,7 @@ class _AdminAccessPageState extends State<AdminAccessPage> {
                       cricketMatch.setTeam2Name(team2Name);
                       cricketMatch.isMatchLive = isLive;
 
-                      listOfAllMatches.add(AdminCard(match: cricketMatch,creatorUID: creatorUID,matchUID: matchUID,));
+                      listOfAllMatches.add(AdminCard(match: cricketMatch,creatorUID: creatorUID,));
                     });
 
                     return ListView.builder(

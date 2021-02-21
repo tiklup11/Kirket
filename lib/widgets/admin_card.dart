@@ -5,10 +5,9 @@ import 'package:umiperer/screens/matchDetailsScreens/dialog_custom.dart';
 
 class AdminCard extends StatefulWidget {
 
-  AdminCard({this.match,this.creatorUID,this.matchUID});
+  AdminCard({this.match,this.creatorUID,});
   final CricketMatch match;
   final String creatorUID;
-  final String matchUID;
 
   @override
   _AdminCardState createState() => _AdminCardState();
@@ -29,7 +28,7 @@ class _AdminCardState extends State<AdminCard> {
         children: [
           Row(
             children: [
-              Text("${widget.match.getTeam1Name()}   VS ${widget.match.getTeam2Name()}"),
+              Text("${widget.match.getTeam1Name()}   VS    ${widget.match.getTeam2Name()}"),
             ],
           ),
           MaterialButton(
@@ -52,8 +51,8 @@ class _AdminCardState extends State<AdminCard> {
     );
   }
 
-  setIsLive(bool value) async{
-     await usersRef.doc(widget.creatorUID).collection('createdMatches').doc(widget.matchUID).update(
+  setIsLive(bool value) {
+      usersRef.doc(widget.creatorUID).collection('createdMatches').doc(widget.match.getMatchId()).update(
        {
         "isLive": value
        });

@@ -57,7 +57,7 @@ class _TeamDetailsState extends State<TeamDetails> {
       ),
       child: Column(
         children: [
-          dataTable(dataType: "Team 1", dataInfo: widget.match.getTeam1Name()),
+          dataTable(dataType: "Team 1", dataInfo: widget.match.getTeam1Name(),),
           dataTable(dataType: "Team 2", dataInfo: widget.match.getTeam2Name()),
           dataTable(
               dataType: "Player in each team",
@@ -84,7 +84,7 @@ class _TeamDetailsState extends State<TeamDetails> {
               style: TextStyle(color: Colors.black54),
             )),
         // SizedBox(width: 20,),
-        Text(dataInfo)
+        Text(dataInfo,maxLines: 2,)
       ],
     );
   }

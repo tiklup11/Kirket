@@ -114,14 +114,13 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
   }
 
   btnLogic(){
-
     if(widget.match.isSecondInningEnd){
       return Text("Match Ended - View Score");
     }
     if(widget.match.getIsMatchStarted()){
       return Text("Continue..");
     }else{
-      Text("Start Match");
+      return Text("Start Match");
     }
   }
 }

@@ -124,6 +124,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'totalRunsOfInning1':0,
       'totalRunsOfInning2':0,
       'currentBallNo': 0,
+      'realBallNo':0,
       'winningMsg':null,
       'isLive':true,
     });
@@ -163,7 +164,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       "ballOfTheOver":0,
       "currentOverNo":0,
       "totalRuns":0,
-      "wicketsDown":0
+      "wicketsDown":0,
+      // "dummyBallOfTheOver":0,
     });
 
     usersRefe.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
@@ -172,6 +174,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       "currentOverNo":0,
       "totalRuns":0,
       "wicketsDown":0,
+      // "dummyBallOfTheOver":0,
     });
 
   }

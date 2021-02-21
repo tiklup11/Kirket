@@ -21,8 +21,6 @@ class RunOutOptions extends StatefulWidget {
   _RunOutOptionsState createState() => _RunOutOptionsState();
 }
 
-enum BothBatsmen { striker, nonStriker }
-
 class _RunOutOptionsState extends State<RunOutOptions> {
 
   final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
@@ -30,15 +28,19 @@ class _RunOutOptionsState extends State<RunOutOptions> {
   final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
   final btnColor = Colors.black12;
 
-  BothBatsmen runOutBatsmen = BothBatsmen.nonStriker;
-  String runOutBatsmenName;
+  String selectedRunOutBatsmen;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.ball.strikerName = widget.match.strikerBatsmen;
-    widget.ball.nonStrikerName = widget.match.nonStrikerBatsmen;
+    if(widget.match.strikerBatsmen!=null){
+      widget.ball.strikerName = widget.match.strikerBatsmen;
+      selectedRunOutBatsmen=widget.ball.strikerName;
+    }
+    if(widget.match.nonStrikerBatsmen!=null){
+      widget.ball.nonStrikerName = widget.match.nonStrikerBatsmen;
+    }
     runUpdater = RunUpdater(
       matchId: widget.match.getMatchId(),userUID: widget.userUID,
       context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse,
@@ -49,12 +51,6 @@ class _RunOutOptionsState extends State<RunOutOptions> {
   @override
   Widget build(BuildContext context) {
 
-    if(BothBatsmen.striker==runOutBatsmen){
-      runOutBatsmenName = widget.match.strikerBatsmen;
-    }
-    if(BothBatsmen.nonStriker==runOutBatsmen){
-      runOutBatsmenName = widget.match.nonStrikerBatsmen;
-    }
 
     return runOutOptions();
   }
@@ -82,7 +78,7 @@ class _RunOutOptionsState extends State<RunOutOptions> {
                 children: [
                   ///Radio Buttons
                   Text("Select RunOut Batsmen"),
-                  radioButtons(),
+                  dropDownListOfBatsmen(),
                   ///row one [0,1,2,3,4]
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -117,41 +113,25 @@ class _RunOutOptionsState extends State<RunOutOptions> {
     );
   }
 
-  radioButtons(){
-    return Row(
-      children: [
-        widget.match.strikerBatsmen!=null?
-        Row(
-          children: [
-            Radio(
-              value: BothBatsmen.nonStriker,
-              groupValue: runOutBatsmen,
-              onChanged: (BothBatsmen value) {
-                setState(() {
-                  runOutBatsmen = value;
-                });
-              },
-            ),
-            Text(widget.match.strikerBatsmen),
-          ],
-        ):Container(),
-        widget.match.nonStrikerBatsmen!=null?
-        Row(
-          children: [
-            Radio(
-              value: BothBatsmen.striker,
-              groupValue: runOutBatsmen,
-              onChanged: (BothBatsmen value) {
-                setState(() {
-                  runOutBatsmen = value;
-                });
-              },
-            ),
-            Text(widget.match.nonStrikerBatsmen)
-          ],
-        ):Container(),
-      ],
-    );
+
+  dropDownListOfBatsmen(){
+    return DropdownButton(
+        value: selectedRunOutBatsmen,
+        items: [
+          DropdownMenuItem(
+            child: Text(widget.match.strikerBatsmen),
+            value: 1,
+          ),
+          DropdownMenuItem(
+            child: Text(widget.match.nonStrikerBatsmen),
+            value: 2,
+          ),
+        ],
+        onChanged: (value) {
+          setState(() {
+            selectedRunOutBatsmen = value;
+          });
+        });
   }
 
   ///this is the wideCustom btn
@@ -163,7 +143,7 @@ class _RunOutOptionsState extends State<RunOutOptions> {
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
-          widget.ball.batsmenName=runOutBatsmenName;
+          widget.ball.batsmenName=selectedRunOutBatsmen;
           runUpdater.updateWicket(ballData: widget.ball);
           // widget.setIsWideToFalse();
         },

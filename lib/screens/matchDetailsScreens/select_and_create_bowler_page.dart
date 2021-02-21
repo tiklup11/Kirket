@@ -137,6 +137,10 @@ class _SelectAndCreateBowlerPageState
         .update({
       "isBowling":value
     });
+    usersRef.doc(widget.user.uid).collection('createdMatches')
+        .doc(widget.match.getMatchId()).update({
+      "currentBowler":playerName
+    });
   }
 
 
@@ -184,6 +188,8 @@ class _SelectAndCreateBowlerPageState
       ),
     );
   }
+
+
 
 
   openDialog() {

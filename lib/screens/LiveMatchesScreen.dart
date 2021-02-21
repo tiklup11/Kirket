@@ -22,7 +22,7 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
 
   buildCards(){
 
-    final userId = "V3lwRvXi2pXYFOnaA9JAC2lgvY42"; //sourabhUID
+    final userId =  "V3lwRvXi2pXYFOnaA9JAC2lgvY42"; //sourabhUID
     // '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
             return StreamBuilder<QuerySnapshot>(
                 stream: usersRef.doc(userId).collection('createdMatches').where('isLive',isEqualTo: true).snapshots(),
@@ -68,7 +68,7 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                     final totalRunsOfInning1 = matchData['totalRunsOfInning1'];
                     final totalRunsOfInning2 = matchData['totalRunsOfInning2'];
                     final totalWicketsOfInning1 = matchData['totalWicketsOfInning1'];
-                    final totalWicketsOfInning2 = matchData['totalWicketsOfInning1'];
+                    final totalWicketsOfInning2 = matchData['totalWicketsOfInning2'];
                     final nonStriker = matchData['nonStrikerBatsmen'];
                     final striker = matchData['strikerBatsmen'];
                     final inningNo = matchData['inningNumber'];

@@ -24,7 +24,6 @@ class BallWidget extends StatelessWidget {
     if(currentBall.currentOverNo==currentBall.cardOverNo){
       isCurrentBall=true;
     }
-    print( "and runsScored=${currentBall.runScoredOnThisBall}");
     if(currentBall.currentOverNo==0){
       return Container(
           margin: EdgeInsets.symmetric(horizontal: (4*SizeConfig.oneW).roundToDouble(), vertical: (4*SizeConfig.oneH).roundToDouble()),

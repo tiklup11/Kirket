@@ -9,8 +9,10 @@ class BowlerStatsRow extends StatelessWidget {
   final Bowler bowler;
   final bool isThisSelectBowlerBtn;
 
+
   @override
   Widget build(BuildContext context) {
+
     return bowlerStatsRow();
   }
 

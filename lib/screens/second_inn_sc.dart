@@ -93,7 +93,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                   .doc(widget.creatorUID)
                   .collection('createdMatches')
                   .doc(widget.match.getMatchId())
-                  .collection('2InningBowlingData')
+                  .collection('2InningBowlingData').where('overs',isGreaterThan: 0).orderBy("overs",descending: true)
                   .snapshots(),
 
               builder: (context, snapshot) {
@@ -194,7 +194,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                   .doc(widget.creatorUID)
                   .collection('createdMatches')
                   .doc(widget.match.getMatchId())
-                  .collection('2InningBattingData')
+                  .collection('2InningBattingData').orderBy("balls",descending: true).where('balls',isGreaterThan: 0)
                   // .where('isOut', isEqualTo: true).where('isBatting',isEqualTo: true)
                   .snapshots(),
 

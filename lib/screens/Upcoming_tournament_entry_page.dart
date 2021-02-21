@@ -3,10 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/widgets/headline_widget.dart';
-import 'package:uuid/uuid.dart';
 import 'package:umiperer/modals/UpcomingTournament.dart';
+import 'package:umiperer/modals/size_config.dart';
+import 'package:uuid/uuid.dart';
 
 ///media querydone
 final upcomingTournamentCollectionRef = FirebaseFirestore.instance.collection('upcomingTournaments');
