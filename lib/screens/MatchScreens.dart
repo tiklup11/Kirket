@@ -2,12 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/LiveMatchesScreen.dart';
 import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/about_us_page.dart';
 import 'package:umiperer/screens/admin_access_page.dart';
 import 'package:umiperer/screens/upcoming_matches_screens.dart';
+import 'package:umiperer/services/UpdateChecker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///This is BottomNavigationBar
@@ -46,12 +48,14 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
     "Upcomings"
   ];
 
+  UpdateChecker _updateChecker;
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    _updateChecker = new UpdateChecker(context: context);
     _widgetOptions = <Widget>[
       LiveMatchesScreen(),
       MyMatchesScreen(
@@ -64,6 +68,14 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
 
   @override
   Widget build(BuildContext context) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      try {
+        _updateChecker.check(context);
+      } catch (e) {
+        print(e);
+      }
+    });
 
     String title = titleList[_selectedIndex];
     final space =SizedBox(height: (4*SizeConfig.oneH).roundToDouble(),);
@@ -86,7 +98,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
             space,
             customTile(iconData: Icons.update,text: "Update app",
             onTab: (){
-              _launchAppOnPS();
+              _launchOnPs(PLAY_STORE_URL);
             }),
             space,
             customTile(iconData:Icons.person,text: "About us",
@@ -104,6 +116,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
         ),
       ),
       appBar: AppBar(
+        // elevation: 0.1,
         title: Text(title),
       ),
       body: Center(
@@ -111,6 +124,8 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         unselectedIconTheme: IconThemeData(color: Colors.black38),
+        selectedIconTheme: IconThemeData(color: Colors.blueGrey.shade600),
+        selectedItemColor: Colors.blueGrey.shade600,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -131,14 +146,71 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
     );
   }
 
-  _launchAppOnPS() async {
-    final url = 'https://play.google.com/store/apps/details?id=com.okays.umiperer';
+
+  // versionCheck(context) async {
+  //   //Get Current installed version of app
+  //   final PackageInfo info = await PackageInfo.fromPlatform();
+  //   double currentBuildNo = double.parse(info.buildNumber.trim().replaceAll(".", ""));
+  //
+  //   //Get Latest version info from firebase config
+  //   final RemoteConfig remoteConfig = await RemoteConfig.instance;
+  //
+  //   try {
+  //     // Using default duration to force fetching from remote server.
+  //     await remoteConfig.fetch(expiration: Duration(seconds: 0));
+  //     await remoteConfig.activateFetched();
+  //     remoteConfig.getString('force_update_current_version');
+  //     double newVersion = double.parse(remoteConfig
+  //         .getString('force_update_build_no'));
+  //
+  //     print(newVersion);
+  //     print(currentBuildNo);
+  //
+  //     if (newVersion > currentBuildNo) {
+  //       _showVersionDialog(context);
+  //     }
+  //   } on FetchThrottledException catch (exception) {
+  //     // Fetch throttled.
+  //     print(exception);
+  //   } catch (exception) {
+  //     print('Unable to fetch remote config. Cached or default values will be '
+  //         'used');
+  //   }
+  // }
+  //
+  // _showVersionDialog(context) async {
+  //   await showDialog<String>(
+  //     // useRootNavigator: false,
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       String title = "New Update Available";
+  //       String message =
+  //           "This version is missing many features. Please update.";
+  //       String btnLabel = "Update Now";
+  //       // String btnLabelCancel = "Later";
+  //       return AlertDialog(
+  //         title: Text(title),
+  //         content: Text(message),
+  //         actions: <Widget>[
+  //           FlatButton(
+  //             child: Text(btnLabel),
+  //             onPressed: () => _launchOnPs(PLAY_STORE_URL),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
+  _launchOnPs(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
     }
   }
+
 
 
   showAlertDialog({BuildContext context}) {

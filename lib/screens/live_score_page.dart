@@ -149,7 +149,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
               print("Batting:: ${firstBattingTeam}");
 
               return Container(
-                color: Colors.black12,
+                // color: Colors.black12,
                 child: Column(
                   children: [
                     miniScoreCard(),

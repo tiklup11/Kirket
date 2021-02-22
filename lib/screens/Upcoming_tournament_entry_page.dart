@@ -42,6 +42,13 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
     ));
   }
 
+  FocusNode _focusNode1 = new FocusNode();
+  FocusNode _focusNode2 = new FocusNode();
+  FocusNode _focusNode3 = new FocusNode();
+  FocusNode _focusNode4 = new FocusNode();
+  FocusNode _focusNode5 = new FocusNode();
+
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
@@ -123,13 +130,14 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 // HeadLineWidget(headLineString: "ANNOUNCE YOUR UP-COMING TOURNAMENT",),
                 sizedBoxSpace,
                 TextFormField(
+                  focusNode: _focusNode1,
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: Icon(Icons.whatshot_rounded),
+                    icon: Icon(Icons.whatshot_rounded,color: _focusNode1.hasFocus?Colors.grey.shade400:Colors.black54,),
                     hintText: "Tournament Name",
                     labelText:
-                    "Tournament Name",
+                    "Tournament Name",labelStyle: TextStyle(color: _focusNode1.hasFocus?Colors.grey.shade400:Colors.black54,)
                   ),
                   onChanged: (value) {
                     tournament.tournamentName=value;
@@ -137,11 +145,12 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 ),
                 sizedBoxSpace,
                 TextFormField(
+                  focusNode: _focusNode2,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: const Icon(Icons.location_on),
+                    icon: Icon(Icons.location_on,color: _focusNode2.hasFocus?Colors.grey.shade400:Colors.black54,),
                     hintText: "Location",
-                    labelText: "Location",
+                    labelText: "Location",labelStyle: TextStyle(color: _focusNode2.hasFocus?Colors.grey.shade400:Colors.black54,)
                     // prefixText: '+1 ',
                   ),
                   onChanged: (value) {
@@ -150,12 +159,13 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 ),
                 sizedBoxSpace,
                 TextFormField(
+                  focusNode: _focusNode3,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: const Icon(Icons.attach_money_rounded),
+                    icon: Icon(Icons.attach_money_rounded,color: _focusNode3.hasFocus?Colors.grey.shade400:Colors.black54,),
                     hintText: "Entry Fees",
                     labelText:
-                    "Entry Fees",
+                    "Entry Fees",labelStyle: TextStyle(color: _focusNode3.hasFocus?Colors.grey.shade400:Colors.black54,)
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
@@ -165,12 +175,13 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 sizedBoxSpace,
                 TextFormField
                   (
+                  focusNode: _focusNode4,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: const Icon(Icons.phone),
+                    icon: Icon(Icons.phone,color: _focusNode4.hasFocus?Colors.grey.shade400:Colors.black54,),
                     hintText: "Contact Number",
                     labelText:
-                    "Contact Number",
+                    "Contact Number",labelStyle: TextStyle(color: _focusNode4.hasFocus?Colors.grey.shade400:Colors.black54,)
                   ),
                   keyboardType: TextInputType.number,
 
@@ -180,12 +191,13 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 ),
                 sizedBoxSpace,
                 TextFormField(
+                  focusNode: _focusNode5,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: const Icon(Icons.date_range),
+                    icon:  Icon(Icons.date_range,color: _focusNode5.hasFocus?Colors.grey.shade400:Colors.black54,),
                     hintText: "Starting Date",
                     labelText:
-                    "Starting Date",
+                    "Starting Date",labelStyle: TextStyle(color: _focusNode5.hasFocus?Colors.grey.shade400:Colors.black54,)
                   ),
                   onChanged: (value) {
                     tournament.startingDate=value;

@@ -21,12 +21,30 @@ class MyMatchesScreen extends StatefulWidget {
 }
 
 class _MyMatchesScreenState extends State<MyMatchesScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //
+    // try {
+    //   versionCheck(context);
+    // } catch (e) {
+    //   print(e);
+    // }
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
         child: Scaffold(
           // backgroundColor: Colors.black12,
           floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.blueGrey.shade400,
             onPressed: (){
               _modalBottomSheetMenu(context);
              print("FAB pressed");

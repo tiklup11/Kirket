@@ -136,7 +136,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
       usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning1overs')
           .doc("over${i+1}").set({
-
         "overNo": i+1,
         "currentBall": 1,
         "fullOverData":completeOverData,
@@ -186,6 +185,12 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     newMatch = CricketMatch();
   }
 
+  FocusNode _focusNode1 = new FocusNode();
+  FocusNode _focusNode2 = new FocusNode();
+  FocusNode _focusNode3 = new FocusNode();
+  FocusNode _focusNode4 = new FocusNode();
+  FocusNode _focusNode5 = new FocusNode();
+
   @override
   Widget build(BuildContext context) {
      final sizedBoxSpace = SizedBox(height: (24*SizeConfig.oneH).roundToDouble());
@@ -207,13 +212,14 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
               children: [
                 sizedBoxSpace,
                 TextFormField(
+                  focusNode: _focusNode1,
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: Icon(Icons.whatshot_rounded),
+                    icon: Icon(Icons.whatshot_rounded,color: _focusNode1.hasFocus?Colors.grey.shade400:Colors.black54,),
                     hintText: "Enter team 1 name",
                     labelText:
-                    "Team 1",
+                    "Team 1",labelStyle: TextStyle(color: _focusNode1.hasFocus?Colors.grey.shade400:Colors.black54)
                   ),
                   onChanged: (value) {
                     newMatch.setTeam1Name(value);
@@ -227,11 +233,12 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                 ),
                 sizedBoxSpace,
                 TextFormField(
+                  focusNode: _focusNode2,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: const Icon(Icons.sports_baseball_sharp),
+                    icon: Icon(Icons.sports_baseball_sharp,color: _focusNode2.hasFocus?Colors.grey.shade400:Colors.black54,),
                     hintText: "Enter team 2 name",
-                    labelText: "Team 2",
+                    labelText: "Team 2",labelStyle: TextStyle(color: _focusNode2.hasFocus?Colors.grey.shade400:Colors.black54,)
                   ),
                   onChanged: (value) {
                     newMatch.setTeam2Name(value);
@@ -239,12 +246,13 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                 ),
                 sizedBoxSpace,
                 TextFormField(
+                  focusNode: _focusNode3,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: const Icon(Icons.create),
+                    icon: Icon(Icons.create,color: _focusNode3.hasFocus?Colors.grey.shade400:Colors.black54,),
                     hintText: "Players in one team",
                     labelText:
-                    "Players Count",
+                    "Players Count",labelStyle: TextStyle(color: _focusNode3.hasFocus?Colors.grey.shade400:Colors.black54,)
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
@@ -253,10 +261,11 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                 ),
                 sizedBoxSpace,
                 TextFormField(
+                  focusNode: _focusNode4,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: const Icon(Icons.sports_handball),
-                    hintText: "Number of overs",
+                    icon: Icon(Icons.sports_handball,color: _focusNode4.hasFocus?Colors.grey.shade400:Colors.black54,),
+                    hintText: "Number of overs",labelStyle: TextStyle(color: _focusNode4.hasFocus?Colors.grey.shade400:Colors.black54,),
                     labelText:
                     "Overs Count",
                   ),
@@ -269,12 +278,13 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                 ),
                 sizedBoxSpace,
                 TextFormField(
+                  focusNode: _focusNode5,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: Icon(Icons.location_on),
+                    icon: Icon(Icons.location_on,color: _focusNode5.hasFocus?Colors.grey.shade400:Colors.black54),
                     hintText: "Enter Location",
                     labelText:
-                    "Match Location",
+                    "Match Location",labelStyle: TextStyle(color: _focusNode5.hasFocus?Colors.grey.shade400:Colors.black54,)
                   ),
                   // onEditingComplete: ,
                   onChanged: (value) {

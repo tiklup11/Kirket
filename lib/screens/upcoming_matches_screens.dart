@@ -24,6 +24,7 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
     return Scaffold(
       // appBar: AppBar(title: Text("HELLO"),),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.blueGrey.shade400,
           child: Icon(Icons.add),
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {

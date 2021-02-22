@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
@@ -36,7 +37,7 @@ class ScoreCountingPage extends StatefulWidget {
 
 class _ScoreCountingPageState extends State<ScoreCountingPage> {
   DataStreams dataStreams;
-  ScrollController _scrollController;
+  ScrollController _overCardScrollController;
   Random random = new Random();
   RunUpdater runUpdater;
   final scoreSelectionAreaLength = (220 * SizeConfig.oneH).roundToDouble();
@@ -122,7 +123,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
 
     super.initState();
 
-    _scrollController = ScrollController(keepScrollOffset: true);
+    _overCardScrollController = ScrollController(keepScrollOffset: true);
     dataStreams = DataStreams(
         userUID: widget.user.uid, matchId: widget.match.getMatchId());
     runUpdater = RunUpdater(
@@ -256,7 +257,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             }
 
             return Container(
-              color: Colors.black12,
+              // color: Colors.black12,
               child: Column(
                 children: [
                   miniScoreCard(),
@@ -859,9 +860,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   }
 
   buildOversList() {
+
     return Expanded(
       child: ListView.builder(
-        controller: _scrollController,
+        controller: _overCardScrollController,
         scrollDirection: Axis.horizontal,
         itemCount: widget.match.getOverCount(),
         itemBuilder: (BuildContext context, int index) => overCard(

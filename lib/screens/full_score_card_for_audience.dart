@@ -19,7 +19,7 @@ class _ScoreCardState extends State<ScoreCard> {
 
   List tabBarView;
   bool isInning1=true;
-  Color activeTabColor = Colors.blueGrey;
+  Color activeTabColor = Colors.black54;
   Color inActiveTabColor = Colors.white;
 
   Color leftColor;
@@ -45,7 +45,7 @@ class _ScoreCardState extends State<ScoreCard> {
       initialIndex: 0,
       length: tabs.length,
       child: Container(
-        color: Colors.black12,
+        // color: Colors.black12,
         child: Column(
           children: [
             //1. toggleBox
@@ -64,7 +64,7 @@ class _ScoreCardState extends State<ScoreCard> {
       padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (6*SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [leftColor,rightColor], ),
-        color: Colors.blueGrey.shade400,
+        color: Colors.black,
         borderRadius: BorderRadius.circular((4*SizeConfig.oneW).roundToDouble())
       ),
       child: Row(
@@ -81,7 +81,7 @@ class _ScoreCardState extends State<ScoreCard> {
             }
           },
           child: Container(
-            child: Text("      Inning 1  "),
+            child: Text("Inning 1"),
           ),
         ),
         Container(
@@ -98,8 +98,10 @@ class _ScoreCardState extends State<ScoreCard> {
               });
             }
           },
-          child: Container(
-            child: Text("  Inning 2      "),
+          child: Expanded(
+            child: Container(
+              child: Text("Inning 2"),
+            ),
           ),
         )
       ],

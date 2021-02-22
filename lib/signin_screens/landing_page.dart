@@ -1,10 +1,15 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 import 'package:umiperer/screens/MatchScreens.dart';
+import 'package:umiperer/screens/app_update_pop.dart';
 import 'package:umiperer/signin_screens/sign_in_screen.dart';
 
 //MediaQuery r2d
+final appVersionRef = FirebaseFirestore.instance.collection('appVersions');
 
 class LandingPage extends StatefulWidget {
 
@@ -18,9 +23,7 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     super.initState();
     auth.FirebaseAuth.instance.authStateChanges().listen((user) {
-      // print('user :${user?.uid}');
     });
-
   }
 
 
@@ -39,15 +42,18 @@ class LandingPageBody extends StatefulWidget {
 }
 
 class _LandingPageBodyState extends State<LandingPageBody> {
-
+  PackageInfo packageInfo;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    getPackageInfo();
   }
 
+  getPackageInfo() async{
+    packageInfo = await PackageInfo.fromPlatform();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +73,6 @@ class _LandingPageBodyState extends State<LandingPageBody> {
                       ///
                       if (snapshot.connectionState == ConnectionState.active) {
                         final user = snapshot.data;
-
                         if (user == null) {
                           // print('qwerty ::${user?.uid}');
                           return SignInPage();
@@ -87,5 +92,29 @@ class _LandingPageBodyState extends State<LandingPageBody> {
                     ),
             );
       }
+
+  // showUpdate(User user){
+  //
+  //   return StreamBuilder(
+  //       stream: appVersionRef.doc("latestAppVersion").snapshots(),
+  //       builder: (context,snapshot){
+  //         if(!snapshot.hasData){
+  //           return Container(child: Center(child: CircularProgressIndicator()));
+  //         }else{
+  //           // String appName = packageInfo.appName;
+  //           // String packageName = packageInfo.packageName;
+  //           String version = packageInfo.version;
+  //           String buildNumber = packageInfo.buildNumber;
+  //           print("version : $buildNumber");
+  //           final latestAppVersion = snapshot.data['latestAppVersion'];
+  //           print(latestAppVersion);
+  //           if(latestAppVersion!=version){
+  //             return MatchHomeScreens(user: user,);
+  //           }else{
+  //             return AppUpdateDialog();
+  //           }
+  //         }
+  //       });
+  // }
 }
 
