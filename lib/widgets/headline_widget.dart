@@ -18,6 +18,7 @@ class HeadLineWidget extends StatelessWidget {
       ),
       child: Text(
         headLineString.toUpperCase(),
+        maxLines: 2,
       ),
     );
   }

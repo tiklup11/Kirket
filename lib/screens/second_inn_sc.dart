@@ -48,10 +48,12 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
         child: Container(
         child: ListView(
           children: [
+            widget.match.isSecondInningEnd?
+            HeadLineWidget(headLineString: "Second inning ended"):Container(),
             miniScoreCard(),
-            HeadLineWidget(headLineString: widget.match.secondBattingTeam,),
+            HeadLineWidget(headLineString: widget.match.secondBattingTeam),
             batsmenList(),
-            HeadLineWidget(headLineString: widget.match.secondBowlingTeam,),
+            HeadLineWidget(headLineString: widget.match.secondBowlingTeam),
             bowlersList()
           ],
         )),

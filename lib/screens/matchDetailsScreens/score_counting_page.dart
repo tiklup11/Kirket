@@ -133,7 +133,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     currentBothBatsmen = [];
 
     if(loadingGifPath==null){
-      loadingGifPath = loadingWinGifs[getRandomIntBelow(2)];
+      loadingGifPath = loadingWinGifs[0];
     }
   }
 
@@ -336,7 +336,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         .doc(widget.user.uid)
         .collection('createdMatches')
         .doc(widget.match.getMatchId())
-        .collection("${widget.match.getInningNo()}InningBowlingData").doc(bowlerName).update(
+        .collection("${widget.match.getInningNo()}InningBowlingData").doc(globalCurrentBowler).update(
         {
           "isBowling":false
         });
@@ -1024,10 +1024,15 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               final currentOver = matchData['currentOverNumber'];
               final currentBallNo = matchData['currentBallNo'];
               final strikerBatsmen = matchData['strikerBatsmen'];
-              // final nonStrikerBatsmen = matchData['nonStrikerBatsmen'];
+              final nonStrikerBatsmen = matchData['nonStrikerBatsmen'];
               final currentBowler = matchData['currentBowler'];
               final inningNo = matchData['inningNumber'];
               final realBallNo = matchData['realBallNo'];
+              widget.match.currentBowler = currentBowler;
+              widget.match.strikerBatsmen=strikerBatsmen;
+              widget.match.nonStrikerBatsmen=nonStrikerBatsmen;
+              globalCurrentBowler=currentBowler;
+              globalOnStrikeBatsmen=strikerBatsmen;
 
               thisBall = Ball(
                 bowlerName: currentBowler,

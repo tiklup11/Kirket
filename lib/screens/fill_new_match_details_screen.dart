@@ -99,6 +99,10 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
     usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).set({
 
+      'isFirstInningStarted':false,
+      'isFirstInningEnd':false,
+      'isSecondStartedYet':false,
+      "isSecondInningEnd":false,
       'matchId':newMatch.getMatchId(),
       'team1name': newMatch.getTeam1Name(),
       'team2name': newMatch.getTeam2Name(),
@@ -106,10 +110,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'playerCount': newMatch.getPlayerCount(),
       'matchLocation': newMatch.getLocation(),
       'timeStamp': DateTime.now(),
-      'isFirstInningStarted':false,
-      'isFirstInningEnd':false,
-      'isSecondStartedYet':false,
-      "isSecondInningEnd":false,
       'tossWinner': null,
       'whatChoose': null, //bat or ball
       'isMatchStarted': false,
