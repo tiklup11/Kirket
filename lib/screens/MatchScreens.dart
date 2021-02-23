@@ -101,6 +101,11 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
               _launchOnPs(PLAY_STORE_URL);
             }),
             space,
+            customTile(iconData:Icons.error,text: "Report Issue",
+                onTab:(){
+                  reportBugDialog(context);
+                }),
+            space,
             customTile(iconData:Icons.person,text: "About us",
                 onTab:(){
                   Navigator.push(context, MaterialPageRoute(builder: (context){
@@ -124,8 +129,8 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         unselectedIconTheme: IconThemeData(color: Colors.black38),
-        selectedIconTheme: IconThemeData(color: Colors.blueGrey.shade600),
-        selectedItemColor: Colors.blueGrey.shade600,
+        // selectedIconTheme: IconThemeData(color: Colors.blueGrey.shade600),
+        // selectedItemColor: Colors.blueGrey.shade600,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -145,63 +150,6 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       ),
     );
   }
-
-
-  // versionCheck(context) async {
-  //   //Get Current installed version of app
-  //   final PackageInfo info = await PackageInfo.fromPlatform();
-  //   double currentBuildNo = double.parse(info.buildNumber.trim().replaceAll(".", ""));
-  //
-  //   //Get Latest version info from firebase config
-  //   final RemoteConfig remoteConfig = await RemoteConfig.instance;
-  //
-  //   try {
-  //     // Using default duration to force fetching from remote server.
-  //     await remoteConfig.fetch(expiration: Duration(seconds: 0));
-  //     await remoteConfig.activateFetched();
-  //     remoteConfig.getString('force_update_current_version');
-  //     double newVersion = double.parse(remoteConfig
-  //         .getString('force_update_build_no'));
-  //
-  //     print(newVersion);
-  //     print(currentBuildNo);
-  //
-  //     if (newVersion > currentBuildNo) {
-  //       _showVersionDialog(context);
-  //     }
-  //   } on FetchThrottledException catch (exception) {
-  //     // Fetch throttled.
-  //     print(exception);
-  //   } catch (exception) {
-  //     print('Unable to fetch remote config. Cached or default values will be '
-  //         'used');
-  //   }
-  // }
-  //
-  // _showVersionDialog(context) async {
-  //   await showDialog<String>(
-  //     // useRootNavigator: false,
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (BuildContext context) {
-  //       String title = "New Update Available";
-  //       String message =
-  //           "This version is missing many features. Please update.";
-  //       String btnLabel = "Update Now";
-  //       // String btnLabelCancel = "Later";
-  //       return AlertDialog(
-  //         title: Text(title),
-  //         content: Text(message),
-  //         actions: <Widget>[
-  //           FlatButton(
-  //             child: Text(btnLabel),
-  //             onPressed: () => _launchOnPs(PLAY_STORE_URL),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 
   _launchOnPs(String url) async {
     if (await canLaunch(url)) {
@@ -268,6 +216,49 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       onTap: onTab,
     );
   }
+}
+
+_launchEmail() async{
+  final Uri _emailLaunchUri = Uri(
+    scheme: 'mailto',
+    path: K_EMAIL,
+    // queryParameters: {
+    //   'subject': 'Example Subject & Symbols are allowed!'
+    // }
+  );
+  launch(_emailLaunchUri.toString());
+}
+
+reportBugDialog(context) async {
+  await showDialog<String>(
+    context: context,
+    // barrierDismissible: false,
+    builder: (BuildContext context) {
+      String title = "Report";
+      String message =
+          "The app is in early development stage, means you can find some issues. Please report us with the screenshot of the issue. Stay with the Latest Version. Thanks";
+      return AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Okays"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: Text("Report"),
+            onPressed: () {
+              _launchEmail();
+            },
+          ),
+        ],
+      );
+    },
+  );
+
+
 }
 
 //TODO: Move profile to app drawer

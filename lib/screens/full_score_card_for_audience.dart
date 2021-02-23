@@ -19,7 +19,7 @@ class _ScoreCardState extends State<ScoreCard> {
 
   List tabBarView;
   bool isInning1=true;
-  Color activeTabColor = Colors.black54;
+  Color activeTabColor = Colors.blueGrey;
   Color inActiveTabColor = Colors.white;
 
   Color leftColor;
@@ -45,7 +45,7 @@ class _ScoreCardState extends State<ScoreCard> {
       initialIndex: 0,
       length: tabs.length,
       child: Container(
-        // color: Colors.black12,
+        color: Colors.black12,
         child: Column(
           children: [
             //1. toggleBox
@@ -61,7 +61,7 @@ class _ScoreCardState extends State<ScoreCard> {
   toggleBox(){
     return Container(
       margin: EdgeInsets.symmetric(horizontal: (100*SizeConfig.oneW).roundToDouble(),vertical: (10*SizeConfig.oneH).roundToDouble()),
-      padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (6*SizeConfig.oneH).roundToDouble()),
+      // padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (6*SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [leftColor,rightColor], ),
         color: Colors.black,
@@ -81,12 +81,14 @@ class _ScoreCardState extends State<ScoreCard> {
             }
           },
           child: Container(
-            child: Text("Inning 1"),
+            width: 60,
+            margin: EdgeInsets.symmetric(vertical: 8),
+            child:Text("Inning 1",),
           ),
         ),
         Container(
-          width: (10*SizeConfig.oneW).roundToDouble(),
-          color: Colors.white,
+          width: (20*SizeConfig.oneW).roundToDouble(),
+          color: Colors.red,
         ),
         GestureDetector(
           onTap: (){
@@ -98,10 +100,10 @@ class _ScoreCardState extends State<ScoreCard> {
               });
             }
           },
-          child: Expanded(
-            child: Container(
-              child: Text("Inning 2"),
-            ),
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 8),
+            width: 60,
+            child: Text("Inning 2"),
           ),
         )
       ],

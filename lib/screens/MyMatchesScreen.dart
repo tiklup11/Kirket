@@ -23,28 +23,12 @@ class MyMatchesScreen extends StatefulWidget {
 class _MyMatchesScreenState extends State<MyMatchesScreen> {
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    //
-    // try {
-    //   versionCheck(context);
-    // } catch (e) {
-    //   print(e);
-    // }
-
-  }
-
-
-
-  @override
   Widget build(BuildContext context) {
-
     return SafeArea(
         child: Scaffold(
           // backgroundColor: Colors.black12,
           floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.blueGrey.shade400,
+            // backgroundColor: Colors.blueGrey.shade400,
             onPressed: (){
               _modalBottomSheetMenu(context);
              print("FAB pressed");
@@ -68,7 +52,10 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
             final matchesData = snapshot.data.docs;
 
             if(matchesData.isEmpty){
-              return ZeroDocScreen(textMsg: "Tab + to create your own match to count runs and that will be live",iconData: Icons.calculate_outlined,);
+              return ZeroDocScreen(
+                showLearnMore: true,
+                dialogText: "Currently matches created by you will not be LIVE. In a week with the new update you will get this feature. Thanks.",
+                textMsg: "Tab + to create your own match to count runs.",iconData: Icons.calculate_outlined,);
             }
 
             for(var matchData in matchesData){

@@ -367,6 +367,7 @@ class RunUpdater {
             .update({
           "ballOfTheOver": FieldValue.increment(1),
           "wicketsDown": FieldValue.increment(1),
+           "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
         });
       } else if (ballData.inningNo == 2) {
          userRef
@@ -377,7 +378,8 @@ class RunUpdater {
             .doc("scoreBoardData")
             .update({"ballOfTheOver": FieldValue.increment(1),
           "wicketsDown": FieldValue.increment(1),
-        });
+           "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
+         });
       }
 
       //3. batsmenData
@@ -417,7 +419,6 @@ class RunUpdater {
             "currentBall": FieldValue.increment(1)
           });
     }
-
     setIsUploadingDataToFalse();
 
   }

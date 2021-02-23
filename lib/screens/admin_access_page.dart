@@ -40,7 +40,7 @@ class _AdminAccessPageState extends State<AdminAccessPage> {
                 builder: (context,snapshot){
 
                   if(!snapshot.hasData){
-                    return Container(child: CircularProgressIndicator(),);
+                    return Container(child: Center(child: CircularProgressIndicator()),);
                   }else{
 
                     List<AdminCard> listOfAllMatches = [];

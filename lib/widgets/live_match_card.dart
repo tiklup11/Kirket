@@ -65,16 +65,18 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
           if (!snapshot.hasData) {
             return miniScoreLoadingScreen();
           } else {
-            final scoreBoardData = snapshot.data.data();
-            final ballOfTheOver = scoreBoardData['ballOfTheOver'];
-            final currentOverNo = scoreBoardData['currentOverNo'];
-            final totalRuns = scoreBoardData['totalRuns'];
-            final wicketsDown = scoreBoardData['wicketsDown'];
+            if(widget.match.getIsMatchStarted()){
+              final scoreBoardData = snapshot.data.data();
+              final ballOfTheOver = scoreBoardData['ballOfTheOver'];
+              final currentOverNo = scoreBoardData['currentOverNo'];
+              final totalRuns = scoreBoardData['totalRuns'];
+              final wicketsDown = scoreBoardData['wicketsDown'];
 
-            _scoreBoardData.currentBallNo=ballOfTheOver;
-            _scoreBoardData.currentOverNo = currentOverNo;
-            _scoreBoardData.totalRuns = totalRuns;
-            _scoreBoardData.totalWicketsDown = wicketsDown;
+              _scoreBoardData.currentBallNo = ballOfTheOver;
+              _scoreBoardData.currentOverNo = currentOverNo;
+              _scoreBoardData.totalRuns = totalRuns;
+              _scoreBoardData.totalWicketsDown = wicketsDown;
+            }
 
             return liveCardUI(scoreBoardData: _scoreBoardData);
           }
@@ -175,7 +177,8 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
                   decoration: BoxDecoration(
                     color: Colors.blueGrey.shade50,
                   ),
-                  child: Center(child: bottomLine())),
+                  child: Center(child:bottomLine()
+                  )),
             ],
           ),
         ),
@@ -185,13 +188,18 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
 
   Container bottomLine(){
+
+    if(!widget.match.getIsMatchStarted()){
+      return Container(child: Text("Match will start soon",maxLines: 3,),);
+    }
+
     String tossString = "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()}";
     if(widget.match.getFinalResult()!=null && widget.match.isSecondInningEnd){
       return Container(child: Text(widget.match.getFinalResult(),maxLines: 4,),);
     }else if(widget.match.isSecondInningEnd && widget.match.getFinalResult()==null){
       return Container(child: Center(child: Text("Match End",maxLines: 1,),),);
     }else if(tossString!=null){
-      return Container(child: Text(tossString,maxLines: 3,),);
+      return Container(child: Text(tossString,maxLines: 3,textAlign: TextAlign.center,),);
     }else {
       return Container();
     }
@@ -214,10 +222,10 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
           Container(
             padding: EdgeInsets.symmetric(
                 horizontal: (10 * SizeConfig.oneW).roundToDouble(),
-                vertical: (10 * SizeConfig.oneH).roundToDouble()),
+                vertical: (4 * SizeConfig.oneH).roundToDouble()),
             margin: EdgeInsets.symmetric(
                 horizontal: (10 * SizeConfig.oneW).roundToDouble(),
-                vertical: (10 * SizeConfig.oneH).roundToDouble()),
+                vertical: (6 * SizeConfig.oneH).roundToDouble()),
             decoration: BoxDecoration(
               // color: Colors.white,
               borderRadius: BorderRadius.circular(

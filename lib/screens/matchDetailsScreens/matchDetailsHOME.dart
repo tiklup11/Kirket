@@ -137,7 +137,7 @@ class MatchDetails extends StatelessWidget {
   _shareMatch(BuildContext context) {
 
     final String playStoreUrl = "https://play.google.com/store/apps/details?id=com.okays.umiperer";
-    final String msg = "Watch live cricket score of Match between ${match.getTeam1Name()} vs ${match.getTeam2Name()} on Kirket app. $playStoreUrl";
+    final String msg = "Watch live score of Cricket Match between ${match.getTeam1Name()} vs ${match.getTeam2Name()} on Kirket app. $playStoreUrl";
 
     final RenderBox box = context.findRenderObject();
     final sharingText = msg;

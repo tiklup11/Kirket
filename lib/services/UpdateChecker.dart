@@ -64,7 +64,6 @@ class UpdateChecker{
 
   _showVersionDialog(context) async {
     await showDialog<String>(
-      // useRootNavigator: false,
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -77,6 +76,10 @@ class UpdateChecker{
           title: Text(title),
           content: Text(message),
           actions: <Widget>[
+            FlatButton(
+              child: Text("Cancel"),
+              onPressed: () => _launchOnPs(PLAY_STORE_URL),
+            ),
             FlatButton(
               child: Text(btnLabel),
               onPressed: () => _launchOnPs(PLAY_STORE_URL),

@@ -24,7 +24,6 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
     return Scaffold(
       // appBar: AppBar(title: Text("HELLO"),),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.blueGrey.shade400,
           child: Icon(Icons.add),
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -47,7 +46,11 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
             final utDocList = snapshot.data.docs;
 
             if(utDocList.isEmpty){
-              return ZeroDocScreen(textMsg: "Tab + to announce your Upcoming Tournament",iconData: Icons.sports_cricket_outlined,);
+              return ZeroDocScreen(
+                dialogText: "Tab + to announce your Upcoming Tournament and It will be visible to all the users.",
+                textMsg: "Tab + to announce your Upcoming Tournament",
+                showLearnMore: true,
+                iconData: Icons.sports_cricket_outlined,);
             }
 
             List<UpcomingTournamentCard> upcomingTournamentsCardList = [];

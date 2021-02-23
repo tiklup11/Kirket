@@ -8,6 +8,7 @@ import 'package:umiperer/modals/ScoreBoardData.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/MyMatchesScreen.dart';
+import 'package:umiperer/services/GifLoader.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/ball_widget.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
@@ -153,7 +154,13 @@ class _LiveScorePageState extends State<LiveScorePage> {
                 child: Column(
                   children: [
                     miniScoreCard(),
-                    buildOversList(),
+
+                    Stack(
+                      children: [
+                        GifLoader(runKey: "six",),
+                        buildOversList(),
+                      ],
+                    ),
                   ],
                 ),
               );

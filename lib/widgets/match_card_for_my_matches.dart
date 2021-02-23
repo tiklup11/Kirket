@@ -1,12 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/toss_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
+import 'package:umiperer/screens/toss_page.dart';
 ///mqd
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -29,7 +28,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
     return Container(
       margin: EdgeInsets.only( left: (10*SizeConfig.oneW).roundToDouble(),
           right: (10*SizeConfig.oneW).roundToDouble(),),
-      padding: EdgeInsets.only(top: 16),
+      padding: EdgeInsets.only(top: (16*SizeConfig.oneH).roundToDouble()),
       height: (170*SizeConfig.oneH).roundToDouble(),
       child: Card(
         elevation: 40,
@@ -41,22 +40,23 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
             topRow(),
             // live - on/off - continue
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
               child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("LIVE"),
-                        FlutterSwitch(
-                          borderRadius: 10,
-                          showOnOff: true,
-                          activeColor: Colors.blueGrey,
-                          value: isSwitched,
-                          onToggle: (val) {
-                            setState(() {
-                              isSwitched = val;
-                            });
-                          },
-                        ),
+                  //TODO: on this Live switch
+                  // Text("LIVE"),
+                  //       FlutterSwitch(
+                  //         borderRadius: 10,
+                  //         showOnOff: true,
+                  //         activeColor: Colors.blueGrey,
+                  //         value: isSwitched,
+                  //         onToggle: (val) {
+                  //           setState(() {
+                  //             isSwitched = val;
+                  //           });
+                  //         },
+                  //       ),
                   GestureDetector(
                     onTap: () {
                       if (widget.match.getTossWinner() == null &&
@@ -117,7 +117,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
         color: Colors.blueGrey.shade50,
         // borderRadius: BorderRadius.circular(10)
       ),
-      margin: EdgeInsets.only(bottom: 8),
+      margin: EdgeInsets.only(bottom: (8*SizeConfig.oneW).roundToDouble()),
       padding: EdgeInsets.symmetric(horizontal: (14*SizeConfig.oneW).roundToDouble(),vertical:( 14*SizeConfig.oneH).roundToDouble()),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -172,14 +172,14 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
   ///3. finish see score -> after match end
   btnLogic(){
     if(widget.match.isSecondInningEnd){
-      return Text("Match Ended - View Score");
+      return Center(child: Text("Ended - View Score"));
     }
     if(widget.match.getIsMatchStarted()){
       return Row(
         mainAxisAlignment:MainAxisAlignment.center,
         children: [
           Text("Continue"),
-          Icon(Icons.arrow_forward,size: 16,)
+          Icon(Icons.arrow_forward,size: (16*SizeConfig.oneW).roundToDouble(),)
         ],
       );
     }else{
@@ -187,7 +187,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Start Match"),
-          Icon(Icons.arrow_forward,size: 16,)
+          Icon(Icons.arrow_forward,size: (16*SizeConfig.oneW).roundToDouble(),)
         ],
       );
     }

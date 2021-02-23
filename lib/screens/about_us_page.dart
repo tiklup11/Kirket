@@ -1,9 +1,9 @@
+import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 
 //media query r2d
-const kEmail = "duoatokays@gmail.com";
 
 class AboutUsPage extends StatelessWidget {
 
@@ -32,7 +32,7 @@ class AboutUsPage extends StatelessWidget {
             TextButton(
               // padding: EdgeInsets.zero,
               onPressed: _launchEmail,
-              child: Text(kEmail,style: TextStyle(fontSize: (SizeConfig.oneW*13).roundToDouble()),),),
+              child: Text(K_EMAIL,style: TextStyle(fontSize: (SizeConfig.oneW*13).roundToDouble()),),),
             // SizedBox(height: (SizeConfig.oneH*50).roundToDouble(),),
             // Text("CREDITS:"),
             // creditThing(webSiteName: "freepik",msg: "for free resources",url: "https://www.freepik.com/free-photos-vectors/study"),
@@ -72,7 +72,7 @@ class AboutUsPage extends StatelessWidget {
   _launchEmail() async{
     final Uri _emailLaunchUri = Uri(
       scheme: 'mailto',
-      path: kEmail,
+      path: K_EMAIL,
       // queryParameters: {
       //   'subject': 'Example Subject & Symbols are allowed!'
       // }

@@ -2,12 +2,21 @@ import 'package:flutter/material.dart';
 
 class ZeroDocScreen extends StatelessWidget {
 
-  ZeroDocScreen({this.iconData,this.textMsg});
+  ZeroDocScreen({this.iconData,this.textMsg,this.showLearnMore,this.dialogText});
 
   final String textMsg;
   final IconData iconData;
+  bool showLearnMore;
+  final String dialogText;
+
   @override
   Widget build(BuildContext context) {
+
+    if(showLearnMore==null)
+    {
+      showLearnMore = false;
+    }
+
     return Container(
         child:Center(
           child: Column(
@@ -19,10 +28,41 @@ class ZeroDocScreen extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 child: Text(textMsg,textAlign: TextAlign.center,),
-              )
+              ),
+              showLearnMore?
+                  TextButton(onPressed: (){
+                    showLearnModeDialog(context);
+                  },
+                      child: Text("Learn More")):Container(),
             ],
           ),
         ),
     );
   }
+
+showLearnModeDialog(context) async {
+  await showDialog<String>(
+    context: context,
+    // barrierDismissible: false,
+    builder: (BuildContext context) {
+      String title = "Notice";
+      String message =
+          dialogText;
+      String btnLabel = "Okays";
+      return AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: Text(btnLabel),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 }

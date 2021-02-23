@@ -42,7 +42,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   RunUpdater runUpdater;
   final scoreSelectionAreaLength = (220 * SizeConfig.oneH).roundToDouble();
   bool isBatsmen1OnStrike = true;
-  String globalOnStrikeBatsmen;
+  String globalOnStrikeBatsmen,globalNonStriker;
   String globalCurrentBowler;
   bool isStrikerSelected =false;
   // String checkerStriker;
@@ -163,6 +163,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             inningNumber = matchData["inningNumber"];
             globalCurrentBowler = matchData["currentBowler"];
             globalOnStrikeBatsmen = matchData['strikerBatsmen'];
+            globalNonStriker = matchData['nonStrikerBatsmen'];
 
             ///getting data from firebase and setting it to the CricketMatch object
             final team1Name = matchData['team1name'];
@@ -257,7 +258,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             }
 
             return Container(
-              // color: Colors.black12,
+              color: Colors.black12,
               child: Column(
                 children: [
                   miniScoreCard(),
@@ -297,6 +298,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   }
 
   updateInningNumberAndOtherStuff({String bowlerName, String striker,String nonStriker}) {
+
+    ///things to change after inning ends
 
     print(bowlerName==null);
     print(striker==null);
@@ -359,6 +362,15 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         "totalRuns": 0,
         "wicketsDown": 0,
         "realBallNo":0
+      });
+
+      usersRef
+          .doc(widget.user.uid)
+          .collection('createdMatches')
+          .doc(widget.match.getMatchId()).collection('FirstInning')
+      .doc("scoreBoardData").update({
+        "ballOfTheOver":0,
+        "currentOverNo": FieldValue.increment(1)
       });
 
       return;
@@ -662,6 +674,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                                     updateStrikerToGeneralMatchData(currentBothBatsmen[0].playerName);
                                     updateNonStrikerToGeneralMatchData(currentBothBatsmen[1].playerName);
                                 globalOnStrikeBatsmen = currentBothBatsmen[0].playerName;
+                                globalNonStriker =currentBothBatsmen[1].playerName;
                                 toogleStrikeOnFirebase(
                                     playerName: currentBothBatsmen[1].playerName,
                                     value: false);
@@ -686,6 +699,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                                 updateStrikerToGeneralMatchData(currentBothBatsmen[1].playerName);
                                 updateNonStrikerToGeneralMatchData(currentBothBatsmen[0].playerName);
                                 globalOnStrikeBatsmen = currentBothBatsmen[1].playerName;
+                                globalNonStriker=currentBothBatsmen[0].playerName;
                                 toogleStrikeOnFirebase(
                                     playerName: currentBothBatsmen[0].playerName,
                                     value: false);
@@ -1006,8 +1020,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                       child: Text("Refresh"),
                       onPressed: (){
                         setState(() {});
-                      })
-
+                      }),
                 ],
               )));
     }
@@ -1355,6 +1368,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
           ball: ballData,
           userUID: widget.user.uid,
           match: widget.match,
+          striker: globalOnStrikeBatsmen,
+          nonStriker: globalNonStriker,
           setRunOutToFalse: () {
             setState(() {
               isRunOut = false;

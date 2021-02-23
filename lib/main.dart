@@ -44,12 +44,12 @@ class _MyAppState extends State<MyApp> {
               builder: (context, orientation) {
                 SizeConfig().init(constraints, orientation);
                 return MaterialApp(
+                  themeMode:ThemeMode.dark,
                   debugShowCheckedModeBanner: false,
                   theme: ThemeData(
-                    primaryColor: Colors.white,
+                    // primaryColor: Colors.blueGrey,
                     primarySwatch: Colors.blueGrey,
-                    focusColor: Colors.blueGrey,
-
+                    // focusColor: Colors.blueGrey,
                   ),
                   home: LandingPage(),
                 );

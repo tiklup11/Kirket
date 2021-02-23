@@ -28,7 +28,7 @@ class _TeamDetailsState extends State<TeamDetails> {
   Widget build(BuildContext context) {
 
     return Container(
-      // color: Colors.black12,
+      color: Colors.black12,
       child: ListView(
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
