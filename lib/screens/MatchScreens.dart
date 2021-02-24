@@ -1,3 +1,4 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:umiperer/screens/admin_access_page.dart';
 import 'package:umiperer/screens/upcoming_matches_screens.dart';
 import 'package:umiperer/services/UpdateChecker.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:umiperer/screens/live_scores_directory/live_screen_home.dart';
 
 ///This is BottomNavigationBar
 
@@ -26,6 +28,7 @@ class MatchHomeScreens extends StatefulWidget {
 
 /// This is the private State class that goes with MyStatefulWidget.
 class _MatchHomeScreensState extends State<MatchHomeScreens> {
+
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions;
@@ -50,14 +53,22 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
 
   UpdateChecker _updateChecker;
 
+  @override
+  void dispose() {
+    super.dispose();
+    // _interstitialAd.dispose();
+  }
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    FirebaseAdMob.instance.initialize(appId: "ca-app-pub-3940256099942544/3419835294");
+
     _updateChecker = new UpdateChecker(context: context);
     _widgetOptions = <Widget>[
-      LiveMatchesScreen(),
+      LiveScreenHome(user: widget.user,),
       MyMatchesScreen(
         user: widget.user,
       ),

@@ -1,3 +1,4 @@
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:umiperer/modals/Match.dart';
@@ -23,7 +24,7 @@ class _TossScreenState extends State<TossScreen> {
   String tossWinner = "who";
   String batOrBall = "";
   Color unSelectedColor = Colors.black12;
-  Color selectedColor = Colors.blue;
+  Color selectedColor = Colors.blueGrey.shade400;
 
   final double outerRadius = (40*SizeConfig.oneW).roundToDouble();
   final double innerRadius = (26*SizeConfig.oneW).roundToDouble();
@@ -72,8 +73,8 @@ class _TossScreenState extends State<TossScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: (){
+              BouncingWidget(
+                onPressed: (){
                   setState(() {
                     isTeam1Selected=!isTeam1Selected;
                     isTeam2Selected=false;
@@ -101,8 +102,8 @@ class _TossScreenState extends State<TossScreen> {
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: (){
+              BouncingWidget(
+                onPressed: (){
                   setState(() {
                     isTeam2Selected=!isTeam2Selected;
                     isTeam1Selected=false;
@@ -152,8 +153,8 @@ class _TossScreenState extends State<TossScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: (){
+              BouncingWidget(
+                onPressed: (){
                   setState(() {
                     isBattingSelected=!isBattingSelected;
                     isBowlingSelected=false;
@@ -174,8 +175,8 @@ class _TossScreenState extends State<TossScreen> {
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: (){
+              BouncingWidget(
+                onPressed: (){
                   setState(() {
                     isBowlingSelected=!isBowlingSelected;
                     isBattingSelected=false;
@@ -208,18 +209,21 @@ class _TossScreenState extends State<TossScreen> {
     return Container(
       margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble()),
       padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble()),
-      child: MaterialButton(
-        height: (40*SizeConfig.oneH).roundToDouble(),
-        elevation: 0,
-        highlightElevation: 0,
-        color: Colors.black12,
-        minWidth: double.infinity,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Continue"),
-            Icon(Icons.arrow_forward)
-          ],
+      child: BouncingWidget(
+        // elevation: 0,
+        // highlightElevation: 0,
+        // minWidth: double.infinity,
+        child: Container(
+          color: Colors.black12,
+          width: double.infinity,
+          height: (40*SizeConfig.oneH).roundToDouble(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Continue"),
+              Icon(Icons.arrow_forward)
+            ],
+          ),
         ),
         onPressed: (){
           uploadTossDataToCloud();

@@ -9,6 +9,7 @@ import 'package:umiperer/widgets/live_match_card.dart';
 final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
 
 class LiveMatchesScreen extends StatefulWidget {
+  LiveMatchesScreen();
   @override
   _LiveMatchesScreenState createState() => _LiveMatchesScreenState();
 }
@@ -21,8 +22,8 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
   }
 
   buildCards(){
-    final userId =  "V3lwRvXi2pXYFOnaA9JAC2lgvY42"; //sourabhUID
-    //  '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
+     // "V3lwRvXi2pXYFOnaA9JAC2lgvY42"; //sourabhUID
+    final userId =  '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
             return StreamBuilder<QuerySnapshot>(
                 stream: usersRef.doc(userId).collection('createdMatches').where('isLive',isEqualTo: true).snapshots(),
                 builder: (context,snapshot){
@@ -122,7 +123,9 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                     cricketMatch.setOverCount(oversCount);
                     cricketMatch.setIsMatchStarted(isMatchStarted);
 
-                    listOfLiveMatches.add(LiveMatchCard(match: cricketMatch,creatorUID: userId,matchUID: matchId,));
+                    listOfLiveMatches.add(LiveMatchCard(match: cricketMatch,
+                      creatorUID: userId,matchUID: matchId,
+                    ));
                     });
 
                     return ListView.builder(

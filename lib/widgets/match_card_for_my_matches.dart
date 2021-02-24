@@ -1,7 +1,10 @@
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
@@ -42,72 +45,96 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
               child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   //TODO: on this Live switch
                   // Text("LIVE"),
-                  //       FlutterSwitch(
-                  //         borderRadius: 10,
-                  //         showOnOff: true,
-                  //         activeColor: Colors.blueGrey,
-                  //         value: isSwitched,
-                  //         onToggle: (val) {
-                  //           setState(() {
-                  //             isSwitched = val;
-                  //           });
-                  //         },
+                  //       BouncingWidget(
+                  //         child: FlutterSwitch(
+                  //           borderRadius: 10,
+                  //           showOnOff: true,
+                  //           activeColor: Colors.blueGrey,
+                  //           value: isSwitched,
+                  //           onToggle: (val) {
+                  //             setState(() {
+                  //               isSwitched = val;
+                  //             });
+                  //           },
+                  //         ),
                   //       ),
-                  GestureDetector(
-                    onTap: () {
-                      if (widget.match.getTossWinner() == null &&
-                          widget.match.getChoosedOption() == null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return TossScreen(
-                                match: widget.match,
-                                user: widget.user,
-                              );
-                            },
-                          ),
-                        );
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MatchDetails(
-                                match: widget.match,
-                                user: widget.user,
-                              );
-                            },
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      height: (35*SizeConfig.oneH).roundToDouble(),
-                      decoration: BoxDecoration(
-                        color: Colors.blueGrey.shade400,
-                        borderRadius: BorderRadius.circular(7.0),
-                      ),
-                      width: (200*SizeConfig.oneW).roundToDouble(),
-                      padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
-                      // elevation: 0,
-                      // highlightElevation: 0,
-                      // color: Colors.blueGrey.shade400,
-                      // minWidth: double.infinity,
-                      child:
-                      btnLogic(),
-                    ),
-                  ),
+                  mainBtn(),
+                  deleteIconBtn()
                 ],
               ),
             )
           ],
         )
     )
+    );
+  }
+
+  void _deleteMatch(){
+      //TODO: deleteFUnction
+  }
+
+  deleteIconBtn(){
+    return  BouncingWidget(
+      onPressed: _deleteMatch,
+      child: Container(
+          decoration: BoxDecoration(
+            color: Colors.blueGrey.shade400,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          width: 35,height: 35,
+          child: Icon(Icons.delete,color: Colors.white,)),
+    );
+  }
+
+  mainBtn(){
+    return BouncingWidget(
+      onPressed: () {
+        if (widget.match.getTossWinner() == null &&
+            widget.match.getChoosedOption() == null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return TossScreen(
+                  match: widget.match,
+                  user: widget.user,
+                );
+              },
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return MatchDetails(
+                  match: widget.match,
+                  user: widget.user,
+                );
+              },
+            ),
+          );
+        }
+      },
+      child: Container(
+        height: (35*SizeConfig.oneH).roundToDouble(),
+        decoration: BoxDecoration(
+          color: Colors.blueGrey.shade400,
+          borderRadius: BorderRadius.circular(7.0),
+        ),
+        width: (180*SizeConfig.oneW).roundToDouble(),
+        padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
+        // elevation: 0,
+        // highlightElevation: 0,
+        // color: Colors.blueGrey.shade400,
+        // minWidth: double.infinity,
+        child:
+        btnLogic(),
+      ),
     );
   }
 

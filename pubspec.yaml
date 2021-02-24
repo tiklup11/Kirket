@@ -29,8 +29,9 @@ dependencies:
   package_info: ^0.4.3+4
   firebase_remote_config: ^0.6.0
   flutter_switch: ^0.2.1
+  bouncing_widget: ^1.2.0
 #  facebook_audience_network: ^0.8.0
-#  firebase_admob: ^0.11.0+1
+  firebase_admob: ^0.11.0+1
 
 
 dev_dependencies:

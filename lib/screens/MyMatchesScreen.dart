@@ -1,3 +1,4 @@
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,13 +28,17 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
     return SafeArea(
         child: Scaffold(
           // backgroundColor: Colors.black12,
-          floatingActionButton: FloatingActionButton(
-            // backgroundColor: Colors.blueGrey.shade400,
+          floatingActionButton: BouncingWidget(
+            duration: Duration(milliseconds: 130),
             onPressed: (){
               _modalBottomSheetMenu(context);
-             print("FAB pressed");
+              print("FAB pressed");
             },
-            child: Icon(Icons.add),
+            child: FloatingActionButton(
+              onPressed: (){},
+              // backgroundColor: Colors.blueGrey.shade400,
+              child: Icon(Icons.add),
+            ),
           ),
           body: matchListView(context),
         ),

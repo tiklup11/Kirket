@@ -97,37 +97,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     print("QQQQQQQQQQQQQQQ:::  ${widget.user.email}");
     print("QQQQQQQQQQQQQQQ:::  ${newMatch.getMatchId()}");
 
-    usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).set({
-
-      'isFirstInningStarted':false,
-      'isFirstInningEnd':false,
-      'isSecondStartedYet':false,
-      "isSecondInningEnd":false,
-      'matchId':newMatch.getMatchId(),
-      'team1name': newMatch.getTeam1Name(),
-      'team2name': newMatch.getTeam2Name(),
-      'overCount': newMatch.getOverCount(),
-      'playerCount': newMatch.getPlayerCount(),
-      'matchLocation': newMatch.getLocation(),
-      'timeStamp': DateTime.now(),
-      'tossWinner': null,
-      'whatChoose': null, //bat or ball
-      'isMatchStarted': false,
-      'currentOverNumber': 1,
-      'inningNumber':1,
-      'strikerBatsmen': null,
-      'nonStrikerBatsmen':null,
-      'currentBowler': null,
-      'totalRunsOfCurrentInning': 0,
-      'totalWicketsOfInning1':0,
-      'totalWicketsOfInning2':0,
-      'totalRunsOfInning1':0,
-      'totalRunsOfInning2':0,
-      'currentBallNo': 0,
-      'realBallNo':0,
-      'winningMsg':null,
-      'isLive':true,
-    });
 
     ///making everyOver doc inside Overs Collections inside first innings collections
     for(int i=0;i<newMatch.getOverCount();i++){
@@ -159,7 +128,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
     ///matchDoc > FirstInningCollection > scoreBoardDataDoc >
     usersRefe.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
-    .collection('FirstInning').doc('scoreBoardData').set({
+        .collection('FirstInning').doc('scoreBoardData').set({
       "ballOfTheOver":0,
       "currentOverNo":0,
       "totalRuns":0,
@@ -174,6 +143,38 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       "totalRuns":0,
       "wicketsDown":0,
       // "dummyBallOfTheOver":0,
+    });
+
+    usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).set({
+
+      'isFirstInningStarted':false,
+      'isFirstInningEnd':false,
+      'isSecondStartedYet':false,
+      "isSecondInningEnd":false,
+      'matchId':newMatch.getMatchId(),
+      'team1name': newMatch.getTeam1Name(),
+      'team2name': newMatch.getTeam2Name(),
+      'overCount': newMatch.getOverCount(),
+      'playerCount': newMatch.getPlayerCount(),
+      'matchLocation': newMatch.getLocation(),
+      'timeStamp': DateTime.now(),
+      'tossWinner': null,
+      'whatChoose': null, //bat or ball
+      'isMatchStarted': false,
+      'currentOverNumber': 1,
+      'inningNumber':1,
+      'strikerBatsmen': null,
+      'nonStrikerBatsmen':null,
+      'currentBowler': null,
+      'totalRunsOfCurrentInning': 0,
+      'totalWicketsOfInning1':0,
+      'totalWicketsOfInning2':0,
+      'totalRunsOfInning1':0,
+      'totalRunsOfInning2':0,
+      'currentBallNo': 0,
+      'realBallNo':0,
+      'winningMsg':null,
+      'isLive':true,
     });
 
   }

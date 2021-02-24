@@ -1,4 +1,6 @@
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/Batsmen.dart';
@@ -52,13 +54,41 @@ class _LiveScorePageState extends State<LiveScorePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    FirebaseAdMob.instance.initialize(appId: "ca-app-pub-7348080910995117~8961750013");
+    _bannerAd = createBannerAd()..load();
     _scoreBoardData = new ScoreBoardData();
     currentBothBatsmen=[];
     _scrollController = ScrollController(keepScrollOffset: true);
   }
 
+  BannerAd _bannerAd;
+
+  BannerAd createBannerAd (){
+    final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo();
+    return  BannerAd(
+      adUnitId: BannerAd.testAdUnitId,
+      size: AdSize.smartBanner,
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        print("BannerAd event is $event");
+      },
+    );
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    // _bannerAd.
+    _bannerAd..dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    // Timer(Duration(seconds: 5), (){
+    //   _bannerAd?.show();
+
 
     return StreamBuilder<DocumentSnapshot>(
           stream: usersRef.doc(widget.creatorUID).collection('createdMatches').doc(widget.matchUID).snapshots(),
@@ -150,17 +180,11 @@ class _LiveScorePageState extends State<LiveScorePage> {
               print("Batting:: ${firstBattingTeam}");
 
               return Container(
-                // color: Colors.black12,
+                color: Colors.black12,
                 child: Column(
                   children: [
                     miniScoreCard(),
-
-                    Stack(
-                      children: [
-                        GifLoader(runKey: "six",),
-                        buildOversList(),
-                      ],
-                    ),
+                    buildOversList(),
                   ],
                 ),
               );

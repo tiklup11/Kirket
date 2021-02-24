@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -297,7 +298,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     // setIsUploadingDataToFalse();
   }
 
-  updateInningNumberAndOtherStuff({String bowlerName, String striker,String nonStriker}) {
+  updateInningNumberAndOtherStuffAfterInnEnd({String bowlerName, String striker,String nonStriker}) {
 
     ///things to change after inning ends
 
@@ -372,7 +373,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         "ballOfTheOver":0,
         "currentOverNo": FieldValue.increment(1)
       });
-
       return;
     }
 
@@ -383,6 +383,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
           .doc(widget.match.getMatchId())
           .update({
         "isSecondInningEnd": true,
+         "isLive":false
       });
       return;
     }
@@ -413,6 +414,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
       "totalRunsOfInning2": widget.match.getTotalRunsOf2ndInning(),
       "totalWicketsOfInning2": widget.match.getTotalWicketsOf2ndInning(),
       "isSecondInningEnd": true,
+       "isLive":false,
     });
     return;
   }
@@ -1263,7 +1265,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                             //TODO: over throw
                             onPressed: () {
                               loadingGifPath = loadingWinGifs[0];
-                              updateInningNumberAndOtherStuff(
+                              updateInningNumberAndOtherStuffAfterInnEnd(
                                   bowlerName: widget.match.currentBowler,
                                   nonStriker: widget.match.nonStrikerBatsmen,
                                   striker: widget.match.strikerBatsmen);

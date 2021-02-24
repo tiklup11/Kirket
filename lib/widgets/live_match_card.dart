@@ -1,18 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/ScoreBoardData.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsHome_forAudience.dart';
-import 'package:umiperer/modals/ScoreBoardData.dart';
 
 ///mqd
 class LiveMatchCard extends StatefulWidget {
-  LiveMatchCard({this.match,this.creatorUID,this.matchUID});
+  LiveMatchCard({this.match,this.creatorUID,this.matchUID,});
 
   CricketMatch match;
   String creatorUID;
   String matchUID;
+  // InterstitialAd interstitialAd;
 
   @override
   _LiveMatchCardState createState() => _LiveMatchCardState();
@@ -22,6 +25,19 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
   DataStreams _dataStreams;
   ScoreBoardData _scoreBoardData;
+
+  InterstitialAd _interstitialAd;
+
+  InterstitialAd createInterstitialAd (){
+    final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo();
+    return  InterstitialAd(
+      adUnitId: "ca-app-pub-3940256099942544/1033173712",
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        print("InterstitialAd event is $event");
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -39,6 +55,8 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
   @override
   Widget build(BuildContext context) {
+
+    _interstitialAd = createInterstitialAd()..load();
 
     // widget.creatorUID = '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
     Stream<DocumentSnapshot> stream;
@@ -65,6 +83,7 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
           if (!snapshot.hasData) {
             return miniScoreLoadingScreen();
           } else {
+            _interstitialAd = createInterstitialAd()..load();
             if(widget.match.getIsMatchStarted()){
               final scoreBoardData = snapshot.data.data();
               final ballOfTheOver = scoreBoardData['ballOfTheOver'];
@@ -95,36 +114,39 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
   liveCardUI({ScoreBoardData scoreBoardData}){
     return Container(
       margin: EdgeInsets.only(top: (4*SizeConfig.oneH).roundToDouble(),
-          left: (10*SizeConfig.oneW).roundToDouble(),
-          right: (10*SizeConfig.oneW).roundToDouble()),
+          // left: (10*SizeConfig.oneW).roundToDouble(),
+          // right: (10*SizeConfig.oneW).roundToDouble(),
+      ),
       // height:widget.match.getIsMatchStarted()?
       // (250*SizeConfig.oneH).roundToDouble():
       // (150*SizeConfig.oneH).roundToDouble(),
-      child: Card(
-        elevation: 40,
-        child: MaterialButton(
-          highlightColor: Colors.grey.shade300,
-          padding: EdgeInsets.only(top: 10*SizeConfig.oneH),
-          onPressed: () {
-            if(widget.match.getIsMatchStarted()){
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return MatchDetailsHomeForAudience(match: widget.match,creatorUID: widget.creatorUID,matchUID: widget.matchUID,);
-              }));
-            }else{
-              showAlertDialog(context: context);
-            }
-          },
+      child: MaterialButton(
+        onPressed: () {
+          if(widget.match.getIsMatchStarted()){
+            _interstitialAd?.show();
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return MatchDetailsHomeForAudience(match: widget.match,creatorUID: widget.creatorUID,matchUID: widget.matchUID,);
+            }));
+          }else{
+            showAlertDialog(context: context);
+          }
+        },
+        child: Card(
+          elevation: 40,
           child: Column(
             children: [
-              widget.match.getIsMatchStarted()?
-              liveScore(scoreBoardData: scoreBoardData):Container(),
+              widget.match.getIsMatchStarted() && !widget.match.isSecondInningEnd?
+              Container(
+                padding: EdgeInsets.only(top: 10),
+                child: liveScore(scoreBoardData: scoreBoardData),
+              ):Container(),
             Container(
               decoration: BoxDecoration(
                 // color: Colors.blueGrey.shade50,
                 // borderRadius: BorderRadius.circular(10)
               ),
               margin: EdgeInsets.only(bottom: 8),
-              padding: EdgeInsets.symmetric(horizontal: (14*SizeConfig.oneW).roundToDouble(),vertical:( 14*SizeConfig.oneH).roundToDouble()),
+              padding: EdgeInsets.symmetric(horizontal:(14*SizeConfig.oneW).roundToDouble(),vertical:( 14*SizeConfig.oneH).roundToDouble()),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 // textBaseline: TextBaseline.values,
@@ -218,7 +240,18 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
       child: Column(
         children: [
           widget.match.getIsMatchStarted()?
-          Text("Inning ${widget.match.getInningNo()}"):Container(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                widget.match.getIsMatchStarted() && !widget.match.isSecondInningEnd?
+                    Text("LIVE",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),)
+                :Container(),
+                Text("Inning ${widget.match.getInningNo()}"),
+              ],
+            ),
+          ):Container(),
           Container(
             padding: EdgeInsets.symmetric(
                 horizontal: (10 * SizeConfig.oneW).roundToDouble(),
