@@ -1,6 +1,8 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/full_score_card_for_audience.dart';
 import 'package:umiperer/screens/live_score_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
@@ -20,14 +22,42 @@ class _MatchDetailsHomeForAudienceState extends State<MatchDetailsHomeForAudienc
 
   List tabBarView;
 
+  BannerAd _bannerAd;
+
+  BannerAd createBannerAd (){
+    final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo();
+    return  BannerAd(
+      adUnitId: "ca-app-pub-7348080910995117/5980363458",
+      size: AdSize.smartBanner,
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        print("BannerAd event is $event");
+      },
+    );
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    // _bannerAd.
+    _bannerAd..dispose();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _bannerAd = createBannerAd()..load();
+    _bannerAd?.show(
+      // anchorOffset: 60.0,
+      // // Positions the banner ad 10 pixels from the center of the screen to the right
+      // horizontalCenterOffset: 10.0,
+      // // Banner Position
+      // anchorType: AnchorType.bottom,
+    );
     tabBarView = [
-      TeamDetails(
-        match: widget.match,
-      ),
+      TeamDetails(match: widget.match,),
       LiveScorePage(matchUID: widget.matchUID,creatorUID: widget.creatorUID,match: widget.match,),
       ScoreCard(creatorUID: widget.creatorUID, match2: widget.match),
     ];
@@ -81,7 +111,12 @@ class _MatchDetailsHomeForAudienceState extends State<MatchDetailsHomeForAudienc
           children: [
             for (final tab in tabBarView)
               Center(
-                child: tab,
+                child: Container(
+                  padding: EdgeInsets.only(
+                      bottom:
+                      (90*SizeConfig.oneH).roundToDouble()
+                  ),
+                  child: tab,),
               ),
           ],
         ),

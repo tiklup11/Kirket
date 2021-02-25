@@ -501,4 +501,101 @@ class RunUpdater {
     setIsUploadingDataToFalse();
   }
 
+  ///wickets update
+  void updateRunOut({Ball ballData}) {
+
+    if(ballData.inningNo!=null && ballData.runScoredOnThisBall!=null && ballData.batsmenName!=null &&ballData.bowlerName!=null && ballData.currentOverNo!=null) {
+      //1. generalData
+
+      matchDocReference.update({
+        "currentBallNo": FieldValue.increment(1),
+        "realBallNo": FieldValue.increment(1),
+        "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
+        "wicketsDown": FieldValue.increment(1),
+        "totalRunsOfInning${ballData.inningNo}": FieldValue.increment(
+            ballData.runScoredOnThisBall),
+        "totalWicketsOfInning${ballData.inningNo}": FieldValue.increment(1),
+        "strikerBatsmen": null,
+        "nonStrikerBatsmen":null
+      });
+
+      //2. scoreBoardData
+      if (ballData.inningNo == 1) {
+        ///updating in SCOREBOARD_DATA
+        userRef
+            .doc(userUID)
+            .collection('createdMatches')
+            .doc(matchId)
+            .collection('FirstInning')
+            .doc("scoreBoardData")
+            .update({
+          "ballOfTheOver": FieldValue.increment(1),
+          "wicketsDown": FieldValue.increment(1),
+          "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
+        });
+      } else if (ballData.inningNo == 2) {
+        userRef
+            .doc(userUID)
+            .collection('createdMatches')
+            .doc(matchId)
+            .collection('SecondInning')
+            .doc("scoreBoardData")
+            .update({"ballOfTheOver": FieldValue.increment(1),
+          "wicketsDown": FieldValue.increment(1),
+          "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
+        });
+      }
+
+      //3. batsmenData
+      print("Striker : ${ballData.strikerName}");
+      print("RunOut  : ${ballData.batsmenName}");
+      userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .collection('${ballData.inningNo}InningBattingData')
+          .doc(ballData.strikerName)
+          .update({
+        "balls": FieldValue.increment(1),
+        "runs": FieldValue.increment(ballData.runScoredOnThisBall),
+      });
+
+      userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .collection('${ballData.inningNo}InningBattingData')
+          .doc(ballData.batsmenName)
+          .update({
+        "isOut": true,
+        "isBatting": false,
+        "isOnStrike": false,
+      });
+
+      //4. BowlerData
+      userRef
+          .doc(userUID)
+          .collection('createdMatches')
+          .doc(matchId)
+          .collection('${ballData.inningNo}InningBowlingData')
+          .doc(ballData.bowlerName)
+          .update({
+        "ballOfTheOver": FieldValue.increment(1),
+        "runs": FieldValue.increment(ballData.runScoredOnThisBall),
+        // "wickets": FieldValue.increment(1),
+      });
+
+      //overData
+      matchDocReference.collection('inning${ballData.inningNo}overs').doc(
+          "over${ballData.currentOverNo}").update(
+          {
+            "fullOverData.${ballData.currentBallNo + 1}": ballData
+                .runToShowOnUI,
+            "currentBall": FieldValue.increment(1)
+          });
+    }
+    setIsUploadingDataToFalse();
+
+  }
+
 }

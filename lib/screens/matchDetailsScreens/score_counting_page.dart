@@ -298,9 +298,10 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     // setIsUploadingDataToFalse();
   }
 
-  updateInningNumberAndOtherStuffAfterInnEnd({String bowlerName, String striker,String nonStriker}) {
+  updateInningNumberAndOtherStuffAfterInnEnd({String bowlerName, String striker,String nonStriker,int currentBallNo}) {
 
     ///things to change after inning ends
+    print("cbn :: $currentBallNo");
 
     print(bowlerName==null);
     print(striker==null);
@@ -345,6 +346,19 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         {
           "isBowling":false
         });
+
+    ///this will convert 1.6 to 2.0, that's it.
+    if(currentBallNo==1){
+      usersRef
+          .doc(widget.user.uid)
+          .collection('createdMatches')
+          .doc(widget.match.getMatchId())
+          .collection("${widget.match.getInningNo()}InningBowlingData").doc(globalCurrentBowler).update(
+          {
+            "ballOfTheOver":0,
+            "overs":FieldValue.increment(1),
+          });
+    }
     ///when 1st inning will end
     if (widget.match.getInningNo() == 1) {
       usersRef
@@ -365,14 +379,17 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         "realBallNo":0
       });
 
-      usersRef
-          .doc(widget.user.uid)
-          .collection('createdMatches')
-          .doc(widget.match.getMatchId()).collection('FirstInning')
-      .doc("scoreBoardData").update({
-        "ballOfTheOver":0,
-        "currentOverNo": FieldValue.increment(1)
-      });
+      if(currentBallNo==1){
+        usersRef
+            .doc(widget.user.uid)
+            .collection('createdMatches')
+            .doc(widget.match.getMatchId())
+            .collection('FirstInning')
+            .doc("scoreBoardData")
+            .update({
+          "ballOfTheOver": 0,
+          "currentOverNo": FieldValue.increment(1)});
+      }
       return;
     }
 
@@ -385,6 +402,17 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
         "isSecondInningEnd": true,
          "isLive":false
       });
+
+       if(currentOverNo==1){
+        usersRef
+            .doc(widget.user.uid)
+            .collection('createdMatches')
+            .doc(widget.match.getMatchId())
+            .collection('SecondInning')
+            .doc("scoreBoardData")
+            .update(
+                {"ballOfTheOver": 0, "currentOverNo": FieldValue.increment(1)});
+      }
       return;
     }
 
@@ -669,7 +697,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                              if (currentBothBatsmen[0].isClickable && !currentBothBatsmen[0].isOnStrike) {
+                            //&& !currentBothBatsmen[0].isOnStrike
+                              if (currentBothBatsmen[0].isClickable ) {
                                 toogleStrikeOnFirebase(
                                     playerName: currentBothBatsmen[0].playerName,
                                     value: true);
@@ -693,7 +722,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                              if (currentBothBatsmen[1].isClickable && !currentBothBatsmen[1].isOnStrike ) {
+                            // && !currentBothBatsmen[1].isOnStrike
+                              if (currentBothBatsmen[1].isClickable) {
                                 toogleStrikeOnFirebase(
                                     playerName: currentBothBatsmen[1].playerName,
                                     value: true);
@@ -1268,7 +1298,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                               updateInningNumberAndOtherStuffAfterInnEnd(
                                   bowlerName: widget.match.currentBowler,
                                   nonStriker: widget.match.nonStrikerBatsmen,
-                                  striker: widget.match.strikerBatsmen);
+                                  striker: widget.match.strikerBatsmen,
+                                  currentBallNo: widget.match.currentOver.getCurrentBallNo()
+                              );
                             },
                             child: Text("EndInn")),
                       ],

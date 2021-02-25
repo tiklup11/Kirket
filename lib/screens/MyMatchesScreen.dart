@@ -35,7 +35,11 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
               print("FAB pressed");
             },
             child: FloatingActionButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return FillNewMatchDetailsPage(user: widget.user,);
+                }));
+              },
               // backgroundColor: Colors.blueGrey.shade400,
               child: Icon(Icons.add),
             ),

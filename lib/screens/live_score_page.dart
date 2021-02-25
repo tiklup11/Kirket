@@ -1,6 +1,4 @@
-import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/Batsmen.dart';
@@ -10,7 +8,6 @@ import 'package:umiperer/modals/ScoreBoardData.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/MyMatchesScreen.dart';
-import 'package:umiperer/services/GifLoader.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/ball_widget.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
@@ -31,7 +28,6 @@ class LiveScorePage extends StatefulWidget {
 }
 
 class _LiveScorePageState extends State<LiveScorePage> {
-
 
   final scoreSelectionAreaLength = (220 * SizeConfig.oneH).roundToDouble();
   List<Batsmen> currentBothBatsmen;
@@ -54,39 +50,19 @@ class _LiveScorePageState extends State<LiveScorePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    FirebaseAdMob.instance.initialize(appId: "ca-app-pub-7348080910995117~8961750013");
-    _bannerAd = createBannerAd()..load();
+    // FirebaseAdMob.instance.initialize(appId: "ca-app-pub-7348080910995117/5980363458");
     _scoreBoardData = new ScoreBoardData();
     currentBothBatsmen=[];
     _scrollController = ScrollController(keepScrollOffset: true);
   }
 
-  BannerAd _bannerAd;
 
-  BannerAd createBannerAd (){
-    final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo();
-    return  BannerAd(
-      adUnitId: BannerAd.testAdUnitId,
-      size: AdSize.smartBanner,
-      targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
-        print("BannerAd event is $event");
-      },
-    );
-  }
-
-
-  @override
-  void dispose() {
-    super.dispose();
-    // _bannerAd.
-    _bannerAd..dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
 
     // Timer(Duration(seconds: 5), (){
+    // _bannerAd..load();
     //   _bannerAd?.show();
 
 
@@ -315,6 +291,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
         child: Text(
             "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()} (Inning: ${widget.match.getInningNo()}) ",
         maxLines: 2,
+          textAlign: TextAlign.center,
         ));
   }
 

@@ -29,9 +29,9 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
   InterstitialAd _interstitialAd;
 
   InterstitialAd createInterstitialAd (){
-    final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo();
+    final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(childDirected: true);
     return  InterstitialAd(
-      adUnitId: "ca-app-pub-3940256099942544/1033173712",
+      adUnitId: "ca-app-pub-7348080910995117/7503637616",
       targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {
         print("InterstitialAd event is $event");

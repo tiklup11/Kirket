@@ -10,6 +10,7 @@ import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
 import 'package:umiperer/widgets/headline_widget.dart';
+import 'package:umiperer/widgets/over_card.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -43,6 +44,8 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
             batsmenList(),
             HeadLineWidget(headLineString: widget.match.firstBowlingTeam),
             bowlersList(),
+            HeadLineWidget(headLineString: "OVERS"),
+            buildOversList(),
           ],
         ),
       ),
@@ -331,6 +334,22 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
         height: (80*SizeConfig.oneH).roundToDouble(),
         child: Center(child: CircularProgressIndicator()));
   }
+
+  buildOversList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      controller: ScrollController(),
+      scrollDirection: Axis.vertical,
+      itemCount: widget.match.getOverCount(),
+      itemBuilder: (BuildContext context, int index) => DummyOverCard(
+        inningNo: 1,
+        creatorUID: widget.creatorUID,
+          match: widget.match,
+          overNoOnCard: (index + 1),
+      ),
+    );
+  }
+
 
   zeroData({String msg, IconData iconData}){
     return Container(

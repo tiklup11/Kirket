@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,8 @@ PackageInfo packageInfo;
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
+  final ok = await FirebaseAdMob.instance.initialize(appId: "ca-app-pub-7348080910995117~8961750013");
+  print("OKAYS $ok");
   await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {

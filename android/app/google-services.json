@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "612366601319-5bisrc7mb8gvl8rgtb2ea03pusi4e1p9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.okays.umiperer",
+            "certificate_hash": "d5018553bf37a4892fd0bf476ec05643d7da3e60"
+          }
+        },
+        {
           "client_id": "612366601319-b71e6jo4lg6cb7fajolti95j9k2hfsna.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

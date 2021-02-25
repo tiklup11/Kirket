@@ -5,14 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/LiveMatchesScreen.dart';
 import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/about_us_page.dart';
 import 'package:umiperer/screens/admin_access_page.dart';
+import 'package:umiperer/screens/live_scores_directory/live_screen_home.dart';
 import 'package:umiperer/screens/upcoming_matches_screens.dart';
 import 'package:umiperer/services/UpdateChecker.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:umiperer/screens/live_scores_directory/live_screen_home.dart';
 
 ///This is BottomNavigationBar
 
@@ -64,7 +63,6 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    FirebaseAdMob.instance.initialize(appId: "ca-app-pub-3940256099942544/3419835294");
 
     _updateChecker = new UpdateChecker(context: context);
     _widgetOptions = <Widget>[
@@ -117,6 +115,15 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
                   reportBugDialog(context);
                 }),
             space,
+            customTile(iconData:Icons.stacked_line_chart_rounded,text: "Support Devs",
+                onTab:(){
+                  RewardedVideoAd.instance.load(
+                    adUnitId: "ca-app-pub-7348080910995117/3729480926",
+                    targetingInfo:MobileAdTargetingInfo(childDirected: true)
+                  );
+                  supportDevsDialog(context: context);
+            }),
+            space,
             customTile(iconData:Icons.person,text: "About us",
                 onTab:(){
                   Navigator.push(context, MaterialPageRoute(builder: (context){
@@ -168,6 +175,38 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  supportDevsDialog({BuildContext context}) {
+    Widget cancelButton = TextButton(
+      child: Text("Nope"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget logoutButton = TextButton(
+      child: Text("Okays"),
+      onPressed: () {
+        RewardedVideoAd.instance.show();
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Support Devs"),
+      content: Text("This app is free for everyone, app services are running due to ads. Watch an ad to support the app devs. Thanks 😁"),
+      actions: [
+        cancelButton,
+        logoutButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
 

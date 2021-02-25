@@ -10,6 +10,7 @@ import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
 import 'package:umiperer/widgets/headline_widget.dart';
+import 'package:umiperer/widgets/over_card.dart';
 
 ///mqd
 final usersRef = FirebaseFirestore.instance.collection('users');
@@ -28,9 +29,6 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
   ScoreBoardData secondInningScoreBoard = ScoreBoardData();
   @override
   Widget build(BuildContext context) {
-
-    print("Inning ${widget.match.getInningNo()}");
-
 
     final Batsmen dummyBatsmen = Batsmen(
         isClickable: false,
@@ -54,7 +52,9 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
             HeadLineWidget(headLineString: widget.match.secondBattingTeam),
             batsmenList(),
             HeadLineWidget(headLineString: widget.match.secondBowlingTeam),
-            bowlersList()
+            bowlersList(),
+            HeadLineWidget(headLineString: "OVERS"),
+            buildOversList()
           ],
         )),
       );
@@ -343,6 +343,20 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
         });
   }
 
+  buildOversList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      controller: ScrollController(),
+      scrollDirection: Axis.vertical,
+      itemCount: widget.match.getOverCount(),
+      itemBuilder: (BuildContext context, int index) => DummyOverCard(
+        inningNo: 2,
+        creatorUID: widget.creatorUID,
+        match: widget.match,
+        overNoOnCard: (index + 1),
+      ),
+    );
+  }
 
   loadingData({String msg}){
     return Container(

@@ -155,11 +155,13 @@ class _RunOutOptionsState extends State<RunOutOptions> {
         color: btnColor,
         minWidth: buttonWidth,
         onPressed: () {
+          widget.ball.strikerName = widget.striker;
+          widget.ball.nonStrikerName  =widget.nonStriker;
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
           widget.ball.batsmenName=selectedRunOutBatsmen;
-          runUpdater.updateWicket(ballData: widget.ball);
+          runUpdater.updateRunOut(ballData: widget.ball);
           widget.setRunOutToFalse();
         },
         child: Text(btnText));
