@@ -6,16 +6,26 @@ import 'package:umiperer/modals/size_config.dart';
 class BallWidget extends StatelessWidget {
   BallWidget({this.currentBall});  //TODO: remove this required it is for special cases
 
-  final double ballRadius = (20*SizeConfig.oneW).roundToDouble();
+  final double ballRadius = (21*SizeConfig.oneW).roundToDouble();
   final Ball currentBall;
+
+  int fontSize=15;
 
   @override
   Widget build(BuildContext context) {
-
+    decideFontSize();
     return
       currentBall==null?
           nullBallWidget():
       ballWidget();
+  }
+
+  decideFontSize(){
+    try{
+      int.parse(currentBall.runToShowOnUI);
+    }catch(e){
+      fontSize = 12;
+    }
   }
 
   ///circleBall widget placed inside Over container
@@ -44,11 +54,12 @@ class BallWidget extends StatelessWidget {
           child: currentBall.runToShowOnUI == null
               ? Text(
             "",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black,fontSize: 12),
           )
               : Text(
             currentBall.runToShowOnUI,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black,fontSize:fontSize.toDouble()
+            ),
           ),
           radius: ballRadius,
           backgroundColor

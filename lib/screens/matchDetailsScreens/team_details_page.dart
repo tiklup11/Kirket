@@ -84,7 +84,9 @@ class _TeamDetailsState extends State<TeamDetails> {
               style: TextStyle(color: Colors.black54),
             )),
         // SizedBox(width: 20,),
-        Text(dataInfo,maxLines: 2,)
+        SizedBox(
+            width: SizeConfig.setWidth(120),
+            child: Text(dataInfo,maxLines: 3,))
       ],
     );
   }

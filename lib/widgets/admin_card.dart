@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/matchDetailsScreens/dialog_custom.dart';
+import 'package:umiperer/main.dart';
 
 class AdminCard extends StatefulWidget {
 
@@ -16,10 +15,11 @@ class AdminCard extends StatefulWidget {
 
 class _AdminCardState extends State<AdminCard> {
 
-  bool isSwitched = true;
+  bool isSwitched;
 
   @override
   Widget build(BuildContext context) {
+    isSwitched = widget.match.isMatchLive;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -56,7 +56,7 @@ class _AdminCardState extends State<AdminCard> {
 
   setIsLive(bool value) {
     // print("Setting isLive to $value");
-      usersRef.doc(widget.creatorUID).collection('createdMatches').doc(widget.match.getMatchId()).update(
+      matchesRef.doc(widget.match.getMatchId()).update(
        {
         "isLive": value
        });

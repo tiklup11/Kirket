@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Ball.dart';
 
-final userRef = FirebaseFirestore.instance.collection('users');
 
 class RunUpdater {
   RunUpdater({this.matchId, this.userUID, @required this.context,this.setIsUploadingDataToFalse}){
-    matchDocReference = userRef
-        .doc(userUID)
-        .collection('createdMatches')
+    matchDocReference = matchesRef
         .doc(matchId);
   }
 
@@ -358,9 +356,7 @@ class RunUpdater {
       //2. scoreBoardData
       if (ballData.inningNo == 1) {
         ///updating in SCOREBOARD_DATA
-         userRef
-            .doc(userUID)
-            .collection('createdMatches')
+         matchesRef
             .doc(matchId)
             .collection('FirstInning')
             .doc("scoreBoardData")
@@ -370,9 +366,7 @@ class RunUpdater {
            "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
         });
       } else if (ballData.inningNo == 2) {
-         userRef
-            .doc(userUID)
-            .collection('createdMatches')
+         matchesRef
             .doc(matchId)
             .collection('SecondInning')
             .doc("scoreBoardData")
@@ -383,9 +377,7 @@ class RunUpdater {
       }
 
       //3. batsmenData
-       userRef
-          .doc(userUID)
-          .collection('createdMatches')
+       matchesRef
           .doc(matchId)
           .collection('${ballData.inningNo}InningBattingData')
           .doc(ballData.batsmenName)
@@ -398,9 +390,7 @@ class RunUpdater {
       });
 
       //4. BowlerData
-       userRef
-          .doc(userUID)
-          .collection('createdMatches')
+       matchesRef
           .doc(matchId)
           .collection('${ballData.inningNo}InningBowlingData')
           .doc(ballData.bowlerName)
@@ -441,9 +431,7 @@ class RunUpdater {
       //2. scoreBoardData
       if (ballData.inningNo == 1) {
         ///updating in SCOREBOARD_DATA
-         userRef
-            .doc(userUID)
-            .collection('createdMatches')
+         matchesRef
             .doc(matchId)
             .collection('FirstInning')
             .doc("scoreBoardData")
@@ -451,9 +439,7 @@ class RunUpdater {
           "wicketsDown": FieldValue.increment(1),
         });
       } else if (ballData.inningNo == 2) {
-         userRef
-            .doc(userUID)
-            .collection('createdMatches')
+         matchesRef
             .doc(matchId)
             .collection('SecondInning')
             .doc("scoreBoardData")
@@ -463,9 +449,7 @@ class RunUpdater {
       }
 
       //3. batsmenData
-       userRef
-          .doc(userUID)
-          .collection('createdMatches')
+       matchesRef
           .doc(matchId)
           .collection('${ballData.inningNo}InningBattingData')
           .doc(ballData.batsmenName)
@@ -477,9 +461,7 @@ class RunUpdater {
       });
 
       //4. BowlerData
-       userRef
-          .doc(userUID)
-          .collection('createdMatches')
+       matchesRef
           .doc(matchId)
           .collection('${ballData.inningNo}InningBowlingData')
           .doc(ballData.bowlerName)
@@ -522,9 +504,7 @@ class RunUpdater {
       //2. scoreBoardData
       if (ballData.inningNo == 1) {
         ///updating in SCOREBOARD_DATA
-        userRef
-            .doc(userUID)
-            .collection('createdMatches')
+        matchesRef
             .doc(matchId)
             .collection('FirstInning')
             .doc("scoreBoardData")
@@ -534,9 +514,7 @@ class RunUpdater {
           "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
         });
       } else if (ballData.inningNo == 2) {
-        userRef
-            .doc(userUID)
-            .collection('createdMatches')
+        matchesRef
             .doc(matchId)
             .collection('SecondInning')
             .doc("scoreBoardData")
@@ -549,9 +527,7 @@ class RunUpdater {
       //3. batsmenData
       print("Striker : ${ballData.strikerName}");
       print("RunOut  : ${ballData.batsmenName}");
-      userRef
-          .doc(userUID)
-          .collection('createdMatches')
+      matchesRef
           .doc(matchId)
           .collection('${ballData.inningNo}InningBattingData')
           .doc(ballData.strikerName)
@@ -560,9 +536,7 @@ class RunUpdater {
         "runs": FieldValue.increment(ballData.runScoredOnThisBall),
       });
 
-      userRef
-          .doc(userUID)
-          .collection('createdMatches')
+      matchesRef
           .doc(matchId)
           .collection('${ballData.inningNo}InningBattingData')
           .doc(ballData.batsmenName)
@@ -573,9 +547,7 @@ class RunUpdater {
       });
 
       //4. BowlerData
-      userRef
-          .doc(userUID)
-          .collection('createdMatches')
+      matchesRef
           .doc(matchId)
           .collection('${ballData.inningNo}InningBowlingData')
           .doc(ballData.bowlerName)

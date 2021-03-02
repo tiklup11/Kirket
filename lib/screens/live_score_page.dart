@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
@@ -67,7 +68,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
 
     return StreamBuilder<DocumentSnapshot>(
-          stream: usersRef.doc(widget.creatorUID).collection('createdMatches').doc(widget.matchUID).snapshots(),
+          stream: matchesRef.doc(widget.matchUID).snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return CircularProgressIndicator();
@@ -157,7 +158,9 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
               return Container(
                 color: Colors.black12,
-                child: Column(
+                child: ListView(
+                  shrinkWrap: true,
+                  // mainAxisSize: MainAxisSize.min,
                   children: [
                     miniScoreCard(),
                     buildOversList(),
@@ -171,11 +174,9 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
   ///
   Widget miniScoreLoadingScreen() {
-    return Expanded(
-      child: Container(
-        child: Center(
-          child: Text("Loading.."),
-        ),
+    return Container(
+      child: Center(
+        child: Text("Loading.."),
       ),
     );
   }
@@ -188,15 +189,13 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
     if(widget.match.getInningNo()==1){
 
-      stream = userRef.doc(widget.creatorUID)
-          .collection('createdMatches')
+      stream =matchesRef
           .doc(widget.matchUID)
           .collection('FirstInning')
           .doc("scoreBoardData").snapshots();
 
     } else if(widget.match.getInningNo()==2){
-      stream = userRef.doc(widget.creatorUID)
-          .collection('createdMatches')
+      stream = matchesRef
           .doc(widget.matchUID)
           .collection('SecondInning')
           .doc("scoreBoardData").snapshots();
@@ -220,7 +219,6 @@ class _LiveScorePageState extends State<LiveScorePage> {
             _scoreBoardData.totalWicketsDown = wicketsDown;
             return Column(
               children: [
-                tossLineWidget(),
                 Container(
                   padding: EdgeInsets.symmetric(
                       horizontal: (10 * SizeConfig.oneW).roundToDouble(),
@@ -235,19 +233,23 @@ class _LiveScorePageState extends State<LiveScorePage> {
                   ),
                   child: Column(
                     children: [
+                      Text("Inning ${widget.match.getInningNo()}"),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                widget.match
-                                    .getCurrentBattingTeam()
-                                    .toUpperCase(),
-                                style: TextStyle(
-                                    fontSize:
-                                    (24 * SizeConfig.oneW).roundToDouble()),
+                              SizedBox(
+                                width: SizeConfig.setWidth(280),
+                                child: Text(
+                                  widget.match
+                                      .getCurrentBattingTeam()
+                                      .toUpperCase(),
+                                  style: TextStyle(
+                                      fontSize:
+                                      (20 * SizeConfig.oneW).roundToDouble()),
+                                ),
                               ),
                               Text(
                                 // runs/wickets (currentOverNumber.currentBallNo)
@@ -267,46 +269,42 @@ class _LiveScorePageState extends State<LiveScorePage> {
                           ),
                         ],
                       ),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: (6 * SizeConfig.oneH).roundToDouble()),
-                        color: Colors.black12,
-                        height: (2 * SizeConfig.oneW).roundToDouble(),
-                      ),
-                      playersScore(),
                     ],
                   ),
                 ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+                      vertical: (10 * SizeConfig.oneH).roundToDouble()),
+                  margin: EdgeInsets.only(
+                      left: (10 * SizeConfig.oneW).roundToDouble(),
+                      right: (10 * SizeConfig.oneW).roundToDouble(),
+                    bottom: (10 * SizeConfig.oneW).roundToDouble(),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(
+                        (4 * SizeConfig.oneW).roundToDouble()),
+                  ),
+                  child: playersScore(),
+                )
+
               ],
             );
           }
         });
   }
 
-  tossLineWidget() {
-    return Container(
-        padding: EdgeInsets.only(
-            left: (12 * SizeConfig.oneW).roundToDouble(),
-            top: (12 * SizeConfig.oneH).roundToDouble()),
-        child: Text(
-            "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()} (Inning: ${widget.match.getInningNo()}) ",
-        maxLines: 2,
-          textAlign: TextAlign.center,
-        ));
-  }
-
   buildOversList() {
-    return Expanded(
-      child: ListView.builder(
-        // shrinkWrap: true,
-        controller: _scrollController,
-        scrollDirection: Axis.vertical,
-        itemCount: widget.match.getOverCount(),
-        itemBuilder: (BuildContext context, int index) => overCard(
-            overNoOnCard: (index + 1),
-            currentOver: widget.match.currentOver.getCurrentOverNo(),
-            currentBallNo: widget.match.currentOver.getCurrentBallNo()),
-      ),
+    return ListView.builder(
+      shrinkWrap: true,
+      controller: _scrollController,
+      scrollDirection: Axis.vertical,
+      itemCount: widget.match.getOverCount(),
+      itemBuilder: (BuildContext context, int index) => overCard(
+          overNoOnCard: (index + 1),
+          currentOver: widget.match.currentOver.getCurrentOverNo(),
+          currentBallNo: widget.match.currentOver.getCurrentBallNo()),
     );
   }
 
@@ -345,8 +343,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
         child: currentOver == 0
             ? Row(children: zeroOverBalls)
             : StreamBuilder<DocumentSnapshot>(
-          stream: usersRef.doc(widget.creatorUID)
-              .collection('createdMatches')
+          stream: matchesRef
               .doc(widget.matchUID)
               .collection('inning${widget.match.getInningNo()}overs')
               .doc("over${overNoOnCard}")
@@ -459,9 +456,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
           //Batsman's data
           StreamBuilder<QuerySnapshot>(
-              stream: usersRef
-                  .doc(widget.creatorUID)
-                  .collection('createdMatches')
+              stream: matchesRef
                   .doc(widget.matchUID)
                   .collection('${widget.match.getInningNo()}InningBattingData')
                   .where("isBatting", isEqualTo: true)
@@ -604,9 +599,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
           ///Bowler's StreamBuilder
           StreamBuilder<QuerySnapshot>(
-              stream: usersRef
-                  .doc(widget.creatorUID)
-                  .collection('createdMatches')
+              stream: matchesRef
                   .doc(widget.matchUID)
                   .collection('${widget.match.getInningNo()}InningBowlingData')
                   .where("isBowling", isEqualTo: true)

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/runUpdater.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/widgets/score_button_widget.dart';
 
 class ByeOptions extends StatefulWidget {
 
@@ -45,73 +46,64 @@ class _ByeOptionsState extends State<ByeOptions> {
       width: (4*SizeConfig.oneW).roundToDouble(),
     );
 
-    return Container(
-        padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.oneH).roundToDouble()),
-        height: scoreSelectionAreaLength.toDouble(),
-        color: Colors.blueGrey.shade400,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (6*SizeConfig.oneH).roundToDouble()),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                // mainAxisAlignment: MainAxisAlignment.center,
+    return ListView(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (6*SizeConfig.oneH).roundToDouble()),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ///row one [0,1,2,3,4]
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ///row one [0,1,2,3,4]
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      customByeButton(runScored: 1,btnText: "1B",toShowOnUI: "1B"),
-                      spaceBtwn,
-                      customByeButton(runScored: 2,btnText: "2B",toShowOnUI: "2B"),
-                    ],
-                  ),
-
-                  ///row 2 [6,Wide,LB,Out,NB]
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      customByeButton(runScored: 3,btnText: "3B",toShowOnUI: "3B"),
-                      spaceBtwn,
-                      customByeButton(runScored: 4,btnText: "4B",toShowOnUI: "4B"),
-                      spaceBtwn,
-                      customByeButton(runScored: 5,btnText: "5B",toShowOnUI: "5B"),
-                    ],
-                  ),
-
-                  ///row 3 [over throw, overEnd,]
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      customByeButton(runScored: 6,btnText: "6B",toShowOnUI: "6B"),
-                    ],
-                  ),
+                  customByeButton(runScored: 1,btnText: "1B",toShowOnUI: "1B"),
+                  spaceBtwn,
+                  customByeButton(runScored: 2,btnText: "2B",toShowOnUI: "2B"),
                 ],
               ),
-            ),
-            IconButton(
-                icon: Icon(Icons.close),
-                onPressed:(){
-                  ///set isWide to false
-                  widget.setByeToFalse();
-                } )
-          ],
-        )
+
+              ///row 2 [6,Wide,LB,Out,NB]
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  customByeButton(runScored: 3,btnText: "3B",toShowOnUI: "3B"),
+                  spaceBtwn,
+                  customByeButton(runScored: 4,btnText: "4B",toShowOnUI: "4B"),
+                  spaceBtwn,
+                  customByeButton(runScored: 5,btnText: "5B",toShowOnUI: "5B"),
+                ],
+              ),
+
+              ///row 3 [over throw, overEnd,]
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  customByeButton(runScored: 6,btnText: "6B",toShowOnUI: "6B"),
+                ],
+              ),
+            ],
+          ),
+        ),
+        IconButton(
+            icon: Icon(Icons.close),
+            onPressed:(){
+              ///set isWide to false
+              widget.setByeToFalse();
+            } )
+      ],
     );
   }
 
   customByeButton({int runScored,String btnText,String toShowOnUI}){
-    return FlatButton(
-        color: btnColor,
-        minWidth: buttonWidth,
+    return ScoreButton(
         onPressed: () {
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall=runScored;
           widget.ball.runToShowOnUI=toShowOnUI;
           runUpdater.updateLegByeAndBye(ballData: widget.ball);
         },
-        child: Text(btnText));
+        btnText:btnText);
   }
 }

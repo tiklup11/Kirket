@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
 import 'package:umiperer/modals/Match.dart';
@@ -13,7 +14,6 @@ import 'package:umiperer/widgets/headline_widget.dart';
 import 'package:umiperer/widgets/over_card.dart';
 
 ///mqd
-final usersRef = FirebaseFirestore.instance.collection('users');
 
 class SecondInningScoreCard extends StatefulWidget {
   SecondInningScoreCard({this.creatorUID, this.match});
@@ -42,22 +42,20 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
 
     return
       // widget.match.getInningNo()==2?
-      Expanded(
-        child: Container(
-        child: ListView(
-          children: [
-            widget.match.isSecondInningEnd?
-            HeadLineWidget(headLineString: "Second inning ended"):Container(),
-            miniScoreCard(),
-            HeadLineWidget(headLineString: widget.match.secondBattingTeam),
-            batsmenList(),
-            HeadLineWidget(headLineString: widget.match.secondBowlingTeam),
-            bowlersList(),
-            HeadLineWidget(headLineString: "OVERS"),
-            buildOversList()
-          ],
-        )),
-      );
+      Container(
+      child: ListView(
+        children: [
+          widget.match.isSecondInningEnd?
+          HeadLineWidget(headLineString: "Second inning ended"):Container(),
+          miniScoreCard(),
+          HeadLineWidget(headLineString: widget.match.secondBattingTeam),
+          batsmenList(),
+          HeadLineWidget(headLineString: widget.match.secondBowlingTeam),
+          bowlersList(),
+          HeadLineWidget(headLineString: "OVERS"),
+          buildOversList()
+        ],
+      ));
   }
 
   bowlersList(){
@@ -91,9 +89,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           ),
           //Batsman's data
           StreamBuilder<QuerySnapshot>(
-              stream: usersRef
-                  .doc(widget.creatorUID)
-                  .collection('createdMatches')
+              stream:matchesRef
                   .doc(widget.match.getMatchId())
                   .collection('2InningBowlingData').where('overs',isGreaterThan: 0).orderBy("overs",descending: true)
                   .snapshots(),
@@ -192,10 +188,8 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
 
           //Batsman's data
           StreamBuilder<QuerySnapshot>(
-              stream: usersRef
-                  .doc(widget.creatorUID)
-                  .collection('createdMatches')
-                  .doc(widget.match.getMatchId())
+              stream:
+                  matchesRef.doc(widget.match.getMatchId())
                   .collection('2InningBattingData').orderBy("balls",descending: true).where('balls',isGreaterThan: 0)
                   // .where('isOut', isEqualTo: true).where('isBatting',isEqualTo: true)
                   .snapshots(),
@@ -262,8 +256,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
   ///upper scorecard with team runs and stuff
   miniScoreCard() {
     Stream<DocumentSnapshot> stream;
-    stream = userRef.doc(widget.creatorUID)
-        .collection('createdMatches')
+    stream = matchesRef
         .doc(widget.match.getMatchId())
         .collection('SecondInning')
         .doc("scoreBoardData").snapshots();
@@ -309,12 +302,15 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                secondInningScoreBoard.battingTeamName
-                                    .toUpperCase(),
-                                style: TextStyle(
-                                    fontSize:
-                                    (24 * SizeConfig.oneW).roundToDouble()),
+                              SizedBox(
+                                width: SizeConfig.setWidth(280),
+                                child: Text(
+                                  secondInningScoreBoard.battingTeamName
+                                      .toUpperCase(),
+                                  style: TextStyle(
+                                      fontSize:
+                                      (20 * SizeConfig.oneW).roundToDouble()),
+                                ),
                               ),
                               Text(
                                 // runs/wickets (currentOverNumber.currentBallNo)

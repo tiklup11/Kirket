@@ -1,14 +1,18 @@
-import 'package:bouncing_widget/bouncing_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:ffi';
+
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:flutter_switch/flutter_switch.dart';
+import 'package:share/share.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
 import 'package:umiperer/screens/toss_page.dart';
 ///mqd
-final usersRef = FirebaseFirestore.instance.collection('users');
 
 class MatchCardForCounting extends StatefulWidget {
   MatchCardForCounting({this.match, this.user});
@@ -22,7 +26,17 @@ class MatchCardForCounting extends StatefulWidget {
 
 class _MatchCardForCountingState extends State<MatchCardForCounting> {
 
-  bool isSwitched= true;
+  bool loadingAd=false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    RewardedVideoAd.instance.load(
+            adUnitId: "ca-app-pub-7348080910995117/3729480926",
+            targetingInfo:MobileAdTargetingInfo(childDirected: true)
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,66 +44,119 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
       margin: EdgeInsets.only( left: (10*SizeConfig.oneW).roundToDouble(),
           right: (10*SizeConfig.oneW).roundToDouble(),),
       padding: EdgeInsets.only(top: (16*SizeConfig.oneH).roundToDouble()),
-      height: (170*SizeConfig.oneH).roundToDouble(),
       child: Card(
         elevation: 40,
-        // semanticContainer: false,
-        // borderOnForeground: true,
         child: Column(
           children: [
+            liveWidget(),
             //TEAM A vs TEAM B
             topRow(),
             // live - on/off - continue
             Container(
-              padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
+              margin: EdgeInsets.only(bottom: 14,top: 2),
+              padding: EdgeInsets.symmetric(horizontal: (0*SizeConfig.oneW).roundToDouble()),
               child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  //TODO: on this Live switch
-                  // Text("LIVE"),
-                  //       BouncingWidget(
-                  //         child: FlutterSwitch(
-                  //           borderRadius: 10,
-                  //           showOnOff: true,
-                  //           activeColor: Colors.blueGrey,
-                  //           value: isSwitched,
-                  //           onToggle: (val) {
-                  //             setState(() {
-                  //               isSwitched = val;
-                  //             });
-                  //           },
-                  //         ),
-                  //       ),
                   mainBtn(),
-                  deleteIconBtn()
+                  moreOptionsBtn()
                 ],
               ),
-            )
+            ),
           ],
         )
     )
     );
   }
 
-  void _deleteMatch(){
-      //TODO: deleteFUnction
+  liveWidget(){
+    return widget.match.isMatchLive?
+    Padding(
+      padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble(),vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "LIVE",
+            style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),)
+        ],
+      ),
+    ):Padding(
+      padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble(),vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "NOT LIVE : Go to MORE OPTIONS",
+            style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)
+        ],
+      ),
+    );
+
   }
 
-  deleteIconBtn(){
-    return  BouncingWidget(
-      onPressed: _deleteMatch,
+  moreOptionsBtn(){
+    return Bounce(
+      onPressed: (){
+        _modalBottomSheetMenuOptions(context);
+      },
       child: Container(
-          decoration: BoxDecoration(
-            color: Colors.blueGrey.shade400,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          width: 35,height: 35,
-          child: Icon(Icons.delete,color: Colors.white,)),
+        height: (35*SizeConfig.oneH).roundToDouble(),
+        decoration: BoxDecoration(
+          color: Colors.blueGrey.shade400,
+          borderRadius: BorderRadius.circular(7.0),
+        ),
+        width: (120*SizeConfig.oneW).roundToDouble(),
+        padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
+        child:Center(child: Text("MORE..")),
+      ),
     );
   }
 
+  void _deleteMatch() async{
+    ///when we delete a collection,
+    ///inner collections are not deleted, so we have to delete inner collections also
+
+
+    final batsmen1Ref = await matchesRef.doc(widget.match.getMatchId()).collection("1InningBattingData").get();
+    for(var docs in batsmen1Ref.docs){
+      docs.reference.delete();
+    }
+
+    final batsmen2Ref = await matchesRef.doc(widget.match.getMatchId()).collection("2InningBattingData").get();
+    for(var docs in batsmen2Ref.docs){
+      docs.reference.delete();
+    }
+
+    final bowler1Ref = await matchesRef.doc(widget.match.getMatchId()).collection("1InningBowlingData").get();
+    for(var docs in bowler1Ref.docs){
+      docs.reference.delete();
+    }
+
+    final bowler2Ref = await matchesRef.doc(widget.match.getMatchId()).collection("2InningBowlingData").get();
+    for(var docs in bowler2Ref.docs){
+      docs.reference.delete();
+    }
+
+    matchesRef.doc(widget.match.getMatchId()).collection("FirstInning").doc("scoreBoardData").delete();
+
+    matchesRef.doc(widget.match.getMatchId()).collection("SecondInning").doc("scoreBoardData").delete();
+
+    final overs1Ref = await matchesRef.doc(widget.match.getMatchId()).collection("inning1overs").get();
+    for(var docs in overs1Ref.docs){
+      docs.reference.delete();
+    }
+
+    final overs2Ref = await matchesRef.doc(widget.match.getMatchId()).collection("inning2overs").get();
+    for(var docs in overs2Ref.docs){
+      docs.reference.delete();
+    }
+
+    matchesRef.doc(widget.match.getMatchId()).delete();
+  }
+
   mainBtn(){
-    return BouncingWidget(
+    return Bounce(
       onPressed: () {
         if (widget.match.getTossWinner() == null &&
             widget.match.getChoosedOption() == null) {
@@ -191,10 +258,6 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
     );
   }
 
-  ///this is button text logic
-  ///1. start match -> before toss and just after match created
-  ///2. continue -> anytime in between
-  ///3. finish see score -> after match end
   btnLogic(){
     if(widget.match.isSecondInningEnd){
       return Center(child: Text("Ended - View Score"));
@@ -216,5 +279,181 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
         ],
       );
     }
+  }
+
+  void toggleLiveOnOff(bool value){
+    print("TURN ON");
+    matchesRef.doc(widget.match.getMatchId()).update({
+      "isLive":value
+    });
+  }
+
+  void toggleLiveChat(bool value){
+    matchesRef.doc(widget.match.getMatchId()).update({
+      "isLiveChatOn":value
+    });
+  }
+
+  void _modalBottomSheetMenuOptions(BuildContext context){
+    showModalBottomSheet(
+        context: context,
+        builder: (builder){
+          return Container(
+            height: (260*SizeConfig.oneH).roundToDouble(),
+            color: Color(0xFF737373),
+            // color: Colors.transparent, //could change this to Color(0xFF737373),
+            //so you don't have to change MaterialApp canvasColor
+            child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular((8*SizeConfig.oneW).roundToDouble()),
+                        topRight: Radius.circular((8*SizeConfig.oneW).roundToDouble()))),
+                child: Column(
+                  children: [
+                    fabBtn(
+                      iconData: widget.match.isMatchLive?Icons.toggle_on_outlined:Icons.toggle_off_outlined,
+                        onPressed: (){
+                          Navigator.pop(context);
+                          widget.match.isMatchLive?toggleLiveOnOff(false):liveOnDialog(context: context);
+                        },
+                        btnText:widget.match.isMatchLive? "TURN OFF LIVE":"TURN ON LIVE"
+                    ),
+                    fabBtn(
+                        iconData: widget.match.isLiveChatOn?Icons.toggle_on_outlined:Icons.toggle_off_outlined,
+                        onPressed: (){
+                          widget.match.isLiveChatOn?toggleLiveChat(false):toggleLiveChat(true);
+                          Navigator.pop(context);
+                          // print("pressed");
+                        },
+                        btnText: widget.match.isLiveChatOn?"TURN OFF LIVE CHAT":"TURN ON LIVE CHAT"
+                    ),
+                    fabBtn(
+                        iconData: Icons.share_outlined,
+                        onPressed: (){
+                          Navigator.pop(context);
+                          _shareMatch(context);
+                        },
+                        btnText: "SHARE MATCH"
+                    ),
+                    fabBtn(
+                      iconData: Icons.delete,
+                        onPressed: (){
+                          Navigator.pop(context);
+                          _deleteMatch();
+                          // print("pressed");
+                        },
+                        btnText: "DELETE MATCH"
+                    )
+                  ],
+                )),
+          );
+        }
+    );
+  }
+
+  fabBtn({Function onPressed, String btnText,double btnWidth,IconData iconData}){
+
+    if(btnWidth==null){
+      btnWidth=double.infinity;
+    }
+
+    return Bounce(
+      onPressed: onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.blueGrey
+        ),
+        margin: EdgeInsets.only(left: 24,right:24,top: 10),
+        padding: EdgeInsets.symmetric(horizontal: 40,vertical: 10),
+        width: btnWidth,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(btnText),
+            iconData!=null?Icon(iconData):Container(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  liveOnDialog({BuildContext context}) {
+    Widget cancelButton = TextButton(
+      child: Text("Go back"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget logoutButton = TextButton(
+      child: Text("Turn ON LIVE"),
+      onPressed: () {
+          adLoop();
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("LIVE TELECAST"),
+      content:
+      loadingAd?
+          Text("Loading ad"):
+      Text("Watch an Rewarding ad and TELECAST LIVE Score. You may need to click 3-4 times on Live button"),
+      actions: [
+        cancelButton,
+        logoutButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  adLoop()async{
+
+    bool didItEnterListener=false;
+
+    print("Entering AdLoop");
+    bool isAdLoaded= await RewardedVideoAd.instance.load(
+        adUnitId: "ca-app-pub-7348080910995117/3729480926",
+        targetingInfo:MobileAdTargetingInfo(childDirected: true));
+    if(isAdLoaded) {
+      print("enter 1");
+      RewardedVideoAd.instance.show();
+
+        RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event,
+            {String rewardType, int rewardAmount}) {
+          print("enter ${event.toString()}");
+          if (event == RewardedVideoAdEvent.rewarded) {
+            print("enter 2");
+            didItEnterListener=true;
+            Navigator.pop(context);
+            toggleLiveOnOff(true);
+          } else if (event == RewardedVideoAdEvent.failedToLoad) {
+            print("enter 3");
+            RewardedVideoAd.instance.load(
+                adUnitId: "ca-app-pub-7348080910995117/3729480926",
+                targetingInfo: MobileAdTargetingInfo(childDirected: true));
+          }
+        };
+    }
+  }
+
+  _shareMatch(BuildContext context) {
+
+    final String playStoreUrl = "https://play.google.com/store/apps/details?id=com.okays.umiperer";
+    final String msg =
+        "Watch live score of Cricket Match between ${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()} [${widget.match.getLocation()}] on Kirket app. $playStoreUrl";
+
+    final RenderBox box = context.findRenderObject();
+    final sharingText = msg;
+    Share.share(sharingText,
+        subject: 'Download Kirket app and watch live scores',
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }

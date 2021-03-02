@@ -6,8 +6,7 @@ description: A new Flutter application.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+6
+version: 2.0.0+8
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -29,9 +28,10 @@ dependencies:
   package_info: ^0.4.3+4
   firebase_remote_config: ^0.6.0
   flutter_switch: ^0.2.1
-  bouncing_widget: ^1.2.0
-#  facebook_audience_network: ^0.8.0
+  flutter_bounce: ^1.0.8
   firebase_admob: ^0.11.0+1
+  your_splash: ^0.2.2
+  shimmer: ^1.1.2
 
 
 dev_dependencies:
@@ -41,19 +41,11 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
 
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
 
-   - assets/images/team1.png
-   - assets/images/team2.png
-   - assets/images/ball.png
-   - assets/images/bat.png
-   - assets/images/aboutUs.png
-   - assets/images/bg.png
+   - assets/images/
    - assets/gifs/
 

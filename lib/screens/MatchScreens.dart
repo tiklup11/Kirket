@@ -115,20 +115,20 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
                   reportBugDialog(context);
                 }),
             space,
-            customTile(iconData:Icons.stacked_line_chart_rounded,text: "Support Devs",
-                onTab:(){
-                  RewardedVideoAd.instance.load(
-                    adUnitId: "ca-app-pub-7348080910995117/3729480926",
-                    targetingInfo:MobileAdTargetingInfo(childDirected: true)
-                  );
-                  supportDevsDialog(context: context);
-            }),
-            space,
             customTile(iconData:Icons.person,text: "About us",
                 onTab:(){
                   Navigator.push(context, MaterialPageRoute(builder: (context){
                     return AboutUsPage();
                   }));
+                }),
+            space,
+            customTile(iconData:Icons.stacked_line_chart_rounded,text: "Support Devs",
+                onTab:(){
+                  RewardedVideoAd.instance.load(
+                      adUnitId: "ca-app-pub-7348080910995117/3729480926",
+                      targetingInfo:MobileAdTargetingInfo(childDirected: true)
+                  );
+                  supportDevsDialog(context: context);
                 }),
             space,
             customTile(iconData:Icons.login_rounded,text: "Logout",
@@ -246,7 +246,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
 
   adminTile(){
     return ListTile(
-      tileColor: Colors.blueGrey.shade50,
+      // tileColor: Colors.blueGrey.shade50,
       leading: Icon(Icons.lock_rounded),
       title: Text('Admin Access'),
       onTap: () {
@@ -260,7 +260,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
 
   customTile({String text,IconData iconData,Function onTab}){
     return ListTile(
-      tileColor: Colors.blueGrey.shade50,
+      // tileColor: Colors.blueGrey.shade50,
       leading: Icon(iconData),
       title: Text(text),
       onTap: onTab,

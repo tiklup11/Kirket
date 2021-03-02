@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:umiperer/main.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/ScoreBoardData.dart';
 import 'package:umiperer/modals/dataStreams.dart';
@@ -10,11 +13,12 @@ import 'package:umiperer/screens/matchDetailsHome_forAudience.dart';
 
 ///mqd
 class LiveMatchCard extends StatefulWidget {
-  LiveMatchCard({this.match,this.creatorUID,this.matchUID,});
+  LiveMatchCard({this.currentUser,this.match,this.creatorUID,this.matchUID,});
 
   CricketMatch match;
   String creatorUID;
   String matchUID;
+  User currentUser;
   // InterstitialAd interstitialAd;
 
   @override
@@ -63,15 +67,13 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
     if(widget.match.getInningNo()==1){
 
-      stream = userRef.doc(widget.creatorUID)
-          .collection('createdMatches')
+      stream = matchesRef
           .doc(widget.matchUID)
           .collection('FirstInning')
           .doc("scoreBoardData").snapshots();
 
     } else if(widget.match.getInningNo()==2){
-      stream = userRef.doc(widget.creatorUID)
-          .collection('createdMatches')
+      stream = matchesRef
           .doc(widget.matchUID)
           .collection('SecondInning')
           .doc("scoreBoardData").snapshots();
@@ -113,7 +115,7 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
   liveCardUI({ScoreBoardData scoreBoardData}){
     return Container(
-      margin: EdgeInsets.only(top: (4*SizeConfig.oneH).roundToDouble(),
+      margin: EdgeInsets.only(top: (16*SizeConfig.oneH).roundToDouble(),
           // left: (10*SizeConfig.oneW).roundToDouble(),
           // right: (10*SizeConfig.oneW).roundToDouble(),
       ),
@@ -125,7 +127,10 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
           if(widget.match.getIsMatchStarted()){
             _interstitialAd?.show();
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return MatchDetailsHomeForAudience(match: widget.match,creatorUID: widget.creatorUID,matchUID: widget.matchUID,);
+              return MatchDetailsHomeForAudience(
+                currentUser: widget.currentUser,
+                match: widget.match,
+                creatorUID: widget.creatorUID,matchUID: widget.matchUID,);
             }));
           }else{
             showAlertDialog(context: context);
@@ -162,7 +167,7 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
                           ),
                         ),
                         Text(widget.match.getTeam1Name().toUpperCase(),maxLines: 2,
-                            style: TextStyle(fontWeight: FontWeight.bold)
+                            style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12)
                         )
                       ],
                     ),
@@ -185,16 +190,24 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
                           ),
                         ),
                         Text(
-                          widget.match.getTeam2Name().toUpperCase(),maxLines: 2,style: TextStyle(fontWeight: FontWeight.bold)
+                            widget.match.getTeam2Name().toUpperCase(),maxLines: 2,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12)
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
+              // child: Stack(
+              //   alignment: Alignment.center,
+              //   children: [
+              //     // Image.asset('assets/gifs/win.gif',height: 100,width: 100,),
+              //
+              //   ],
+              // ),
             ),
               Container(
-                height: 27,
+                padding: EdgeInsets.symmetric(vertical: 2,horizontal: 6),
+                height: SizeConfig.setHeight(40),
                 width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.blueGrey.shade50,
@@ -211,17 +224,19 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
   Container bottomLine(){
 
-    if(!widget.match.getIsMatchStarted()){
+    TextStyle textStyle = TextStyle(fontSize: 12);
+
+    if(!widget.match.getIsMatchStarted()) {
       return Container(child: Text("Match will start soon",maxLines: 3,),);
     }
 
     String tossString = "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()}";
     if(widget.match.getFinalResult()!=null && widget.match.isSecondInningEnd){
-      return Container(child: Text(widget.match.getFinalResult(),maxLines: 4,),);
+      return Container(child: Text(widget.match.getFinalResult(),maxLines: 4,style: textStyle,),);
     }else if(widget.match.isSecondInningEnd && widget.match.getFinalResult()==null){
-      return Container(child: Center(child: Text("Match End",maxLines: 1,),),);
+      return Container(child: Center(child: Text("Match End",maxLines: 1,style: textStyle,),),);
     }else if(tossString!=null){
-      return Container(child: Text(tossString,maxLines: 3,textAlign: TextAlign.center,),);
+      return Container(child: Text(tossString,maxLines: 3,textAlign: TextAlign.center,style: textStyle,),);
     }else {
       return Container();
     }
@@ -239,7 +254,7 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
       ),
       child: Column(
         children: [
-          widget.match.getIsMatchStarted()?
+          widget.match.isMatchLive?
           Padding(
             padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
             child: Row(
@@ -272,12 +287,15 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          scoreBoardData.battingTeamName
-                              .toUpperCase(),
-                          style: TextStyle(
-                              fontSize:
-                              (24 * SizeConfig.oneW).roundToDouble()),
+                        SizedBox(
+                          width: 230,
+                          child: Text(
+                            scoreBoardData.battingTeamName
+                                .toUpperCase(),
+                            style: TextStyle(
+                                fontSize:
+                                (16 * SizeConfig.oneW).roundToDouble()),
+                          ),
                         ),
                         Text(
                           // runs/wickets (currentOverNumber.currentBallNo)

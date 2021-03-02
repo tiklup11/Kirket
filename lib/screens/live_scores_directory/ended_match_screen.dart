@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/screens/zero_doc_screen.dart';
@@ -10,7 +12,9 @@ import 'package:umiperer/widgets/live_match_card.dart';
 final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
 
 class EndMatchesScreen extends StatefulWidget {
-  EndMatchesScreen();
+  EndMatchesScreen({this.currentUser});
+
+  final User currentUser;
   @override
   _EndMatchesScreenState createState() => _EndMatchesScreenState();
 }
@@ -23,10 +27,10 @@ class _EndMatchesScreenState extends State<EndMatchesScreen> {
   }
 
   buildCards(){
-    // "V3lwRvXi2pXYFOnaA9JAC2lgvY42"; //sourabhUID
-    final userId =   '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
+    final userId =  "V3lwRvXi2pXYFOnaA9JAC2lgvY42"; //sourabhUID
+    //  '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
     return StreamBuilder<QuerySnapshot>(
-        stream: usersRef.doc(userId).collection('createdMatches').where('isLive',isEqualTo: false,).snapshots(),
+        stream: matchesRef.where("isLive",isEqualTo: true).where('isSecondInningEnd',isEqualTo: true,).snapshots(),
         builder: (context,snapshot){
           if(!snapshot.hasData){
             return Container(child: CircularProgressIndicator(),);
@@ -75,6 +79,9 @@ class _EndMatchesScreenState extends State<EndMatchesScreen> {
               final inningNo = matchData['inningNumber'];
               final currentBallNo = matchData['currentBallNo'];
               final winningMsg = matchData['winningMsg'];
+
+              cricketMatch.isMatchLive = matchData['isLive'];
+              cricketMatch.isLiveChatOn = matchData['isLiveChatOn'];
 
               cricketMatch.nonStrikerBatsmen = nonStriker;
               cricketMatch.strikerBatsmen = striker;
@@ -125,8 +132,11 @@ class _EndMatchesScreenState extends State<EndMatchesScreen> {
               cricketMatch.setOverCount(oversCount);
               cricketMatch.setIsMatchStarted(isMatchStarted);
 
-              listOfLiveMatches.add(LiveMatchCard(match: cricketMatch,
-                creatorUID: userId,matchUID: matchId,
+              listOfLiveMatches.add(LiveMatchCard(
+                currentUser: widget.currentUser,
+                match: cricketMatch,
+                creatorUID: userId,
+                matchUID: matchId,
               ));
             });
 

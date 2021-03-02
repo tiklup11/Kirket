@@ -2,6 +2,8 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
@@ -17,16 +19,15 @@ class SelectAndCreateBatsmenPage extends StatefulWidget {
   @override
   _SelectAndCreateBatsmenPageState createState() =>
       _SelectAndCreateBatsmenPageState();
-}
+  }
 
 class _SelectAndCreateBatsmenPageState
     extends State<SelectAndCreateBatsmenPage> {
   DataStreams _dataStreams;
   bool isPlayerSelected = false;
-  HashMap<String,bool> checkBoxMap = HashMap();
-  int maximumCheckBox=2;
+  HashMap<String, bool> checkBoxMap = HashMap();
+  int maximumCheckBox = 2;
   int selectedCheckBox;
-  // bool isStrikerSelected  = false;
 
   @override
   void initState() {
@@ -38,21 +39,18 @@ class _SelectAndCreateBatsmenPageState
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           // backgroundColor: Colors.blueAccent,
           automaticallyImplyLeading: false,
-          title: Text("Select Batsmen (${widget.match.getCurrentBattingTeam()})"),
+          title:
+              Text("Select Batsmen (${widget.match.getCurrentBattingTeam()})"),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            batsmensList(),
-            addNewPlayerBtn(),
-            saveBtn()
-          ],
-        ));
+          children: [batsmensList(), addNewPlayerBtn(), saveBtn()],
+        ),
+    );
   }
 
   Widget batsmensList() {
@@ -60,7 +58,7 @@ class _SelectAndCreateBatsmenPageState
       stream:
           _dataStreams.batsmenData(inningNumber: widget.match.getInningNo()),
       builder: (context, snapshot) {
-        selectedCheckBox=0;
+        selectedCheckBox = 0;
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
         } else {
@@ -74,16 +72,14 @@ class _SelectAndCreateBatsmenPageState
 
           ///getting isBatting data and filling checkboxes depending upon them
           playersData.forEach((player) {
-
-
-            if(player.data()['isBatting']==false){
-              checkBoxMap[player.id]=false;
+            if (player.data()['isBatting'] == false) {
+              checkBoxMap[player.id] = false;
             }
-            if(player.data()['isBatting']==true){
-              checkBoxMap[player.id]=true;
+            if (player.data()['isBatting'] == true) {
+              checkBoxMap[player.id] = true;
               selectedCheckBox++;
             }
-            playerNames.add(selectPlayerWidget(playerName:player.id));
+            playerNames.add(selectPlayerWidget(playerName: player.id));
           });
 
           print("XXXXXXXXXXXXXXXXXXXXD $selectedCheckBox");
@@ -100,28 +96,27 @@ class _SelectAndCreateBatsmenPageState
     );
   }
 
-
   Widget selectPlayerWidget({String playerName}) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: (4*SizeConfig.oneW).roundToDouble(),vertical: (4*SizeConfig.oneH).roundToDouble()),
+      margin: EdgeInsets.symmetric(
+          vertical: (4 * SizeConfig.oneH).roundToDouble()),
       // padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
-      decoration: BoxDecoration(
-          color: ThemeData.light().primaryColor.withOpacity(0.1)
-      ),
+      decoration:
+          BoxDecoration(
+              color: Colors.grey.withOpacity(0.2)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("   $playerName"),
           Checkbox(
             value: checkBoxMap[playerName],
-            onChanged: (bool value){
-              if(selectedCheckBox<maximumCheckBox || !value){
-
-                updateIsBatting(playerName: playerName,value: value);
+            onChanged: (bool value) {
+              if (selectedCheckBox < maximumCheckBox || !value) {
+                updateIsBatting(playerName: playerName, value: value);
 
                 setState(() {
                   checkBoxMap[playerName] = value;
-                  if(!value){
+                  if (!value) {
                     selectedCheckBox--;
                   }
                 });
@@ -133,100 +128,112 @@ class _SelectAndCreateBatsmenPageState
     );
   }
 
-  void updateIsBatting({String playerName, bool value}){
-
-    if(selectedCheckBox==0){
-      usersRef.doc(widget.user.uid).collection('createdMatches')
+  void updateIsBatting({String playerName, bool value}) {
+    if (selectedCheckBox == 0) {
+      matchesRef
           .doc(widget.match.getMatchId())
           .collection('${widget.match.getInningNo()}InningBattingData')
           .doc(playerName)
           .update({
-        "isBatting":value,
-        "isOnStrike":true,
+        "isBatting": value,
+        "isOnStrike": true,
       });
 
-      usersRef.doc(widget.user.uid).collection('createdMatches')
-          .doc(widget.match.getMatchId()).update({
-        "strikerBatsmen":playerName
-      });
+      matchesRef
+          .doc(widget.match.getMatchId())
+          .update({"strikerBatsmen": playerName});
     }
 
-    if(selectedCheckBox==1){
-      usersRef.doc(widget.user.uid).collection('createdMatches')
+    if (selectedCheckBox == 1) {
+      matchesRef
           .doc(widget.match.getMatchId())
           .collection('${widget.match.getInningNo()}InningBattingData')
           .doc(playerName)
           .update({
-        "isBatting":value,
+        "isBatting": value,
         // "isOnStrike":true,
       });
-      usersRef.doc(widget.user.uid).collection('createdMatches')
-          .doc(widget.match.getMatchId()).update({
-        "nonStrikerBatsmen":playerName
-      });
+      matchesRef
+          .doc(widget.match.getMatchId())
+          .update({"nonStrikerBatsmen": playerName});
     }
 
-    if(!value){
-      usersRef.doc(widget.user.uid).collection('createdMatches')
+    if (!value) {
+      matchesRef
           .doc(widget.match.getMatchId())
           .collection('${widget.match.getInningNo()}InningBattingData')
           .doc(playerName)
           .update({
-        "isBatting":value,
-        "isOnStrike":value,
+        "isBatting": value,
+        "isOnStrike": value,
       });
     }
-
   }
 
   Widget addNewPlayerText() {
     return Expanded(
       child: Center(
-        child: Text(
-          "ADD NEW PLAYER",
-          style: TextStyle(
-              fontSize: (20*SizeConfig.oneW).roundToDouble(),
-              fontWeight: FontWeight.w400,
-              fontStyle: FontStyle.italic),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.sports_cricket_outlined),
+            Text(
+              "ADD NEW PLAYER",
+              style: TextStyle(
+                  fontSize: (20 * SizeConfig.oneW).roundToDouble(),
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget addNewPlayerBtn() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: (26*SizeConfig.oneW).roundToDouble()),
-      child: FlatButton(
-        minWidth: double.infinity,
-        color: Colors.blueGrey.shade400,
-        child: Text("ADD NEW PLAYER"),
-        onPressed: () {
+    return Bounce(
+      onPressed: () {
+        //TODO: update current batsmen name and other related stuff
           openDialog();
-        },
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.blueGrey.shade400,
+        ),
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 12),
+        margin: EdgeInsets.only(
+            left: (30 * SizeConfig.oneW).roundToDouble(),
+            right: (30 * SizeConfig.oneW).roundToDouble(),
+            bottom: (10 * SizeConfig.oneH).roundToDouble()),
+        child: Center(child: Text("ADD NEW PLAYER")),
       ),
     );
   }
 
   Widget saveBtn() {
-    return Container(
-      margin: EdgeInsets.only(left: (26*SizeConfig.oneW).roundToDouble(),
-          right: (26*SizeConfig.oneW).roundToDouble(),
-          bottom: (10*SizeConfig.oneH).roundToDouble()),
-      child: FlatButton(
-        minWidth: double.infinity,
-        color: Colors.blueGrey.shade400,
-        child: Text("CONTINUE.."),
-        onPressed: () {
-          //TODO: update current batsmen name and other related stuff
-          // onSaveBtnPressed();
-          Navigator.pop(context);
-        },
+    return Bounce(
+      onPressed: () {
+        //TODO: update current batsmen name and other related stuff
+        // onSaveBtnPressed();
+        Navigator.pop(context);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.blueGrey.shade400,
+        ),
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 12),
+        margin: EdgeInsets.only(
+            left: (30 * SizeConfig.oneW).roundToDouble(),
+            right: (30 * SizeConfig.oneW).roundToDouble(),
+            bottom: (10 * SizeConfig.oneH).roundToDouble()),
+        child: Center(child: Text("CONTINUE..")),
       ),
     );
   }
-
-
-
 
   openDialog() {
     return showDialog(

@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:umiperer/main.dart';
 
 
-
-final userRef = FirebaseFirestore.instance.collection('users');
 
 class DataStreams{
 
@@ -37,7 +36,7 @@ class DataStreams{
     ///tossWinner
     ///whatChoose [byWinningTossTeam]
     Stream<DocumentSnapshot> generalMatchDataStream;
-    generalMatchDataStream =  userRef.doc(userUID).collection('createdMatches').doc(matchId).snapshots();
+    generalMatchDataStream =  matchesRef.doc(matchId).snapshots();
     return generalMatchDataStream;
   }
 
@@ -46,8 +45,7 @@ class DataStreams{
       {@required int inningNo}){
     if(inningNo==1){
 
-      Stream<DocumentSnapshot> firstInningDataStream = userRef.doc(userUID)
-          .collection('createdMatches')
+      Stream<DocumentSnapshot> firstInningDataStream = matchesRef
           .doc(matchId)
           .collection('FirstInning')
           .doc("scoreBoardData").snapshots();
@@ -55,8 +53,7 @@ class DataStreams{
     return firstInningDataStream;
     } else{
 
-      Stream<DocumentSnapshot> secondInningDataStream = userRef.doc(userUID)
-          .collection('createdMatches')
+      Stream<DocumentSnapshot> secondInningDataStream = matchesRef
           .doc(matchId)
           .collection('SecondInning')
           .doc("scoreBoardData").snapshots();
@@ -68,8 +65,7 @@ class DataStreams{
   ///getting particular over data
   Stream<DocumentSnapshot> getFullOverDataStream({int inningNo,int overNumber}){
 
-      Stream<DocumentSnapshot> getOversData1 = userRef.doc(userUID)
-          .collection('createdMatches')
+      Stream<DocumentSnapshot> getOversData1 = matchesRef
           .doc(matchId)
           .collection('inning${inningNo}overs')
           .doc("over$overNumber")
@@ -82,8 +78,7 @@ class DataStreams{
   ///getting particularBatsmenData
   Stream<DocumentSnapshot> getBatsmenDataStream({String batsmenName,@required int inningNo}){
     if(inningNo==1){
-      Stream<DocumentSnapshot> batsmenStream =  userRef.doc(userUID)
-          .collection('createdMatches')
+      Stream<DocumentSnapshot> batsmenStream =  matchesRef
           .doc(matchId)
           .collection('FirstInning')
           .doc("BattingTeam")
@@ -94,8 +89,7 @@ class DataStreams{
       return batsmenStream;
     }
     else{
-      Stream<DocumentSnapshot> batsmenStream =  userRef.doc(userUID)
-          .collection('createdMatches')
+      Stream<DocumentSnapshot> batsmenStream =  matchesRef
           .doc(matchId)
           .collection('SecondInning')
           .doc("BattingTeam")
@@ -109,8 +103,7 @@ class DataStreams{
 
   Stream<DocumentSnapshot> getBowlerDataStream({String bowlerName,@required int inningNo}){
     if(inningNo==1){
-      Stream<DocumentSnapshot> batsmenStream =  userRef.doc(userUID)
-          .collection('createdMatches')
+      Stream<DocumentSnapshot> batsmenStream =  matchesRef
           .doc(matchId)
           .collection('FirstInning')
           .doc("BowlingTeam")
@@ -121,8 +114,7 @@ class DataStreams{
       return batsmenStream;
     }
     else{
-      Stream<DocumentSnapshot> batsmenStream =  userRef.doc(userUID)
-          .collection('createdMatches')
+      Stream<DocumentSnapshot> batsmenStream =  matchesRef
           .doc(matchId)
           .collection('SecondInning')
           .doc("BowlingTeam")
@@ -137,8 +129,7 @@ class DataStreams{
   //change to something else
   Stream<DocumentSnapshot> thatOverDocsStream({int inningNumber, int overNumber}){
 
-      final allOversDocStream =  userRef.doc(userUID)
-          .collection('createdMatches')
+      final allOversDocStream =  matchesRef
           .doc(matchId)
           .collection('inning{$inningNumber}overs')
           .doc("over$overNumber")
@@ -149,16 +140,14 @@ class DataStreams{
 
 
   Stream<QuerySnapshot> batsmenData({int inningNumber}){
-    final inningBattingData =  userRef.doc(userUID)
-        .collection('createdMatches')
+    final inningBattingData =  matchesRef
         .doc(matchId)
         .collection('${inningNumber}InningBattingData').snapshots();
     return inningBattingData;
   }
 
   Stream<QuerySnapshot> bowlersData({int inningNumber}){
-    final inningBattingData =  userRef.doc(userUID)
-        .collection('createdMatches')
+    final inningBattingData =  matchesRef
         .doc(matchId)
         .collection('${inningNumber}InningBowlingData').snapshots();
 

@@ -1,25 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/main.dart';
 ///MQD
 
 
-class AddPlayerDialog extends StatefulWidget {
+class CreateNewCategoryDialog extends StatefulWidget {
 
-  AddPlayerDialog({this.match, this.user,@required this.areWeAddingBatsmen});
+  CreateNewCategoryDialog({this.match, this.user,@required this.areWeAddingBatsmen});
 
   final CricketMatch match;
   final User user;
   final bool areWeAddingBatsmen;
   @override
-  _AddPlayerDialogState createState() => _AddPlayerDialogState();
+  _CreateNewCategoryDialogState createState() => _CreateNewCategoryDialogState();
 }
 
-class _AddPlayerDialogState extends State<AddPlayerDialog> {
+class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
 
   String playerName;
   @override
@@ -36,16 +35,16 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
           children: [
             topAppName(),
             Container(
-                padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.oneH).roundToDouble(),
-                    horizontal: (20*SizeConfig.oneW).roundToDouble()),
-                height: (200*SizeConfig.oneH).roundToDouble(),
+              padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.oneH).roundToDouble(),
+                  horizontal: (20*SizeConfig.oneW).roundToDouble()),
+              height: (260*SizeConfig.oneH).roundToDouble(),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular((8*SizeConfig.oneW).roundToDouble()),
                     bottomRight: Radius.circular((8*SizeConfig.oneW).roundToDouble())),
                 color: Colors.white,
               ),
-                child:dialogContent(context),
+              child:dialogContent(context),
             ),
           ],
         )
@@ -55,10 +54,10 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
   topAppName(){
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-        topLeft: Radius.circular((8*SizeConfig.oneW).roundToDouble()),
-              topRight: Radius.circular((8*SizeConfig.oneW).roundToDouble())),
-          color: Colors.blueGrey,
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular((8*SizeConfig.oneW).roundToDouble()),
+            topRight: Radius.circular((8*SizeConfig.oneW).roundToDouble())),
+        color: Colors.blueGrey,
       ),
       padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
       // alignment: Alignment.centerLeft,
@@ -67,7 +66,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("ADD NEW PLAYER",
+          Text("ADD YOUR CATEGORY",
             style: TextStyle(fontWeight: FontWeight.w400,),),
           Text("Kirket"),
         ],
@@ -82,49 +81,8 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
 
-        TextFormField(
-          decoration: InputDecoration(
-            filled: true,
-            icon: Icon(Icons.sports_baseball_sharp),
-            hintText: "Enter player name",
-            labelText: "Player Name",
-            // prefixText: '+1 ',
-          ),
-          onChanged: (value) {
-          //  newMatch.setTeam2Name(value);
-            playerName = value;
-          },
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Bounce(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                color: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
-                margin: EdgeInsets.symmetric(horizontal: 4),
-                child: Text("Cancel"),
-              ),
-            ),
-            Bounce(
-              onPressed: () {
-                onCreateBtnPressed();
-              },
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 4),
-                padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey.shade400,
-                  borderRadius: BorderRadius.circular(6)
-                ),
-                child: Text("Create"),
-              ),
-            ),
-          ],
-        )
+        enterForm(),
+        endBtns()
       ],
     );
   }
@@ -269,5 +227,56 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
       }
     }
     Navigator.pop(context);
+  }
+
+  hintTextTop(){
+    return Container(
+      child: Text("Category can be your tournament name, next time you create a match, you can put ")
+    );
+  }
+
+  enterForm(){
+    return TextFormField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: "Create new category",
+        labelText: "New Category",
+      ),
+      onChanged: (value) {
+        playerName = value;
+      },
+    );
+  }
+  endBtns(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Bounce(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Container(
+            color: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+            margin: EdgeInsets.symmetric(horizontal: 4),
+            child: Text("Cancel"),
+          ),
+        ),
+        Bounce(
+          onPressed: () {
+            // onCreateBtnPressed();
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 4),
+            padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+            decoration: BoxDecoration(
+                color: Colors.blueGrey.shade400,
+                borderRadius: BorderRadius.circular(6)
+            ),
+            child: Text("Create"),
+          ),
+        ),
+      ],
+    );
   }
 }

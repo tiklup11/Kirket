@@ -1,16 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/widgets/new_category_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 ///media querydone
-final usersRefe = FirebaseFirestore.instance.collection('users');
-final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
-
 
 class FillNewMatchDetailsPage extends StatelessWidget {
    FillNewMatchDetailsPage({this.user});
@@ -62,8 +61,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       //TODO: 1.Upload Match Details on firebase
       uploadMatchDataToCloud();
 
-      ///only userId and matchId are uploaded there
-      uploadDataToLiveMatches();
       //2. Navigate to a screen and pass Match
       Navigator.pop(context);
 
@@ -77,14 +74,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         "Please fill all details",
       );
     }
-  }
-
-  ///in live matches we get data from here
-  uploadDataToLiveMatches(){
-    liveMatchesRef.doc(newMatch.getMatchId()).set({
-      "matchId":newMatch.getMatchId(),
-      "userId":widget.user.uid,
-    });
   }
 
   generateIdForMatch(){
@@ -103,7 +92,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
       var completeOverData = {"1":null,"2":null,"3":null,"4":null,"5":null,"6":null};
 
-      usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning1overs')
+      matchesRef.doc(newMatch.getMatchId()).collection('inning1overs')
           .doc("over${i+1}").set({
         "overNo": i+1,
         "currentBall": 1,
@@ -113,9 +102,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         "overLength":6
       });
 
-      usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).collection('inning2overs')
+      matchesRef.doc(newMatch.getMatchId()).collection('inning2overs')
           .doc("over${i+1}").set({
-
         "overNo": i+1,
         "currentBall": 1,
         "fullOverData":completeOverData,
@@ -127,7 +115,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     }
 
     ///matchDoc > FirstInningCollection > scoreBoardDataDoc >
-    usersRefe.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
+    matchesRef.doc(newMatch.getMatchId())
         .collection('FirstInning').doc('scoreBoardData').set({
       "ballOfTheOver":0,
       "currentOverNo":0,
@@ -136,7 +124,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       // "dummyBallOfTheOver":0,
     });
 
-    usersRefe.doc(widget.user.uid).collection('createdMatches').doc(newMatch.getMatchId())
+    matchesRef.doc(newMatch.getMatchId())
         .collection('SecondInning').doc('scoreBoardData').set({
       "ballOfTheOver":0,
       "currentOverNo":0,
@@ -145,8 +133,9 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       // "dummyBallOfTheOver":0,
     });
 
-    usersRefe.doc(widget.user.uid).collection("createdMatches").doc(newMatch.getMatchId()).set({
+    matchesRef.doc(newMatch.getMatchId()).set({
 
+      'creatorUid':widget.user.uid,
       'isFirstInningStarted':false,
       'isFirstInningEnd':false,
       'isSecondStartedYet':false,
@@ -174,9 +163,9 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'currentBallNo': 0,
       'realBallNo':0,
       'winningMsg':null,
-      'isLive':true,
+      'isLive':false,
+      'isLiveChatOn':true,
     });
-
   }
 
   @override
@@ -209,7 +198,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                 TextFormField(
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    filled: true,
+                    border: new OutlineInputBorder(),
                     icon: Icon(Icons.whatshot_rounded,),
                     hintText: "Enter team 1 name",
                     labelText:
@@ -228,7 +217,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                 sizedBoxSpace,
                 TextFormField(
                   decoration: InputDecoration(
-                    filled: true,
+                    border: new OutlineInputBorder(),
                     icon: Icon(Icons.sports_baseball_sharp,),
                     hintText: "Enter team 2 name",
                     labelText: "Team 2",
@@ -238,39 +227,51 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                   },
                 ),
                 sizedBoxSpace,
-                TextFormField(
-                  decoration: InputDecoration(
-                    filled: true,
-                    icon: Icon(Icons.create),
-                    hintText: "Players in one team",
-                    labelText:
-                    "Players Count",
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                  SizedBox(
+                    width: SizeConfig.setWidth(180),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        border: new OutlineInputBorder(),
+                        icon: Icon(Icons.create),
+                        hintText: "Players in one team",
+                        labelText:
+                        "Players Count",
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        newMatch.setPlayerCount(int.parse(value));
+                      },
+                    ),
                   ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    newMatch.setPlayerCount(int.parse(value));
-                  },
+                  SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    width: SizeConfig.setWidth(140),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        border: new OutlineInputBorder(),
+                        hintText: "Number of overs",
+                        labelText:
+                        "Overs Count",
+                      ),
+                      keyboardType: TextInputType.number,
+                      // onEditingComplete: ,
+                      onChanged: (value) {
+                        newMatch.setOverCount(int.parse(value));
+                        print("OVER COUNTTTTTTT:: $value");
+                      },
+                    ),
+                  ),
+                  ],
                 ),
                 sizedBoxSpace,
                 TextFormField(
                   decoration: InputDecoration(
-                    filled: true,
-                    icon: Icon(Icons.sports_handball,),
-                    hintText: "Number of overs",
-                    labelText:
-                    "Overs Count",
-                  ),
-                  keyboardType: TextInputType.number,
-                  // onEditingComplete: ,
-                  onChanged: (value) {
-                    newMatch.setOverCount(int.parse(value));
-                    print("OVER COUNTTTTTTT:: $value");
-                  },
-                ),
-                sizedBoxSpace,
-                TextFormField(
-                  decoration: InputDecoration(
-                    filled: true,
+                    border: new OutlineInputBorder(),
                     icon: Icon(Icons.location_on),
                     hintText: "Enter Location",
                     labelText:
@@ -283,22 +284,96 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                   },
                 ),
                 sizedBoxSpace,
-                Center(
-                  child: MaterialButton(
-                    elevation: 0,
-                    highlightElevation: 0,
-                    color: Colors.blueGrey.shade400,
-                    child: Text(
-                        "Create Match"),
-                    onPressed: (){
-                      _handleSubmitted();
-                    },
-                  ),
-                ),
+                categoryWidget(),
                 sizedBoxSpace,
+                createMatchBtn(),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  String _currentSelectedValue;
+
+  categoryWidget(){
+
+    var _currencies = [
+      "Create new Category",
+      "Food",
+      "Transport",
+      "Personal",
+      "Shopping",
+      "Medical",
+      "Rent",
+      "Movie",
+      "Salary"
+    ];
+
+    return FormField<String>(
+      builder: (FormFieldState<String> state) {
+        return InputDecorator(
+          decoration: InputDecoration(
+            labelText: "Select a Category",
+            icon: Icon(Icons.category_outlined),
+              errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
+              hintText: 'Please select expense',
+              border: OutlineInputBorder(),
+          ),
+          isEmpty: _currentSelectedValue == "",
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: _currentSelectedValue,
+              isDense: true,
+              onChanged: (String newValue) {
+                setState(() {
+                  _currentSelectedValue = newValue;
+                  state.didChange(newValue);
+                  if(newValue=="Create new Category"){
+                    openCreateNewCategoryDialog();
+                  }
+                });
+              },
+              items: _currencies.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  openCreateNewCategoryDialog() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return CreateNewCategoryDialog(
+            areWeAddingBatsmen: true,
+            user: widget.user,
+          );
+        });
+  }
+
+  createMatchBtn(){
+    return Bounce(
+      onPressed: (){
+        _handleSubmitted();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.blueGrey.shade400,
+            borderRadius: BorderRadius.circular(SizeConfig.setWidth(10))
+        ),
+        margin: EdgeInsets.symmetric(horizontal: SizeConfig.setWidth(100)),
+        height: SizeConfig.setHeight(40),
+        child: Center(
+          child: Text(
+              "Create Match"),
         ),
       ),
     );

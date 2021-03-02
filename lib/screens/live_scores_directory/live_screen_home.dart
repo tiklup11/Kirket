@@ -6,8 +6,6 @@ import 'package:umiperer/screens/LiveMatchesScreen.dart';
 import 'package:umiperer/screens/live_scores_directory/ended_match_screen.dart';
 
 
-final usersRef = FirebaseFirestore.instance.collection('users');
-
 ///this is home screen for live matches
 ///this has two tabs - 1. LIVE   2. ENDED
 
@@ -22,12 +20,12 @@ class LiveScreenHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabs = [
       "Live",
-      "Ended"
+      "Finished"
     ];
 
     final tabBarView = [
-      LiveMatchesScreen(),
-      EndMatchesScreen(),
+      LiveMatchesScreen(currentUser: user,),
+      EndMatchesScreen(currentUser: user,),
       // TeamDetails(match: match,),
       // ScoreCountingPage(user: user,match: match,),
     ];

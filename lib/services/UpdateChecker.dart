@@ -69,7 +69,7 @@ class UpdateChecker{
       builder: (BuildContext context) {
         String title = "New Update Available";
         String message =
-            "This version is missing many features. Please update.";
+            "There are some issues in this version. Please update. If you don't see update option, First uninstall and then install.";
         String btnLabel = "Update Now";
         // String btnLabelCancel = "Later";
         return AlertDialog(

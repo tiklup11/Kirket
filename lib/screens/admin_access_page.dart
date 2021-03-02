@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/screens/toss_page.dart';
 import 'package:umiperer/widgets/admin_card.dart';
@@ -36,7 +37,7 @@ class _AdminAccessPageState extends State<AdminAccessPage> {
      //sourabhUID
 
    return StreamBuilder<QuerySnapshot>(
-                stream: usersRef.doc(creatorUID).collection('createdMatches').snapshots(),
+                stream: matchesRef.snapshots(),
                 builder: (context,snapshot){
 
                   if(!snapshot.hasData){

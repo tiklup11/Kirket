@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
+import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/screens/full_score_card_for_audience.dart';
 import 'package:umiperer/screens/matchDetailsScreens/score_counting_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
-
-
-final usersRef = FirebaseFirestore.instance.collection('users');
 
 class MatchDetails extends StatelessWidget {
 
@@ -79,9 +76,7 @@ class MatchDetails extends StatelessWidget {
         body: TabBarView(
           children: [
             for (final tab in tabBarView)
-              Center(
-                child: tab,
-              ),
+              tab,
           ],
         ),
       ),
@@ -96,41 +91,41 @@ class MatchDetails extends StatelessWidget {
     Navigator.pop(context);
     // print("deleting the docs");
 
-    final batsmen1Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("1InningBattingData").get();
+    final batsmen1Ref = await matchesRef.doc(match.getMatchId()).collection("1InningBattingData").get();
     for(var docs in batsmen1Ref.docs){
       docs.reference.delete();
     }
 
-    final batsmen2Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("2InningBattingData").get();
+    final batsmen2Ref = await matchesRef.doc(match.getMatchId()).collection("2InningBattingData").get();
     for(var docs in batsmen2Ref.docs){
       docs.reference.delete();
     }
 
-    final bowler1Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("1InningBowlingData").get();
+    final bowler1Ref = await matchesRef.doc(match.getMatchId()).collection("1InningBowlingData").get();
     for(var docs in bowler1Ref.docs){
       docs.reference.delete();
     }
 
-    final bowler2Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("2InningBowlingData").get();
+    final bowler2Ref = await matchesRef.doc(match.getMatchId()).collection("2InningBowlingData").get();
     for(var docs in bowler2Ref.docs){
       docs.reference.delete();
     }
 
-    usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("FirstInning").doc("scoreBoardData").delete();
+    matchesRef.doc(match.getMatchId()).collection("FirstInning").doc("scoreBoardData").delete();
 
-    usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("SecondInning").doc("scoreBoardData").delete();
+    matchesRef.doc(match.getMatchId()).collection("SecondInning").doc("scoreBoardData").delete();
 
-    final overs1Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("inning1overs").get();
+    final overs1Ref = await matchesRef.doc(match.getMatchId()).collection("inning1overs").get();
     for(var docs in overs1Ref.docs){
       docs.reference.delete();
     }
 
-    final overs2Ref = await usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).collection("inning2overs").get();
+    final overs2Ref = await matchesRef.doc(match.getMatchId()).collection("inning2overs").get();
     for(var docs in overs2Ref.docs){
        docs.reference.delete();
     }
 
-    usersRef.doc(user.uid).collection("createdMatches").doc(match.getMatchId()).delete();
+    matchesRef.doc(match.getMatchId()).delete();
 
   }
 

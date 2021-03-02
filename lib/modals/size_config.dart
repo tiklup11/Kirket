@@ -38,6 +38,14 @@ class SizeConfig {
 
   }
 
+  static setHeight(int value){
+    return (value*oneH).roundToDouble();
+  }
+
+  static setWidth(int value){
+    return (value*oneW).roundToDouble();
+  }
+
   //making new UNIT
   static double oneW = (0.25*widthMultiplier).roundToDouble();
 

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/MyMatchesScreen.dart';
 import 'package:umiperer/widgets/ball_widget.dart';
+import 'package:umiperer/main.dart';
 
 class DummyOverCard extends StatefulWidget {
 
@@ -53,8 +53,7 @@ overCard()
           BorderRadius.circular((5 * SizeConfig.oneW).roundToDouble()),
           color: Colors.white),
       child: StreamBuilder<DocumentSnapshot>(
-        stream: usersRef.doc(widget.creatorUID)
-            .collection('createdMatches')
+        stream: matchesRef
             .doc(widget.match.getMatchId())
             .collection('inning${widget.inningNo}overs')
             .doc("over${widget.overNoOnCard}")

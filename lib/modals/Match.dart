@@ -16,11 +16,18 @@ class CricketMatch{
   int totalRuns;
   int wicketDown;
 
+  bool isLiveChatOn;
+  bool isMatchLive;
+
+
   CricketOver currentOver = CricketOver();
   String _matchId;
+  String creatorUid;
   String _location;
   bool _isMatchStarted;
   bool isFirstOverStarted;
+
+
   String _tossWinner;
   String _chooseToBatOrBall;
   //this will decide weather match is []
@@ -44,7 +51,6 @@ class CricketMatch{
   bool isFirstInningStartedYet;
   bool isSecondInningStartedYet;
   bool isSecondInningEnd;
-  bool isMatchLive;
 
   List<String> team1List=[];
   List<String> team2List=[];
@@ -185,10 +191,6 @@ class CricketMatch{
 
   void setIsMatchLive(String value){
     matchStatus = value;
-  }
-
-  String getIsMatchLive(){
-    return matchStatus;
   }
 
   void setMatchId(String value){

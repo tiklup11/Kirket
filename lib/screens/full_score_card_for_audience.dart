@@ -15,7 +15,7 @@ class ScoreCard extends StatefulWidget {
 }
 
 class _ScoreCardState extends State<ScoreCard> {
-  final tabs = ["first inning", "second inning"];
+  final tabs = ["First Inning", "Second Inning"];
 
   List tabBarView;
   bool isInning1=true;
@@ -41,22 +41,33 @@ class _ScoreCardState extends State<ScoreCard> {
 
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
       initialIndex: 0,
       length: tabs.length,
-      child: Container(
-        color: Colors.black12,
-        child: Column(
+      child: Scaffold(
+        backgroundColor: Colors.black12,
+        appBar: AppBar(
+          toolbarHeight: (50*SizeConfig.oneH).roundToDouble(),
+          bottom: TabBar(
+            isScrollable: true,
+            tabs: [
+              for (final tab in tabs) Tab(text: tab),
+            ],
+          ),
+        ),
+        body: TabBarView(
           children: [
-            //1. toggleBox
-            toggleBox(),
-            isInning1?
-                tabBarView[0]:tabBarView[1],
+            for (final tab in tabBarView)
+              Center(
+                child: tab,
+              ),
           ],
         ),
-      )
+      ),
     );
   }
+
 
   toggleBox(){
     return Container(
