@@ -100,22 +100,16 @@ overCard()
               }
             });
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: (6 * SizeConfig.oneW).roundToDouble()),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("OVER NO: ${widget.overNoOnCard}"),
-                      SizedBox(
-                        width: (30 * SizeConfig.oneW).roundToDouble(),
-                      ),
-                      bowlerOfThisOver == null
-                          ? Container()
-                          : Text("🏐 : $bowlerOfThisOver"),
-                    ],
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("OVER NO: ${widget.overNoOnCard}"),
+                    bowlerOfThisOver == null
+                        ? Container()
+                        : Text("$bowlerOfThisOver : 🏐"),
+                  ],
                 ),
                 Container(
                   height: (60 * SizeConfig.oneH).roundToDouble(),

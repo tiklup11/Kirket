@@ -25,14 +25,15 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-          // backgroundColor: Colors.black12,
+          backgroundColor: Colors.white,
           floatingActionButton: Bounce(
             duration: Duration(milliseconds: 120),
             onPressed: (){
               _modalBottomSheetMenu(context);
             },
             child: FloatingActionButton(
-              // backgroundColor: Colors.blueGrey.shade400,
+              backgroundColor: Colors.blueAccent.withOpacity(0.7),
+              // backgroundColor: Colors.blueAccent.shade400,
               child: Icon(Icons.add),
             ),
           ),
@@ -42,100 +43,103 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
   }
 
   Widget matchListView(BuildContext context){
-    return StreamBuilder<QuerySnapshot>(
-        stream: matchesRef.where('creatorUid',isEqualTo: widget.user.uid).orderBy('timeStamp',descending: true).snapshots(),
-        builder: (context, snapshot){
+    return Container(
+      padding: EdgeInsets.only(top: 14),
+      child: StreamBuilder<QuerySnapshot>(
+          stream: matchesRef.where('creatorUid',isEqualTo: widget.user.uid).orderBy('timeStamp',descending: true).snapshots(),
+          builder: (context, snapshot){
 
-          if(!snapshot.hasData){
-            return Center(child: CircularProgressIndicator());
-          } else{
-            final List<MatchCardForCounting> matchCards = [];
-            final matchesData = snapshot.data.docs;
+            if(!snapshot.hasData){
+              return Center(child: CircularProgressIndicator());
+            } else{
+              final List<MatchCardForCounting> matchCards = [];
+              final matchesData = snapshot.data.docs;
 
-            if(matchesData.isEmpty){
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ZeroDocScreen(
-                    showLearnMore: true,
-                    dialogText: "Currently matches created by you will not be LIVE. In a week with the new update you will get this feature.",
-                    textMsg: "Tab + to create your own match to count runs. Live feature is coming soon.",iconData: Icons.calculate_outlined,),
-                ],
+              if(matchesData.isEmpty){
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ZeroDocScreen(
+                      showLearnMore: true,
+                      dialogText: "Currently matches created by you will not be LIVE. In a week with the new update you will get this feature.",
+                      textMsg: "Tab + to create your own match to count runs. Live feature is coming soon.",iconData: Icons.calculate_outlined,),
+                  ],
+                );
+              }
+
+              for(var matchData in matchesData){
+
+                final CricketMatch match = CricketMatch();
+
+                final team1Name = matchData.data()['team1name'];
+                final team2Name = matchData.data()['team2name'];
+
+                final oversCount = matchData.data()['overCount'];
+
+                final matchId = matchData.data()['matchId'];
+                final creatorUid = matchData.data()['creatorUid'];
+                final playerCount = matchData.data()['playerCount'];
+                final tossWinner = matchData.data()['tossWinner'];
+                final batOrBall = matchData.data()['whatChoose'];
+                final location = matchData.data()['matchLocation'];
+                final isMatchStarted = matchData.data()['isMatchStarted'];
+                final currentOverNumber = matchData.data()['currentOverNumber'];
+                final isSecondInningEnd = matchData.data()['isSecondInningEnd'];
+
+                final firstBattingTeam = matchData.data()['firstBattingTeam'];
+                final firstBowlingTeam = matchData.data()['firstBowlingTeam'];
+                final secondBattingTeam = matchData.data()['secondBattingTeam'];
+                final secondBowlingTeam = matchData.data()['secondBowlingTeam'];
+
+                match.isMatchLive = matchData.data()['isLive'];
+                match.isLiveChatOn = matchData.data()['isLiveChatOn'];
+
+
+                match.firstBattingTeam=firstBattingTeam;
+                match.firstBowlingTeam=firstBowlingTeam;
+                match.creatorUid = creatorUid;
+                match.secondBattingTeam=secondBattingTeam;
+                match.secondBowlingTeam=secondBowlingTeam;
+                match.isSecondInningEnd =isSecondInningEnd;
+
+                if(firstBattingTeam!=null && firstBowlingTeam!=null && secondBattingTeam!=null && secondBowlingTeam!=null)
+                {
+                  match.setFirstInnings();
+                }
+
+
+                if(matchData.data()['teamAPlayers'] != null){
+                  final teamAPlayers = matchData.data()['teamAPlayers'].cast<String>();
+                  final teamBPlayers = matchData.data()['teamBPlayers'].cast<String>();
+
+                  match.team1List=teamAPlayers;
+                  match.team2List=teamBPlayers;
+                }
+
+                match.currentOver.setCurrentOverNo(currentOverNumber);
+                match.setTeam1Name(team1Name);
+                match.setTeam2Name(team2Name);
+                match.setMatchId(matchId);
+                match.setPlayerCount(playerCount);
+                match.setLocation(location);
+                match.setTossWinner(tossWinner);
+                match.setBatOrBall(batOrBall);
+                match.setOverCount(oversCount);
+                match.setIsMatchStarted(isMatchStarted);
+
+                matchCards.add(MatchCardForCounting(match: match,user: widget.user,));
+              }
+
+              return ListView.builder(
+                // physics: BouncingScrollPhysics(),
+                  itemCount: matchCards.length,
+                  itemBuilder: (context, int){
+                return matchCards[int];
+              }
               );
             }
-
-            for(var matchData in matchesData){
-
-              final CricketMatch match = CricketMatch();
-
-              final team1Name = matchData.data()['team1name'];
-              final team2Name = matchData.data()['team2name'];
-
-              final oversCount = matchData.data()['overCount'];
-
-              final matchId = matchData.data()['matchId'];
-              final creatorUid = matchData.data()['creatorUid'];
-              final playerCount = matchData.data()['playerCount'];
-              final tossWinner = matchData.data()['tossWinner'];
-              final batOrBall = matchData.data()['whatChoose'];
-              final location = matchData.data()['matchLocation'];
-              final isMatchStarted = matchData.data()['isMatchStarted'];
-              final currentOverNumber = matchData.data()['currentOverNumber'];
-              final isSecondInningEnd = matchData.data()['isSecondInningEnd'];
-
-              final firstBattingTeam = matchData.data()['firstBattingTeam'];
-              final firstBowlingTeam = matchData.data()['firstBowlingTeam'];
-              final secondBattingTeam = matchData.data()['secondBattingTeam'];
-              final secondBowlingTeam = matchData.data()['secondBowlingTeam'];
-
-              match.isMatchLive = matchData.data()['isLive'];
-              match.isLiveChatOn = matchData.data()['isLiveChatOn'];
-
-
-              match.firstBattingTeam=firstBattingTeam;
-              match.firstBowlingTeam=firstBowlingTeam;
-              match.creatorUid = creatorUid;
-              match.secondBattingTeam=secondBattingTeam;
-              match.secondBowlingTeam=secondBowlingTeam;
-              match.isSecondInningEnd =isSecondInningEnd;
-
-              if(firstBattingTeam!=null && firstBowlingTeam!=null && secondBattingTeam!=null && secondBowlingTeam!=null)
-              {
-                match.setFirstInnings();
-              }
-
-
-              if(matchData.data()['teamAPlayers'] != null){
-                final teamAPlayers = matchData.data()['teamAPlayers'].cast<String>();
-                final teamBPlayers = matchData.data()['teamBPlayers'].cast<String>();
-
-                match.team1List=teamAPlayers;
-                match.team2List=teamBPlayers;
-              }
-
-              match.currentOver.setCurrentOverNo(currentOverNumber);
-              match.setTeam1Name(team1Name);
-              match.setTeam2Name(team2Name);
-              match.setMatchId(matchId);
-              match.setPlayerCount(playerCount);
-              match.setLocation(location);
-              match.setTossWinner(tossWinner);
-              match.setBatOrBall(batOrBall);
-              match.setOverCount(oversCount);
-              match.setIsMatchStarted(isMatchStarted);
-
-              matchCards.add(MatchCardForCounting(match: match,user: widget.user,));
-            }
-
-            return ListView.builder(
-              // physics: BouncingScrollPhysics(),
-                itemCount: matchCards.length,
-                itemBuilder: (context, int){
-              return matchCards[int];
-            }
-            );
-          }
-        });
+          }),
+    );
   }
 
   fabBtn({Function onPressed, String btnText}){
@@ -143,8 +147,9 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
       onPressed: onPressed,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.blueGrey
+          color: Colors.blueAccent.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.black12,width: 2)
         ),
         margin: EdgeInsets.only(left: 30,right:30,top: 10),
         padding: EdgeInsets.symmetric(horizontal: 40,vertical: 10),

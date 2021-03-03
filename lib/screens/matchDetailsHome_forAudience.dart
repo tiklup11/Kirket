@@ -3,10 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/screens/first_in_sc.dart';
 import 'package:umiperer/screens/full_score_card_for_audience.dart';
 import 'package:umiperer/screens/live_chat_screens/live_chat_page.dart';
 import 'package:umiperer/screens/live_score_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
+import 'package:umiperer/screens/second_inn_sc.dart';
 
 ///this contains 3-4 tabs and show to audience
 class MatchDetailsHomeForAudience extends StatefulWidget {
@@ -65,7 +68,8 @@ class _MatchDetailsHomeForAudienceState extends State<MatchDetailsHomeForAudienc
     tabs = [
       "Details",
       "Live Score",
-      "Full ScoreCard",
+      "1st Inning",
+      "2nd Inning"
       // "Overs"
     ];
 
@@ -74,7 +78,13 @@ class _MatchDetailsHomeForAudienceState extends State<MatchDetailsHomeForAudienc
       LiveScorePage(matchUID: widget.matchUID,
         creatorUID: widget.creatorUID,
         match: widget.match,),
-      ScoreCard(creatorUID: widget.creatorUID, match2: widget.match),
+      // ScoreCard(creatorUID: widget.creatorUID, match2: widget.match),
+      FirstInningScoreCard(creatorUID: widget.creatorUID, match: widget.match),
+      widget.match.getInningNo()==1?
+      Container(
+        color: Colors.white,
+        child: Center(child: zeroData(msg: "2nd Inning not started yet",iconData: Icons.sports_cricket_outlined),),):
+      SecondInningScoreCard(creatorUID: widget.creatorUID, match: widget.match)
     ];
 
     if(widget.match.isLiveChatOn){
@@ -98,7 +108,10 @@ class _MatchDetailsHomeForAudienceState extends State<MatchDetailsHomeForAudienc
         initialIndex: 0,
         length: tabs.length,
         child: Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
+            iconTheme: IconThemeData(color: Colors.black),
+            backgroundColor: Colors.white,
             actions: [
               PopupMenuButton<String>(
                 padding: EdgeInsets.zero,
@@ -122,8 +135,10 @@ class _MatchDetailsHomeForAudienceState extends State<MatchDetailsHomeForAudienc
             automaticallyImplyLeading: false,
             title: Text(
                 "${widget.match.getTeam1Name().toUpperCase()} v ${widget.match
-                    .getTeam2Name().toUpperCase()}"),
+                    .getTeam2Name().toUpperCase()}",
+            style: TextStyle(color: Colors.black),),
             bottom: TabBar(
+              labelColor: Colors.black,
               isScrollable: true,
               tabs: [
                 for (final tab in tabs) Tab(text: tab),
@@ -139,6 +154,8 @@ class _MatchDetailsHomeForAudienceState extends State<MatchDetailsHomeForAudienc
         ),
       );
     }
+
+
   _shareMatch(BuildContext context) {
     final String playStoreUrl = "https://play.google.com/store/apps/details?id=com.okays.umiperer";
     final String msg = "Watch live score of Cricket Match between ${widget
@@ -150,6 +167,20 @@ class _MatchDetailsHomeForAudienceState extends State<MatchDetailsHomeForAudienc
     Share.share(sharingText,
         subject: 'Download Kirket app and watch live scores',
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  }
+
+  zeroData({String msg, IconData iconData}){
+    return Container(
+      height: (80*SizeConfig.oneH).roundToDouble(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(iconData),
+          SizedBox(width: (4*SizeConfig.oneW).roundToDouble(),),
+          Text(msg),
+        ],
+      ),
+    );
   }
 
   }

@@ -38,34 +38,58 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
         );
   }
 
+  BoxDecoration myBoxDecoration() {
+    return BoxDecoration(
+      border: Border.all(),
+    );
+  }
+
+  dividerWidget(){
+    return Container(
+      color: Colors.black12,height: 2,width: double.infinity,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only( left: (10*SizeConfig.oneW).roundToDouble(),
-          right: (10*SizeConfig.oneW).roundToDouble(),),
-      padding: EdgeInsets.only(top: (16*SizeConfig.oneH).roundToDouble()),
-      child: Card(
-        elevation: 40,
-        child: Column(
-          children: [
-            liveWidget(),
-            //TEAM A vs TEAM B
-            topRow(),
-            // live - on/off - continue
-            Container(
-              margin: EdgeInsets.only(bottom: 14,top: 2),
-              padding: EdgeInsets.symmetric(horizontal: (0*SizeConfig.oneW).roundToDouble()),
-              child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  mainBtn(),
-                  moreOptionsBtn()
-                ],
-              ),
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 10,
+              offset: Offset(0, 3), // changes position of shadow
             ),
           ],
-        )
-    )
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.black12,width: 2)
+      ),
+      margin: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),
+          right: (16*SizeConfig.oneW).roundToDouble(),bottom: SizeConfig.setHeight(16)),
+      // padding: EdgeInsets.only(top: (6*SizeConfig.oneH).roundToDouble(),left: 12,right: 12),
+      child: Column(
+        children: [
+          liveWidget(),
+          dividerWidget(),
+          //TEAM A vs TEAM B
+          topRow(),
+          dividerWidget(),
+          // live - on/off - continue
+          Container(
+            margin: EdgeInsets.only(bottom: 14,top: 14),
+            padding: EdgeInsets.symmetric(horizontal: (0*SizeConfig.oneW).roundToDouble()),
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                mainBtn(),
+                moreOptionsBtn()
+              ],
+            ),
+          ),
+        ],
+      )
     );
   }
 
@@ -103,12 +127,14 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
       child: Container(
         height: (35*SizeConfig.oneH).roundToDouble(),
         decoration: BoxDecoration(
-          color: Colors.blueGrey.shade400,
+          border: Border.all(width: 2,color: Colors.black12),
+          color: Colors.blueAccent.withOpacity(0.6),
           borderRadius: BorderRadius.circular(7.0),
         ),
         width: (120*SizeConfig.oneW).roundToDouble(),
         padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
-        child:Center(child: Text("MORE..")),
+        child:Center(
+            child: Text("MORE..")),
       ),
     );
   }
@@ -152,6 +178,12 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
       docs.reference.delete();
     }
 
+    final chatCollection = await matchesRef.doc(widget.match.getMatchId()).collection("chatData").get();
+    for(var docs in chatCollection.docs){
+      docs.reference.delete();
+    }
+
+
     matchesRef.doc(widget.match.getMatchId()).delete();
   }
 
@@ -188,14 +220,15 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
       child: Container(
         height: (35*SizeConfig.oneH).roundToDouble(),
         decoration: BoxDecoration(
-          color: Colors.blueGrey.shade400,
+          border: Border.all(width: 2,color: Colors.black12),
+          color: Colors.blueAccent.withOpacity(0.6),
           borderRadius: BorderRadius.circular(7.0),
         ),
         width: (180*SizeConfig.oneW).roundToDouble(),
         padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble()),
         // elevation: 0,
         // highlightElevation: 0,
-        // color: Colors.blueGrey.shade400,
+        // color: Colors.blueAccent.shade400,
         // minWidth: double.infinity,
         child:
         btnLogic(),
@@ -206,8 +239,9 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
   topRow(){
     return Container(
       decoration: BoxDecoration(
-        color: Colors.blueGrey.shade50,
-        // borderRadius: BorderRadius.circular(10)
+          // border: Border.all(color: Colors.black12,width: 2),
+          // color: Colors.black12,
+        borderRadius: BorderRadius.circular(10)
       ),
       margin: EdgeInsets.only(bottom: (8*SizeConfig.oneW).roundToDouble()),
       padding: EdgeInsets.symmetric(horizontal: (14*SizeConfig.oneW).roundToDouble(),vertical:( 14*SizeConfig.oneH).roundToDouble()),
@@ -362,8 +396,9 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
       onPressed: onPressed,
       child: Container(
         decoration: BoxDecoration(
+            border: Border.all(color: Colors.black12,width: 2),
             borderRadius: BorderRadius.circular(10),
-            color: Colors.blueGrey
+            color: Colors.blueAccent.withOpacity(0.6)
         ),
         margin: EdgeInsets.only(left: 24,right:24,top: 10),
         padding: EdgeInsets.symmetric(horizontal: 40,vertical: 10),

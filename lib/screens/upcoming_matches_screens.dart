@@ -22,7 +22,7 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: Text("HELLO"),),
+        backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {

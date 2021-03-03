@@ -28,15 +28,13 @@ class _TeamDetailsState extends State<TeamDetails> {
   Widget build(BuildContext context) {
 
     return Container(
-      color: Colors.black12,
+      color: Colors.white,
       child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //matchINFO
           Container(
             margin: EdgeInsets.only(top: (22*SizeConfig.oneH).roundToDouble(),bottom: (2*SizeConfig.oneH).roundToDouble()),
-            padding: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),
-            ),
+            padding: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),),
             child: Text(
               "INFO",
             ),
@@ -52,8 +50,8 @@ class _TeamDetailsState extends State<TeamDetails> {
       padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (10*SizeConfig.oneH).roundToDouble()),
       margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(), vertical: (10*SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular((4*SizeConfig.oneW).roundToDouble()),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
       ),
       child: Column(
         children: [

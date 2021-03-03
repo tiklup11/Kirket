@@ -5,6 +5,7 @@ import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/screens/toss_page.dart';
 import 'package:umiperer/widgets/admin_card.dart';
+import 'package:umiperer/widgets/back_button_widget.dart';
 
 ///mqd
 final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
@@ -28,7 +29,14 @@ class _AdminAccessPageState extends State<AdminAccessPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Admin Access"),),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: CustomBackButton(),
+        iconTheme: IconThemeData(color: Colors.black),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text('Admin Access',style: TextStyle(color: Colors.black),),
+      ),
       body: matchesData(),
     );
   }

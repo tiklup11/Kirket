@@ -24,7 +24,8 @@ class BowlerStatsRow extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular((4*SizeConfig.oneW)..roundToDouble()),
         color: isThisSelectBowlerBtn?
-        Colors.blueGrey.withOpacity(0.5):Colors.white,
+      Colors.blueAccent.withOpacity(0.5)
+      :Colors.white,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

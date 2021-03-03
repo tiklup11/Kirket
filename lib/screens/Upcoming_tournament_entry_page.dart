@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:umiperer/modals/UpcomingTournament.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/widgets/back_button_widget.dart';
 import 'package:uuid/uuid.dart';
 
 ///media querydone
@@ -105,10 +106,13 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
     final sizedBoxSpace = SizedBox(height: 24);
 
     return Scaffold(
-      // resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        automaticallyImplyLeading: true,
-        title: Text("Fill Tournament Details"),
+        leading: CustomBackButton(),
+        iconTheme: IconThemeData(color: Colors.black),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text('Tournament Details',style: TextStyle(color: Colors.black),),
       ),
       key: _scaffoldKey,
       body: Form(
@@ -196,7 +200,7 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                   child: MaterialButton(
                     elevation: 0,
                     highlightElevation: 0,
-                    color: Colors.blueGrey.shade400,
+                    color: Colors.blueAccent.withOpacity(0.9),
                     child: Text(
                         "Announce Tournament"),
                     onPressed: (){

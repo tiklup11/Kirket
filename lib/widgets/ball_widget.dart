@@ -44,7 +44,7 @@ class BallWidget extends StatelessWidget {
               style: TextStyle(color: Colors.black),
             ),
             radius: ballRadius,
-            backgroundColor: Colors.blueGrey.shade400,
+            backgroundColor: Colors.blueAccent.shade100,
           ));
     }
     return Container(
@@ -63,7 +63,7 @@ class BallWidget extends StatelessWidget {
           ),
           radius: ballRadius,
           backgroundColor
-              : Colors.blueGrey.shade400,
+              : Colors.blueAccent.shade100,
         ));
   }
 
@@ -77,7 +77,7 @@ class BallWidget extends StatelessWidget {
             style: TextStyle(color: Colors.black),
           ),
           radius: ballRadius,
-          backgroundColor: Colors.blue.shade100,
+          backgroundColor: Colors.blueAccent.shade100.withOpacity(0.5),
         ));
   }
 }

@@ -10,11 +10,10 @@ import 'package:your_splash/your_splash.dart';
 
 
 final matchesRef = FirebaseFirestore.instance.collection('allMatches');
-// final usersRef = FirebaseFirestore.instance.collection('users');
 
 // final String adMobId = "ca-app-pub-3940256099942544~3347511713";
 
-CollectionReference appVersionRef;
+
 PackageInfo packageInfo;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,10 +39,9 @@ class _MyAppState extends State<MyApp> {
       return OrientationBuilder(builder: (context, orientation) {
         SizeConfig().init(constraints, orientation);
         return MaterialApp(
-          themeMode: ThemeMode.dark,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            primarySwatch: Colors.blueGrey,
+            primaryColor: Colors.blueAccent,
             // focusColor: Colors.blueGrey,
           ),
           home: SplashScreen.timed(

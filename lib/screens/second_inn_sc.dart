@@ -43,7 +43,8 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
     return
       // widget.match.getInningNo()==2?
       Container(
-      child: ListView(
+          color: Colors.white,
+          child: ListView(
         children: [
           widget.match.isSecondInningEnd?
           HeadLineWidget(headLineString: "Second inning ended"):Container(),
@@ -67,9 +68,8 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           horizontal: (10 * SizeConfig.oneW).roundToDouble(),
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(
-            (4 * SizeConfig.oneW).roundToDouble()),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
       ),
       child: Column(
         children: [
@@ -85,7 +85,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           ),
           Container(
             color: Colors.black12,
-            height: (4 * SizeConfig.oneH).roundToDouble(),
+            height: (2 * SizeConfig.oneH).roundToDouble(),
           ),
           //Batsman's data
           StreamBuilder<QuerySnapshot>(
@@ -161,9 +161,8 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           horizontal: (10 * SizeConfig.oneW).roundToDouble(),
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(
-            (4 * SizeConfig.oneW).roundToDouble()),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
       ),
       child: Column(
         children: [
@@ -183,7 +182,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
 
           Container(
             color: Colors.black12,
-            height: (4 * SizeConfig.oneH).roundToDouble(),
+            height: (2 * SizeConfig.oneH).roundToDouble(),
           ),
 
           //Batsman's data
@@ -290,9 +289,8 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                       horizontal: (10 * SizeConfig.oneW).roundToDouble(),
                       vertical: (10 * SizeConfig.oneH).roundToDouble()),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                        (4 * SizeConfig.oneW).roundToDouble()),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black12,width: 2)
                   ),
                   child: Column(
                     children: [
@@ -340,16 +338,28 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
   }
 
   buildOversList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      controller: ScrollController(),
-      scrollDirection: Axis.vertical,
-      itemCount: widget.match.getOverCount(),
-      itemBuilder: (BuildContext context, int index) => DummyOverCard(
-        inningNo: 2,
-        creatorUID: widget.creatorUID,
-        match: widget.match,
-        overNoOnCard: (index + 1),
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: (8 * SizeConfig.oneW).roundToDouble(),
+          vertical: (10 * SizeConfig.oneH).roundToDouble()),
+      margin: EdgeInsets.symmetric(
+          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+          vertical: (10 * SizeConfig.oneH).roundToDouble()),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
+      ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        controller: ScrollController(),
+        scrollDirection: Axis.vertical,
+        itemCount: widget.match.getOverCount(),
+        itemBuilder: (BuildContext context, int index) => DummyOverCard(
+          inningNo: 2,
+          creatorUID: widget.creatorUID,
+          match: widget.match,
+          overNoOnCard: (index + 1),
+        ),
       ),
     );
   }

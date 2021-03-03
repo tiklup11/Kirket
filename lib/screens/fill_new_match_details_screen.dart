@@ -54,9 +54,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     if (newMatch.getOverCount()!=null && newMatch.getPlayerCount()!=null &&
     newMatch.getTeam1Name()!=null && newMatch.getTeam2Name()!=null && newMatch.getLocation()!=null &&
         newMatch.getOverCount().toString()!='' && newMatch.getPlayerCount().toString()!='' &&
-        newMatch.getTeam1Name()!='' && newMatch.getTeam2Name()!='' && newMatch.getLocation()!=''
-    ) {
-      // print('QWWWWWWWWW:::   ${newMatch.getTeam1Name()}');
+        newMatch.getTeam1Name()!='' && newMatch.getTeam2Name()!='' && newMatch.getLocation()!='' ) {
       generateIdForMatch();
       //TODO: 1.Upload Match Details on firebase
       uploadMatchDataToCloud();
@@ -180,19 +178,21 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
      final sizedBoxSpace = SizedBox(height: (24*SizeConfig.oneH).roundToDouble());
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        title: Text("Match Details"),
+        title: Text("Fill Match Details",style: TextStyle(color: Colors.black),),
       ),
       key: _scaffoldKey,
       body: Form(
         key: _formKey,
         child: Scrollbar(
-          child: SingleChildScrollView(
-            dragStartBehavior: DragStartBehavior.down,
+          child: Padding(
             padding: EdgeInsets.symmetric(horizontal: (16*SizeConfig.oneW).roundToDouble()),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: ListView(
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 sizedBoxSpace,
                 TextFormField(
@@ -301,14 +301,9 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
     var _currencies = [
       "Create new Category",
-      "Food",
-      "Transport",
-      "Personal",
-      "Shopping",
-      "Medical",
-      "Rent",
-      "Movie",
-      "Salary"
+      "AKPL",
+      "Karhi Local",
+      "College"
     ];
 
     return FormField<String>(
@@ -366,8 +361,9 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       },
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.blueGrey.shade400,
-            borderRadius: BorderRadius.circular(SizeConfig.setWidth(10))
+            color: Colors.blueAccent.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.black12,width: 2)
         ),
         margin: EdgeInsets.symmetric(horizontal: SizeConfig.setWidth(100)),
         height: SizeConfig.setHeight(40),

@@ -273,7 +273,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
             }
 
             return Container(
-              color: Colors.black12,
+              color: Colors.white,
               child: Column(
                 children: [
                   miniScoreCard(),
@@ -281,7 +281,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                   // textWidget(),
                   Expanded(
                     child: Container(
-                      color: Colors.blueGrey.shade400,
+                      color: Colors.blueAccent.shade100,
                       margin: EdgeInsets.only(top: SizeConfig.setHeight(16)),
                       padding: EdgeInsets.symmetric(
                           vertical: SizeConfig.setHeight(10),
@@ -477,9 +477,8 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                       horizontal: (10 * SizeConfig.oneW).roundToDouble(),
                       vertical: (10 * SizeConfig.oneH).roundToDouble()),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                        (4 * SizeConfig.oneW).roundToDouble()),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black12,width: 2)
                   ),
                   child: Column(
                     children: [
@@ -946,10 +945,9 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
               vertical: (8 * SizeConfig.oneH).roundToDouble(),
               horizontal: (4 * SizeConfig.oneW).roundToDouble()),
           decoration: BoxDecoration(
-              borderRadius:
-                  BorderRadius.circular((5 * SizeConfig.oneW).roundToDouble()),
-              color:
-                  overNoOnCard == currentOver ? Colors.white : Colors.white60),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.black12,width: 2)
+          ),
           // height: (60 * SizeConfig.oneH).roundToDouble(),
           child: currentOver == 0
               ? Row(children: zeroOverBalls)
@@ -998,14 +996,12 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                         }
                       });
                       return Column(
+                        // crossAxisAlignment: CrossAxisAlignment,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text("OVER NO: $overNoOnCard"),
-                              SizedBox(
-                                width: 30 * SizeConfig.oneW,
-                              ),
                               bowlerOfThisOver == null
                                   ? Container()
                                   : Text("🏐 : $bowlerOfThisOver"),
@@ -1556,7 +1552,7 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   selectPlayersBtn() {
     return Container(
       height: scoreSelectionAreaLength.toDouble(),
-      color: Colors.blueGrey.shade400,
+      color: Colors.blueAccent.shade100,
       padding: EdgeInsets.symmetric(
           horizontal: (70 * SizeConfig.oneW).roundToDouble()),
       child: Column(

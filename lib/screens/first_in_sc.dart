@@ -32,6 +32,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
   Widget build(BuildContext context) {
 
     return Container(
+      color: Colors.white,
       child: ListView(
         // shrinkWrap: true,
         // crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,9 +59,8 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           horizontal: (10 * SizeConfig.oneW).roundToDouble(),
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(
-            (4 * SizeConfig.oneW).roundToDouble()),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
       ),
       child: Column(
         children: [
@@ -77,7 +77,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
 
           Container(
             color: Colors.black12,
-            height: (4 * SizeConfig.oneH).roundToDouble(),
+            height: (2 * SizeConfig.oneH).roundToDouble(),
           ),
 
           //Batsman's data
@@ -151,9 +151,8 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           horizontal: (10 * SizeConfig.oneW).roundToDouble(),
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(
-            (4 * SizeConfig.oneW).roundToDouble()),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
       ),
       child: Column(
         children: [
@@ -173,7 +172,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
 
           Container(
             color: Colors.black12,
-            height: (4 * SizeConfig.oneH).roundToDouble(),
+            height: (2 * SizeConfig.oneH).roundToDouble(),
           ),
 
           //Batsman's data
@@ -276,9 +275,8 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                       horizontal: (10 * SizeConfig.oneW).roundToDouble(),
                       vertical: (10 * SizeConfig.oneH).roundToDouble()),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                        (4 * SizeConfig.oneW).roundToDouble()),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black12,width: 2)
                   ),
                   child: Column(
                     children: [
@@ -332,16 +330,28 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
   }
 
   buildOversList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      controller: ScrollController(),
-      scrollDirection: Axis.vertical,
-      itemCount: widget.match.getOverCount(),
-      itemBuilder: (BuildContext context, int index) => DummyOverCard(
-        inningNo: 1,
-        creatorUID: widget.creatorUID,
-          match: widget.match,
-          overNoOnCard: (index + 1),
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+          vertical: (10 * SizeConfig.oneH).roundToDouble()),
+      margin: EdgeInsets.symmetric(
+          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+          vertical: (10 * SizeConfig.oneH).roundToDouble()),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
+      ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        controller: ScrollController(),
+        scrollDirection: Axis.vertical,
+        itemCount: widget.match.getOverCount(),
+        itemBuilder: (BuildContext context, int index) => DummyOverCard(
+          inningNo: 1,
+          creatorUID: widget.creatorUID,
+            match: widget.match,
+            overNoOnCard: (index + 1),
+        ),
       ),
     );
   }

@@ -62,7 +62,6 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
     _interstitialAd = createInterstitialAd()..load();
 
-    // widget.creatorUID = '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
     Stream<DocumentSnapshot> stream;
 
     if(widget.match.getInningNo()==1){
@@ -98,10 +97,17 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
               _scoreBoardData.totalRuns = totalRuns;
               _scoreBoardData.totalWicketsDown = wicketsDown;
             }
-
             return liveCardUI(scoreBoardData: _scoreBoardData);
           }
         });
+  }
+
+  divider(){
+    return Container(
+      color: Colors.black12,
+      height: 2,
+      width: double.infinity,
+    );
   }
 
   Widget miniScoreLoadingScreen() {
@@ -115,14 +121,25 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
   liveCardUI({ScoreBoardData scoreBoardData}){
     return Container(
-      margin: EdgeInsets.only(top: (16*SizeConfig.oneH).roundToDouble(),
-          // left: (10*SizeConfig.oneW).roundToDouble(),
-          // right: (10*SizeConfig.oneW).roundToDouble(),
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 10,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
       ),
-      // height:widget.match.getIsMatchStarted()?
-      // (250*SizeConfig.oneH).roundToDouble():
-      // (150*SizeConfig.oneH).roundToDouble(),
+      margin: EdgeInsets.only(top: (16*SizeConfig.oneH).roundToDouble(),
+          left: (10*SizeConfig.oneW).roundToDouble(),
+          right: (10*SizeConfig.oneW).roundToDouble(),
+      ),
       child: MaterialButton(
+        padding: EdgeInsets.zero,
         onPressed: () {
           if(widget.match.getIsMatchStarted()){
             _interstitialAd?.show();
@@ -136,88 +153,86 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
             showAlertDialog(context: context);
           }
         },
-        child: Card(
-          elevation: 40,
-          child: Column(
-            children: [
-              widget.match.getIsMatchStarted() && !widget.match.isSecondInningEnd?
-              Container(
-                padding: EdgeInsets.only(top: 10),
-                child: liveScore(scoreBoardData: scoreBoardData),
-              ):Container(),
+        child: Column(
+          children: [
+            widget.match.getIsMatchStarted() && !widget.match.isSecondInningEnd?
+
             Container(
-              decoration: BoxDecoration(
-                // color: Colors.blueGrey.shade50,
-                // borderRadius: BorderRadius.circular(10)
-              ),
-              margin: EdgeInsets.only(bottom: 8),
-              padding: EdgeInsets.symmetric(horizontal:(14*SizeConfig.oneW).roundToDouble(),vertical:( 14*SizeConfig.oneH).roundToDouble()),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // textBaseline: TextBaseline.values,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          child: Image.asset(
-                            'assets/images/team1.png',
-                            scale: (17*SizeConfig.oneW).roundToDouble(),
-                          ),
-                        ),
-                        Text(widget.match.getTeam1Name().toUpperCase(),maxLines: 2,
-                            style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12)
-                        )
-                      ],
-                    ),
-                  ),
-                  Text(
-                    "VS",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: (25*SizeConfig.oneW).roundToDouble(),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          child: Image.asset(
-                            'assets/images/team2.png',
-                            scale: (17*SizeConfig.oneW).roundToDouble(),
-                          ),
-                        ),
-                        Text(
-                            widget.match.getTeam2Name().toUpperCase(),maxLines: 2,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12)
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              // child: Stack(
-              //   alignment: Alignment.center,
-              //   children: [
-              //     // Image.asset('assets/gifs/win.gif',height: 100,width: 100,),
-              //
-              //   ],
-              // ),
+              // padding: EdgeInsets.only(top: 10),
+              child: liveScore(scoreBoardData: scoreBoardData),
+            ):Container(),
+
+            aVsB(),
+
+            divider(),
+
+            Container(
+              height: SizeConfig.setHeight(40),
+              width: double.infinity,
+                child: Center(child:bottomLine()
+                ),
             ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 2,horizontal: 6),
-                height: SizeConfig.setHeight(40),
-                width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.blueGrey.shade50,
-                  ),
-                  child: Center(child:bottomLine()
-                  )),
-            ],
-          ),
+          ],
         ),
       ),
+    );
+  }
+
+  aVsB(){
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // textBaseline: TextBaseline.values,
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  child: Image.asset(
+                    'assets/images/team1.png',
+                    scale: (17*SizeConfig.oneW).roundToDouble(),
+                  ),
+                ),
+                Text(widget.match.getTeam1Name().toUpperCase(),maxLines: 2,
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12)
+                )
+              ],
+            ),
+          ),
+          Text(
+            "VS",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: (25*SizeConfig.oneW).roundToDouble(),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  child: Image.asset(
+                    'assets/images/team2.png',
+                    scale: (17*SizeConfig.oneW).roundToDouble(),
+                  ),
+                ),
+                Text(
+                    widget.match.getTeam2Name().toUpperCase(),maxLines: 2,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12)
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      // child: Stack(
+      //   alignment: Alignment.center,
+      //   children: [
+      //     // Image.asset('assets/gifs/win.gif',height: 100,width: 100,),
+      //
+      //   ],
+      // ),
     );
   }
 
@@ -246,11 +261,12 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
   liveScore({ScoreBoardData scoreBoardData}){
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble()),
+      margin: EdgeInsets.only(left: 10,right: 10,top: 14,bottom: 0),
       padding: EdgeInsets.only(top: (6*SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
-        color: Colors.blueGrey.shade50,
-        borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
+          color: Colors.white,
+          border: Border.all(color: Colors.black12,width: 2),
+          borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
       ),
       child: Column(
         children: [

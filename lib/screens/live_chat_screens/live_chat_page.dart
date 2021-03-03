@@ -27,7 +27,7 @@ class _LiveChatPageState extends State<LiveChatPage> {
   Widget build(BuildContext context) {
     print("currentUID: ${widget.creatorUid}");
     return Container(
-      color: Colors.black12,
+      color: Colors.white,
       child: Column(
         children: [
           msgList(),
@@ -55,6 +55,15 @@ class _LiveChatPageState extends State<LiveChatPage> {
             return Expanded(child: Container(child: Center(child: CircularProgressIndicator())));
           }else{
             final allMsgDocs = snapshot.data.docs;
+
+            if(allMsgDocs.isEmpty){
+              return Expanded(
+                child: Container(
+                  child: Center(child: Image.asset('assets/gifs/msg.gif',scale: 1.4,)),
+                ),
+              );
+            }
+
             List<MessageCard> allMsgList = [];
 
             allMsgDocs.forEach((msgDoc) {
@@ -83,14 +92,10 @@ class _LiveChatPageState extends State<LiveChatPage> {
 
   sendBtn(){
     return Bounce(
-        child:Container(
-          padding: EdgeInsets.symmetric(horizontal: 8,vertical: 11),
-          child: Icon(Icons.send_rounded,color: Colors.blueGrey,),
-          decoration: BoxDecoration(
-            color: Colors.blueGrey.shade100,
-            borderRadius: BorderRadius.all(Radius.circular(6))
-          ),
-        ) ,
+        child:CircleAvatar(
+          radius: 23,
+            backgroundColor: Colors.black12,
+            child: Icon(Icons.send_rounded,color: Colors.black38,)) ,
         onPressed: (){
           print("Sending");
           uploadMessageToCloud();
@@ -119,10 +124,11 @@ class _LiveChatPageState extends State<LiveChatPage> {
 
   typeBox() {
     return Container(
-      width: 330,
+      width: 310,
       decoration: BoxDecoration(
-        color: Colors.blueGrey.shade100,
-            borderRadius: BorderRadius.all(Radius.circular(8))
+          border: Border.all(color: Colors.black26,width: 2),
+          color:Colors.white.withOpacity(0.3),
+            borderRadius: BorderRadius.all(Radius.circular(20))
       ),
       margin: EdgeInsets.symmetric(horizontal: (6*SizeConfig.oneW).roundToDouble(),vertical: 12),
       alignment: Alignment.bottomCenter,

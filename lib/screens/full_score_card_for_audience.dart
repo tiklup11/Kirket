@@ -34,7 +34,9 @@ class _ScoreCardState extends State<ScoreCard> {
     tabBarView = [
       FirstInningScoreCard(creatorUID: widget.creatorUID, match: widget.match2),
       widget.match2.getInningNo()==1?
-    Container(child: Center(child: zeroData(msg: "2nd Inning not started yet",iconData: Icons.sports_cricket_outlined),),):
+    Container(
+      color: Colors.white,
+      child: Center(child: zeroData(msg: "2nd Inning not started yet",iconData: Icons.sports_cricket_outlined),),):
     SecondInningScoreCard(creatorUID: widget.creatorUID, match: widget.match2)
     ];
   }

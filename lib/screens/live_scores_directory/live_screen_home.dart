@@ -34,9 +34,12 @@ class LiveScreenHome extends StatelessWidget {
       initialIndex: 0,
       length: tabs.length,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: Colors.white,
           toolbarHeight: (50*SizeConfig.oneH).roundToDouble(),
           bottom: TabBar(
+            labelColor: Colors.black,
             isScrollable: true,
             tabs: [
               for (final tab in tabs) Tab(text: tab),

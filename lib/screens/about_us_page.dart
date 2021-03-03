@@ -1,5 +1,6 @@
 import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/widgets/back_button_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +11,13 @@ class AboutUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('About Us'),
+        leading: CustomBackButton(),
+        iconTheme: IconThemeData(color: Colors.black),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text('About Us',style: TextStyle(color: Colors.black),),
       ),
       body: SafeArea(
         child: Column(

@@ -13,7 +13,7 @@ class BatsmenScoreRow extends StatelessWidget {
 
   Color whatColor(){
     if(isThisSelectBatsmenBtn){
-      return Colors.blueGrey.withOpacity(0.5);
+      return Colors.blueAccent.withOpacity(0.5);
     }
     if(isOnStrike){
       return ThemeData.light().primaryColor.withOpacity(0.3);

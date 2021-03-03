@@ -111,7 +111,7 @@ class _SignInPageState extends State<SignInPage> {
       Stack(children: [
         Container(
           // color: Color(0xFF466EB6),
-        color: Colors.blueGrey
+        color: Colors.blueAccent.withOpacity(0.7)
         ),
       Center(
         child: Container(

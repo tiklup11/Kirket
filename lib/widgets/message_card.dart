@@ -27,32 +27,24 @@ class MessageCard extends StatelessWidget {
           crossAxisAlignment:currentUser.email==senderEmail?
           CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            Text(senderDisplayName,style: TextStyle(fontSize: SizeConfig.setWidth(8)),),
-            Material(
-              color: Colors.blueGrey,
-              borderRadius:
+            Padding(
+              padding:
               currentUser.email==senderEmail?
-              BorderRadius.only(
-                topRight: Radius.circular(0),
-                topLeft:  Radius.circular(SizeConfig.setWidth(8)),
-                bottomRight:  Radius.circular(SizeConfig.setWidth(16)),
-                bottomLeft:  Radius.circular(SizeConfig.setWidth(8)),
-              ):
-              BorderRadius.only(
-                topRight: Radius.circular(SizeConfig.setWidth(8)),
-                topLeft:  Radius.circular(0),
-                bottomRight:  Radius.circular(SizeConfig.setWidth(8)),
-                bottomLeft:  Radius.circular(SizeConfig.setWidth(16)),
-              ),
-              child: Padding(
+              EdgeInsets.only(right:12.0):EdgeInsets.only(left: 12.0),
+              child: Text(senderDisplayName,style: TextStyle(fontSize: SizeConfig.setWidth(8)),),
+            ),
+            Container(
                 padding: EdgeInsets.only(
                     left: SizeConfig.setWidth(14),
                     right:SizeConfig.setWidth(14),
                     top: SizeConfig.setWidth(8),
                     bottom: SizeConfig.setWidth(8)),
-                child: Text(textMsg,maxLines: 10,),
-              ),
-            ),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black26,width: 2)
+                ),
+                child: Text(textMsg,maxLines: 10,)),
           ],
         ),
       ),

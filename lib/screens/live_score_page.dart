@@ -157,7 +157,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
               print("Batting:: ${firstBattingTeam}");
 
               return Container(
-                color: Colors.black12,
+                color: Colors.white,
                 child: ListView(
                   shrinkWrap: true,
                   // mainAxisSize: MainAxisSize.min,
@@ -227,9 +227,9 @@ class _LiveScorePageState extends State<LiveScorePage> {
                       horizontal: (10 * SizeConfig.oneW).roundToDouble(),
                       vertical: (10 * SizeConfig.oneH).roundToDouble()),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                        (4 * SizeConfig.oneW).roundToDouble()),
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black12,width: 2),
+                      borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
                   ),
                   child: Column(
                     children: [
@@ -282,9 +282,9 @@ class _LiveScorePageState extends State<LiveScorePage> {
                     bottom: (10 * SizeConfig.oneW).roundToDouble(),
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                        (4 * SizeConfig.oneW).roundToDouble()),
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black12,width: 2),
+                      borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
                   ),
                   child: playersScore(),
                 )
@@ -296,15 +296,30 @@ class _LiveScorePageState extends State<LiveScorePage> {
   }
 
   buildOversList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      controller: _scrollController,
-      scrollDirection: Axis.vertical,
-      itemCount: widget.match.getOverCount(),
-      itemBuilder: (BuildContext context, int index) => overCard(
-          overNoOnCard: (index + 1),
-          currentOver: widget.match.currentOver.getCurrentOverNo(),
-          currentBallNo: widget.match.currentOver.getCurrentBallNo()),
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+          vertical: (10 * SizeConfig.oneH).roundToDouble()),
+      margin: EdgeInsets.only(
+        left: (10 * SizeConfig.oneW).roundToDouble(),
+        right: (10 * SizeConfig.oneW).roundToDouble(),
+        bottom: (10 * SizeConfig.oneW).roundToDouble(),
+      ),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.black12,width: 2),
+          borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
+      ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        controller: _scrollController,
+        scrollDirection: Axis.vertical,
+        itemCount: widget.match.getOverCount(),
+        itemBuilder: (BuildContext context, int index) => overCard(
+            overNoOnCard: (index + 1),
+            currentOver: widget.match.currentOver.getCurrentOverNo(),
+            currentBallNo: widget.match.currentOver.getCurrentBallNo()),
+      ),
     );
   }
 

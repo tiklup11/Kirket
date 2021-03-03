@@ -6,6 +6,7 @@ import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
+import 'package:umiperer/widgets/back_button_widget.dart';
 
 //where actual counting happens
 class TossScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _TossScreenState extends State<TossScreen> {
   String tossWinner = "who";
   String batOrBall = "";
   Color unSelectedColor = Colors.black12;
-  Color selectedColor = Colors.blueGrey.shade400;
+  Color selectedColor = Colors.blueAccent;
 
   final double outerRadius = (40*SizeConfig.oneW).roundToDouble();
   final double innerRadius = (26*SizeConfig.oneW).roundToDouble();
@@ -37,8 +38,16 @@ class _TossScreenState extends State<TossScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text("${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()}"),
+          leading: CustomBackButton(),
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Colors.white,
+          title: Text(
+              "${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()}",
+          style: TextStyle(color: Colors.black),
+          ),
         ),
         body: Container(
           child: Column(
@@ -231,8 +240,10 @@ class _TossScreenState extends State<TossScreen> {
       child: Bounce(
         duration: Duration(milliseconds: 150),
         child: Container(
+
           decoration: BoxDecoration(
-            color: Colors.blueGrey.shade400,
+              border: Border.all(color: Colors.black12,width: 2),
+            color: Colors.blueAccent.withOpacity(0.6),
             borderRadius: BorderRadius.circular(10)
           ),
           width: double.infinity,

@@ -139,16 +139,30 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
         ),
       ),
       appBar: AppBar(
+        leading:  Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.arrow_forward_ios_rounded),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Colors.white,
         // elevation: 0.1,
-        title: Text(title),
+        title: Text(title,style: TextStyle(color: Colors.black),),
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedFontSize: 13,
+        unselectedFontSize: 13,
         unselectedIconTheme: IconThemeData(color: Colors.black38),
-        // selectedIconTheme: IconThemeData(color: Colors.blueGrey.shade600),
-        // selectedItemColor: Colors.blueGrey.shade600,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

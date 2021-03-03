@@ -37,7 +37,7 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
             Container(
               padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.oneH).roundToDouble(),
                   horizontal: (20*SizeConfig.oneW).roundToDouble()),
-              height: (260*SizeConfig.oneH).roundToDouble(),
+              height: (300*SizeConfig.oneH).roundToDouble(),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular((8*SizeConfig.oneW).roundToDouble()),
@@ -80,8 +80,18 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-
+        SizedBox(
+          height: 10,
+        ),
+        hintTextTop(),
+        SizedBox(
+          height: 18,
+        ),
         enterForm(),
+        radioButtonPublicOrPrivate(),
+        SizedBox(
+          height: 16,
+        ),
         endBtns()
       ],
     );
@@ -231,7 +241,42 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
 
   hintTextTop(){
     return Container(
-      child: Text("Category can be your tournament name, next time you create a match, you can put ")
+      child: Text("Category can be your Tournament name, Location etc. Next time you create a similar new match, you can put it in same category.")
+    );
+  }
+
+  String selectedState = "Private";
+
+
+  radioButtonPublicOrPrivate(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        new Radio(
+          value: "Public",
+          groupValue: selectedState,
+          onChanged: (value){
+            setState(() {
+              selectedState=value;
+              print(selectedState);
+            });
+          },
+        ),
+        new Text(
+          'Public',
+        ),
+        new Radio(
+          value: "Private",
+          groupValue: selectedState,
+          onChanged:  (value){
+            setState(() {
+              selectedState=value;
+            });
+          },
+        ),
+        new Text(
+          'Private',),
+      ],
     );
   }
 

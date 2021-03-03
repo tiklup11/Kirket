@@ -5,6 +5,8 @@ class CricketMatch{
 
   String _team1Name;
   String _team2Name;
+  String category;
+
   int _oversCount;
   int _playersCount;
   int _inningNumber=1;

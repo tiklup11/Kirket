@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/screens/first_in_sc.dart';
 import 'package:umiperer/screens/full_score_card_for_audience.dart';
 import 'package:umiperer/screens/matchDetailsScreens/score_counting_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
+import 'package:umiperer/screens/second_inn_sc.dart';
 
 class MatchDetails extends StatelessWidget {
 
@@ -19,7 +22,8 @@ class MatchDetails extends StatelessWidget {
     final tabs = [
       "Details",
       "Counting",
-      "ScoreCard",
+      "1st Inning",
+      "2nd Inning"
       // "BallByBall"
       // "Overs"
     ];
@@ -27,7 +31,12 @@ class MatchDetails extends StatelessWidget {
     final tabBarView = [
       TeamDetails(match: match,),
       ScoreCountingPage(user: user,match: match,),
-      ScoreCard(creatorUID: user.uid,match2: match,),
+      FirstInningScoreCard(creatorUID: user.uid, match: match),
+      match.getInningNo()==1?
+      Container(
+        color: Colors.white,
+        child: Center(child: zeroData(msg: "2nd Inning not started yet",iconData: Icons.sports_cricket_outlined),),):
+      SecondInningScoreCard(creatorUID: user.uid, match: match)
       // BallByBallPage()
       // Overs(),
     ];
@@ -37,6 +46,8 @@ class MatchDetails extends StatelessWidget {
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Colors.white,
           actions: [
             PopupMenuButton<String>(
               padding: EdgeInsets.zero,
@@ -59,14 +70,17 @@ class MatchDetails extends StatelessWidget {
                   PopupMenuItem<String>(
                     value: "Delete Match",
                     child: Text("Delete Match"),),
-
                 ];
               },
               ),
           ],
           automaticallyImplyLeading: false,
-          title: Text("${match.getTeam1Name().toUpperCase()} v ${match.getTeam2Name().toUpperCase()}"),
+          title: Text(
+              "${match.getTeam1Name().toUpperCase()} v ${match.getTeam2Name().toUpperCase()}",
+            style: TextStyle(color: Colors.black),
+          ),
           bottom: TabBar(
+            labelColor: Colors.black,
             isScrollable: true,
             tabs: [
               for (final tab in tabs) Tab(text: tab),
@@ -125,6 +139,11 @@ class MatchDetails extends StatelessWidget {
        docs.reference.delete();
     }
 
+    final chatCollection = await matchesRef.doc(match.getMatchId()).collection("chatData").get();
+    for(var docs in chatCollection.docs){
+      docs.reference.delete();
+    }
+
     matchesRef.doc(match.getMatchId()).delete();
 
   }
@@ -139,6 +158,21 @@ class MatchDetails extends StatelessWidget {
     Share.share(sharingText,
         subject: 'Download Kirket app and watch live scores',
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  }
+
+
+  zeroData({String msg, IconData iconData}){
+    return Container(
+      height: (80*SizeConfig.oneH).roundToDouble(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(iconData),
+          SizedBox(width: (4*SizeConfig.oneW).roundToDouble(),),
+          Text(msg),
+        ],
+      ),
+    );
   }
 
 
