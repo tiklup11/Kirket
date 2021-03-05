@@ -1505,14 +1505,16 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
                 ],
               )
             : Container(),
+        SizedBox(height: 4,),
         Bounce(
           onPressed: whatToUpdateFunction,
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 16,horizontal: 20),
             margin: EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.circular(12)
+                color: Colors.blueAccent.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.black12,width: 2)
             ),
               child: Text(btnText),
 ),

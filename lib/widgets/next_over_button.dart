@@ -22,8 +22,9 @@ class NextOverButton extends StatelessWidget {
               height: 50,
               width: 180,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: Colors.blueGrey,
+                  color: Colors.blueAccent.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.black12,width: 2)
               ),
               child: Center(child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

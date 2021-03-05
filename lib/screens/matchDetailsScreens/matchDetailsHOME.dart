@@ -10,12 +10,38 @@ import 'package:umiperer/screens/matchDetailsScreens/score_counting_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
 import 'package:umiperer/screens/second_inn_sc.dart';
 
-class MatchDetails extends StatelessWidget {
+class MatchDetails extends StatefulWidget {
 
   MatchDetails({this.match,this.user});
 
   final CricketMatch match;
   final User user;
+
+  @override
+  _MatchDetailsState createState() => _MatchDetailsState();
+}
+
+class _MatchDetailsState extends State<MatchDetails> {
+
+  List tabBarView;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tabBarView = [
+      TeamDetails(match: widget.match,),
+      ScoreCountingPage(user: widget.user,match: widget.match,),
+      FirstInningScoreCard(creatorUID: widget.user.uid, match: widget.match),
+      widget.match.getInningNo()==1?
+      Container(
+        color: Colors.white,
+        child: Center(child: zeroData(msg: "2nd Inning not started yet",iconData: Icons.sports_cricket_outlined),),):
+      SecondInningScoreCard(creatorUID: widget.user.uid, match: widget.match)
+      // BallByBallPage()
+      // Overs(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +54,6 @@ class MatchDetails extends StatelessWidget {
       // "Overs"
     ];
 
-    final tabBarView = [
-      TeamDetails(match: match,),
-      ScoreCountingPage(user: user,match: match,),
-      FirstInningScoreCard(creatorUID: user.uid, match: match),
-      match.getInningNo()==1?
-      Container(
-        color: Colors.white,
-        child: Center(child: zeroData(msg: "2nd Inning not started yet",iconData: Icons.sports_cricket_outlined),),):
-      SecondInningScoreCard(creatorUID: user.uid, match: match)
-      // BallByBallPage()
-      // Overs(),
-    ];
 
     return DefaultTabController(
       initialIndex: 0,
@@ -76,7 +90,7 @@ class MatchDetails extends StatelessWidget {
           ],
           automaticallyImplyLeading: false,
           title: Text(
-              "${match.getTeam1Name().toUpperCase()} v ${match.getTeam2Name().toUpperCase()}",
+              "${widget.match.getTeam1Name().toUpperCase()} v ${widget.match.getTeam2Name().toUpperCase()}",
             style: TextStyle(color: Colors.black),
           ),
           bottom: TabBar(
@@ -97,7 +111,6 @@ class MatchDetails extends StatelessWidget {
     );
   }
 
-
   deleteTheMatchFromCloud(BuildContext context) async{
     ///when we delete a collection,
     ///inner collections are not deleted, so we have to delete inner collections also
@@ -105,53 +118,53 @@ class MatchDetails extends StatelessWidget {
     Navigator.pop(context);
     // print("deleting the docs");
 
-    final batsmen1Ref = await matchesRef.doc(match.getMatchId()).collection("1InningBattingData").get();
+    final batsmen1Ref = await matchesRef.doc(widget.match.getMatchId()).collection("1InningBattingData").get();
     for(var docs in batsmen1Ref.docs){
       docs.reference.delete();
     }
 
-    final batsmen2Ref = await matchesRef.doc(match.getMatchId()).collection("2InningBattingData").get();
+    final batsmen2Ref = await matchesRef.doc(widget.match.getMatchId()).collection("2InningBattingData").get();
     for(var docs in batsmen2Ref.docs){
       docs.reference.delete();
     }
 
-    final bowler1Ref = await matchesRef.doc(match.getMatchId()).collection("1InningBowlingData").get();
+    final bowler1Ref = await matchesRef.doc(widget.match.getMatchId()).collection("1InningBowlingData").get();
     for(var docs in bowler1Ref.docs){
       docs.reference.delete();
     }
 
-    final bowler2Ref = await matchesRef.doc(match.getMatchId()).collection("2InningBowlingData").get();
+    final bowler2Ref = await matchesRef.doc(widget.match.getMatchId()).collection("2InningBowlingData").get();
     for(var docs in bowler2Ref.docs){
       docs.reference.delete();
     }
 
-    matchesRef.doc(match.getMatchId()).collection("FirstInning").doc("scoreBoardData").delete();
+    matchesRef.doc(widget.match.getMatchId()).collection("FirstInning").doc("scoreBoardData").delete();
 
-    matchesRef.doc(match.getMatchId()).collection("SecondInning").doc("scoreBoardData").delete();
+    matchesRef.doc(widget.match.getMatchId()).collection("SecondInning").doc("scoreBoardData").delete();
 
-    final overs1Ref = await matchesRef.doc(match.getMatchId()).collection("inning1overs").get();
+    final overs1Ref = await matchesRef.doc(widget.match.getMatchId()).collection("inning1overs").get();
     for(var docs in overs1Ref.docs){
       docs.reference.delete();
     }
 
-    final overs2Ref = await matchesRef.doc(match.getMatchId()).collection("inning2overs").get();
+    final overs2Ref = await matchesRef.doc(widget.match.getMatchId()).collection("inning2overs").get();
     for(var docs in overs2Ref.docs){
        docs.reference.delete();
     }
 
-    final chatCollection = await matchesRef.doc(match.getMatchId()).collection("chatData").get();
+    final chatCollection = await matchesRef.doc(widget.match.getMatchId()).collection("chatData").get();
     for(var docs in chatCollection.docs){
       docs.reference.delete();
     }
 
-    matchesRef.doc(match.getMatchId()).delete();
+    matchesRef.doc(widget.match.getMatchId()).delete();
 
   }
 
   _shareMatch(BuildContext context) {
 
     final String playStoreUrl = "https://play.google.com/store/apps/details?id=com.okays.umiperer";
-    final String msg = "Watch live score of Cricket Match between ${match.getTeam1Name()} vs ${match.getTeam2Name()} on Kirket app. $playStoreUrl";
+    final String msg = "Watch live score of Cricket Match between ${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()} on Kirket app. $playStoreUrl";
 
     final RenderBox box = context.findRenderObject();
     final sharingText = msg;
@@ -159,7 +172,6 @@ class MatchDetails extends StatelessWidget {
         subject: 'Download Kirket app and watch live scores',
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
-
 
   zeroData({String msg, IconData iconData}){
     return Container(
@@ -174,7 +186,4 @@ class MatchDetails extends StatelessWidget {
       ),
     );
   }
-
-
-
 }

@@ -9,12 +9,14 @@ import 'package:umiperer/widgets/live_match_card.dart';
 
 ///after 2nd inning ends, we are setting isLive to false,
 ///and all those matches are here
-final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
+// final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
 
 class EndMatchesScreen extends StatefulWidget {
-  EndMatchesScreen({this.currentUser});
+  EndMatchesScreen({this.currentUser,this.catName});
 
   final User currentUser;
+  final String catName;
+
   @override
   _EndMatchesScreenState createState() => _EndMatchesScreenState();
 }

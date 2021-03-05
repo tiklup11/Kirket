@@ -1,11 +1,9 @@
-import 'dart:ffi';
 
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';

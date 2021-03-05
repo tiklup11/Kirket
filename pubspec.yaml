@@ -27,12 +27,13 @@ dependencies:
   share: ^0.6.5+4
   package_info: ^0.4.3+4
   firebase_remote_config: ^0.6.0
-  flutter_switch: ^0.2.1
+#  flutter_switch: ^0.2.1
   flutter_bounce: ^1.0.8
   firebase_admob: ^0.11.0+1
   your_splash: ^0.2.2
   shimmer: ^1.1.2
-
+  provider: 4.3.3
+  material_floating_search_bar: ^0.2.6
 
 dev_dependencies:
   flutter_test:
@@ -48,4 +49,5 @@ flutter:
 
    - assets/images/
    - assets/gifs/
+   - assets/json/
 

@@ -31,23 +31,19 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         child:
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            topAppName(),
-            Container(
-                padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.oneH).roundToDouble(),
-                    horizontal: (20*SizeConfig.oneW).roundToDouble()),
-                height: (200*SizeConfig.oneH).roundToDouble(),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular((8*SizeConfig.oneW).roundToDouble()),
-                    bottomRight: Radius.circular((8*SizeConfig.oneW).roundToDouble())),
-                color: Colors.white,
-              ),
-                child:dialogContent(context),
+        Container(
+            padding: EdgeInsets.only(top: (40*SizeConfig.oneH).roundToDouble(),
+                left: (20*SizeConfig.oneW).roundToDouble(),
+            right:  (20*SizeConfig.oneW).roundToDouble(),
+              bottom:  (20*SizeConfig.oneW).roundToDouble()
             ),
-          ],
+            height: (240*SizeConfig.oneH).roundToDouble(),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.black12,width: 2)
+          ),
+            child:dialogContent(context),
         )
     );
   }
@@ -84,7 +80,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
 
         TextFormField(
           decoration: InputDecoration(
-            filled: true,
+            border: new OutlineInputBorder(),
             icon: Icon(Icons.sports_baseball_sharp),
             hintText: "Enter player name",
             labelText: "Player Name",
@@ -99,7 +95,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Bounce(
-              onPressed: () {
+              onPressed: (){
                 Navigator.pop(context);
               },
               child: Container(
@@ -117,8 +113,9 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
                 margin: EdgeInsets.symmetric(horizontal: 4),
                 padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
                 decoration: BoxDecoration(
-                  color: Colors.blueGrey.shade400,
-                  borderRadius: BorderRadius.circular(6)
+                    color: Colors.blueAccent.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black12,width: 2)
                 ),
                 child: Text("Create"),
               ),

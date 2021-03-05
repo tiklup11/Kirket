@@ -60,7 +60,7 @@ overCard()
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Text("Loading");
+            return Center(child: Text("Loading.."));
           } else {
             final overData = snapshot.data.data();
 

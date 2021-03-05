@@ -13,7 +13,7 @@ class HeadLineWidget extends StatelessWidget {
 
   headLine({String headLineString}){
     return  Container(
-      margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble(),bottom: (2*SizeConfig.oneH).roundToDouble()),
+      margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble()),
       padding: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),
       ),
       child: Text(

@@ -21,8 +21,9 @@ class ScoreButton extends StatelessWidget {
           margin: EdgeInsets.symmetric(vertical: SizeConfig.setHeight(6),horizontal: SizeConfig.setWidth(1)),
             padding: EdgeInsets.symmetric(vertical: SizeConfig.setHeight(10)),
             decoration: BoxDecoration(
-                color: Colors.blueGrey,
-                borderRadius: BorderRadius.circular(SizeConfig.setWidth(6))
+                color: Colors.blueAccent.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.black12,width: 2)
             ),
             // height: btnHeight,
             child: Center(child: Text(btnText))),

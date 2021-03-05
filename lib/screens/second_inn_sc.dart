@@ -48,6 +48,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
         children: [
           widget.match.isSecondInningEnd?
           HeadLineWidget(headLineString: "Second inning ended"):Container(),
+          HeadLineWidget(headLineString: "SCORECARD"),
           miniScoreCard(),
           HeadLineWidget(headLineString: widget.match.secondBattingTeam),
           batsmenList(),
@@ -98,10 +99,8 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                 List<BowlerStatsRow> allBowlersList = [];
 
                 if (!snapshot.hasData) {
-                  return loadingData(msg: "Loading bowlers data");
+                  return loadingData();
                 } else {
-
-
                   final bowlersData = snapshot.data.docs;
 
                   bowlersData.forEach((playerData) {
@@ -198,10 +197,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
 
                 if (!snapshot.hasData) {
                   return loadingData(msg: "Loading batsmen data");
-                } else if(widget.match.getInningNo()==1){
-                  loadingData(msg: "2nd Inning not started yet");
-                }
-                  else{
+                } else{
                   final batsmenData = snapshot.data.docs;
 
                   batsmenData.forEach((playerData) {
@@ -260,81 +256,76 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
         .collection('SecondInning')
         .doc("scoreBoardData").snapshots();
 
-    return StreamBuilder<DocumentSnapshot>(
-        stream: stream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container(child: Center(child: CircularProgressIndicator()));
-          } else {
-            final scoreBoardData = snapshot.data.data();
-            final ballOfTheOver = scoreBoardData['ballOfTheOver'];
-            final currentOverNo = scoreBoardData['currentOverNo'];
-            final totalRuns = scoreBoardData['totalRuns'];
-            final wicketsDown = scoreBoardData['wicketsDown'];
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+          vertical: (10 * SizeConfig.oneH).roundToDouble()),
+      margin: EdgeInsets.symmetric(
+          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+          vertical: (10 * SizeConfig.oneH).roundToDouble()),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
+      ),
+      child: StreamBuilder<DocumentSnapshot>(
+          stream: stream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container(child: Center(child: CircularProgressIndicator()));
+            } else {
+              final scoreBoardData = snapshot.data.data();
+              final ballOfTheOver = scoreBoardData['ballOfTheOver'];
+              final currentOverNo = scoreBoardData['currentOverNo'];
+              final totalRuns = scoreBoardData['totalRuns'];
+              final wicketsDown = scoreBoardData['wicketsDown'];
 
-            secondInningScoreBoard.currentBallNo=ballOfTheOver;
-            secondInningScoreBoard.currentOverNo = currentOverNo;
-            secondInningScoreBoard.totalRuns = totalRuns;
-            secondInningScoreBoard.totalWicketsDown = wicketsDown;
-            secondInningScoreBoard.battingTeamName = widget.match.secondBattingTeam;
+              secondInningScoreBoard.currentBallNo=ballOfTheOver;
+              secondInningScoreBoard.currentOverNo = currentOverNo;
+              secondInningScoreBoard.totalRuns = totalRuns;
+              secondInningScoreBoard.totalWicketsDown = wicketsDown;
+              secondInningScoreBoard.battingTeamName = widget.match.secondBattingTeam;
 
-            return Column(
-              children: [
-                // tossLineWidget(),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: (10 * SizeConfig.oneW).roundToDouble(),
-                      vertical: (10 * SizeConfig.oneH).roundToDouble()),
-                  margin: EdgeInsets.symmetric(
-                      horizontal: (10 * SizeConfig.oneW).roundToDouble(),
-                      vertical: (10 * SizeConfig.oneH).roundToDouble()),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.black12,width: 2)
-                  ),
-                  child: Column(
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: SizeConfig.setWidth(280),
-                                child: Text(
-                                  secondInningScoreBoard.battingTeamName
-                                      .toUpperCase(),
-                                  style: TextStyle(
-                                      fontSize:
-                                      (20 * SizeConfig.oneW).roundToDouble()),
-                                ),
-                              ),
-                              Text(
-                                // runs/wickets (currentOverNumber.currentBallNo)
-                                // "65/3  (13.2)",
-                                secondInningScoreBoard.getFormatedRunsString(),
-                                style: TextStyle(
-                                    fontSize:
-                                    (16 * SizeConfig.oneW).roundToDouble()),
-                              )
-                            ],
+                          SizedBox(
+                            width: SizeConfig.setWidth(280),
+                            child: Text(
+                              secondInningScoreBoard.battingTeamName
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                  fontSize:
+                                  (20 * SizeConfig.oneW).roundToDouble()),
+                            ),
                           ),
-                          Column(
-                            children: [
-                              Text("CRR"),
-                              Text(secondInningScoreBoard.getCrr()),
-                            ],
-                          ),
+                          Text(
+                            // runs/wickets (currentOverNumber.currentBallNo)
+                            // "65/3  (13.2)",
+                            secondInningScoreBoard.getFormatedRunsString(),
+                            style: TextStyle(
+                                fontSize:
+                                (16 * SizeConfig.oneW).roundToDouble()),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text("CRR"),
+                          Text(secondInningScoreBoard.getCrr()),
                         ],
                       ),
                     ],
                   ),
-                ),
-              ],
-            );
-          }
-        });
+                ],
+              );
+            }
+          }),
+    );
   }
 
   buildOversList() {

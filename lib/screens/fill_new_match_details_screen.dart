@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart' show QuerySnapshot;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:provider/provider.dart';
 import 'package:umiperer/main.dart';
+import 'package:umiperer/modals/CategoryController.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/widgets/new_category_dialog.dart';
@@ -35,6 +37,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
   CricketMatch newMatch;
   var uuid = Uuid();
+  String selectedCat;
 
   void showInSnackBar(String value) {
     _scaffoldKey.currentState.hideCurrentSnackBar();
@@ -54,7 +57,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     if (newMatch.getOverCount()!=null && newMatch.getPlayerCount()!=null &&
     newMatch.getTeam1Name()!=null && newMatch.getTeam2Name()!=null && newMatch.getLocation()!=null &&
         newMatch.getOverCount().toString()!='' && newMatch.getPlayerCount().toString()!='' &&
-        newMatch.getTeam1Name()!='' && newMatch.getTeam2Name()!='' && newMatch.getLocation()!='' ) {
+        newMatch.getTeam1Name()!='' && newMatch.getTeam2Name()!='' && newMatch.getLocation()!='' && selectedCat!=null && selectedCat!="Create new Category" && selectedCat.trim().length!=0
+    ) {
       generateIdForMatch();
       //TODO: 1.Upload Match Details on firebase
       uploadMatchDataToCloud();
@@ -163,6 +167,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'winningMsg':null,
       'isLive':false,
       'isLiveChatOn':true,
+      'cat':selectedCat,
     });
   }
 
@@ -177,117 +182,119 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
   Widget build(BuildContext context) {
      final sizedBoxSpace = SizedBox(height: (24*SizeConfig.oneH).roundToDouble());
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
+    return Consumer<CategoryController>(
+      builder: (_,categoryController,child)=> Scaffold(
         backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        title: Text("Fill Match Details",style: TextStyle(color: Colors.black),),
-      ),
-      key: _scaffoldKey,
-      body: Form(
-        key: _formKey,
-        child: Scrollbar(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: (16*SizeConfig.oneW).roundToDouble()),
-            child: ListView(
-              // crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                sizedBoxSpace,
-                TextFormField(
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    border: new OutlineInputBorder(),
-                    icon: Icon(Icons.whatshot_rounded,),
-                    hintText: "Enter team 1 name",
-                    labelText:
-                    "Team 1",
-                  ),
-                  onChanged: (value) {
-                    newMatch.setTeam1Name(value);
-                  },
-                  validator: (value){
-                   if (value.isEmpty) {
-                      return 'Enter last Name';
-                    }
-                   return null;
-                      },
-                ),
-                sizedBoxSpace,
-                TextFormField(
-                  decoration: InputDecoration(
-                    border: new OutlineInputBorder(),
-                    icon: Icon(Icons.sports_baseball_sharp,),
-                    hintText: "Enter team 2 name",
-                    labelText: "Team 2",
-                  ),
-                  onChanged: (value) {
-                    newMatch.setTeam2Name(value);
-                  },
-                ),
-                sizedBoxSpace,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                  SizedBox(
-                    width: SizeConfig.setWidth(180),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        border: new OutlineInputBorder(),
-                        icon: Icon(Icons.create),
-                        hintText: "Players in one team",
-                        labelText:
-                        "Players Count",
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        newMatch.setPlayerCount(int.parse(value));
-                      },
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+          title: Text("Fill Match Details",style: TextStyle(color: Colors.black),),
+        ),
+        key: _scaffoldKey,
+        body: Form(
+          key: _formKey,
+          child: Scrollbar(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: (16*SizeConfig.oneW).roundToDouble()),
+              child: ListView(
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  sizedBoxSpace,
+                  TextFormField(
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(
+                      border: new OutlineInputBorder(),
+                      icon: Icon(Icons.whatshot_rounded,),
+                      hintText: "Enter team 1 name",
+                      labelText:
+                      "Team 1",
                     ),
+                    onChanged: (value) {
+                      newMatch.setTeam1Name(value);
+                    },
+                    validator: (value){
+                     if (value.isEmpty) {
+                        return 'Enter last Name';
+                      }
+                     return null;
+                        },
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  SizedBox(
-                    width: SizeConfig.setWidth(140),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        border: new OutlineInputBorder(),
-                        hintText: "Number of overs",
-                        labelText:
-                        "Overs Count",
-                      ),
-                      keyboardType: TextInputType.number,
-                      // onEditingComplete: ,
-                      onChanged: (value) {
-                        newMatch.setOverCount(int.parse(value));
-                        print("OVER COUNTTTTTTT:: $value");
-                      },
+                  sizedBoxSpace,
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: new OutlineInputBorder(),
+                      icon: Icon(Icons.sports_baseball_sharp,),
+                      hintText: "Enter team 2 name",
+                      labelText: "Team 2",
                     ),
+                    onChanged: (value) {
+                      newMatch.setTeam2Name(value);
+                    },
                   ),
-                  ],
-                ),
-                sizedBoxSpace,
-                TextFormField(
-                  decoration: InputDecoration(
-                    border: new OutlineInputBorder(),
-                    icon: Icon(Icons.location_on),
-                    hintText: "Enter Location",
-                    labelText:
-                    "Match Location",
+                  sizedBoxSpace,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                    SizedBox(
+                      width: SizeConfig.setWidth(180),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          border: new OutlineInputBorder(),
+                          icon: Icon(Icons.create),
+                          hintText: "Players in one team",
+                          labelText:
+                          "Players Count",
+                        ),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          newMatch.setPlayerCount(int.parse(value));
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: SizeConfig.setWidth(140),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          border: new OutlineInputBorder(),
+                          hintText: "Number of overs",
+                          labelText:
+                          "Overs Count",
+                        ),
+                        keyboardType: TextInputType.number,
+                        // onEditingComplete: ,
+                        onChanged: (value) {
+                          newMatch.setOverCount(int.parse(value));
+                          print("OVER COUNTTTTTTT:: $value");
+                        },
+                      ),
+                    ),
+                    ],
                   ),
-                  // onEditingComplete: ,
-                  onChanged: (value) {
-                    newMatch.setLocation(value);
-                    print("Location:: $value");
-                  },
-                ),
-                sizedBoxSpace,
-                categoryWidget(),
-                sizedBoxSpace,
-                createMatchBtn(),
-              ],
+                  sizedBoxSpace,
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: new OutlineInputBorder(),
+                      icon: Icon(Icons.location_on),
+                      hintText: "Enter Location",
+                      labelText:
+                      "Match Location",
+                    ),
+                    // onEditingComplete: ,
+                    onChanged: (value) {
+                      newMatch.setLocation(value);
+                      print("Location:: $value");
+                    },
+                  ),
+                  sizedBoxSpace,
+                  categoryWidget(),
+                  sizedBoxSpace,
+                  createMatchBtn(),
+                ],
+              ),
             ),
           ),
         ),
@@ -295,51 +302,65 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     );
   }
 
-  String _currentSelectedValue;
+  // String _currentSelectedValue;
 
   categoryWidget(){
 
-    var _currencies = [
-      "Create new Category",
-      "AKPL",
-      "Karhi Local",
-      "College"
-    ];
+    return Consumer<CategoryController>(
+      builder: (_,categoryController,child)=> FormField<String>(
+        builder: (FormFieldState<String> state) {
+          return StreamBuilder<QuerySnapshot>(
+            stream: categoryRef.where('creatorUid',isEqualTo: widget.user.uid).snapshots(),
+            builder: (context,snapshot) {
 
-    return FormField<String>(
-      builder: (FormFieldState<String> state) {
-        return InputDecorator(
-          decoration: InputDecoration(
-            labelText: "Select a Category",
-            icon: Icon(Icons.category_outlined),
-              errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
-              hintText: 'Please select expense',
-              border: OutlineInputBorder(),
-          ),
-          isEmpty: _currentSelectedValue == "",
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: _currentSelectedValue,
-              isDense: true,
-              onChanged: (String newValue) {
-                setState(() {
-                  _currentSelectedValue = newValue;
-                  state.didChange(newValue);
-                  if(newValue=="Create new Category"){
-                    openCreateNewCategoryDialog();
-                  }
+              List<String> catList=['Create new Category'];
+
+              if(!snapshot.hasData){
+                return Container(child: Center(child: CircularProgressIndicator()));
+              }else {
+                final catDocs = snapshot.data.docs;
+
+                catDocs.forEach((cat) {
+                  catList.add(cat.data()['catName']);
                 });
-              },
-              items: _currencies.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
+                print("LIST ----- $catList");
+
+                return InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: "Select a Category",
+                    icon: Icon(Icons.category_outlined),
+                    errorStyle: TextStyle(
+                        color: Colors.redAccent, fontSize: 16.0),
+                    hintText: 'Please select expense',
+                    border: OutlineInputBorder(),
+                  ),
+                  isEmpty: categoryController.selectedCategory == "",
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: categoryController.selectedCategory,
+                      onChanged: (String newValue) {
+                        selectedCat=newValue;
+                        categoryController.setSelectedCategory(to: newValue);
+                        state.didChange(newValue);
+                        if (newValue == "Create new Category") {
+                          openCreateNewCategoryDialog();
+                        }
+                      },
+                      items: catList.map((
+                          String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 );
-              }).toList(),
-            ),
-          ),
-        );
-      },
+              }
+        }
+          );
+        },
+      ),
     );
   }
 

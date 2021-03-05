@@ -69,8 +69,9 @@ class _TossScreenState extends State<TossScreen> {
   whoWonTossWidget(){
     return Container(
       decoration: BoxDecoration(
-          color: Colors.black12,
-        borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
       ),
       margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (10*SizeConfig.oneH).roundToDouble()),
       padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble(),vertical: (20*SizeConfig.oneH).roundToDouble()),
@@ -161,8 +162,9 @@ class _TossScreenState extends State<TossScreen> {
   andChooseToWidget(){
     return Container(
       decoration: BoxDecoration(
-          color: Colors.black12,
-          borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
       ),
       margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (10*SizeConfig.oneH).roundToDouble()),
       padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble(),vertical: (20*SizeConfig.oneH).roundToDouble()),
@@ -235,6 +237,7 @@ class _TossScreenState extends State<TossScreen> {
 
   continueButton(){
     return Container(
+
       margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble()),
       padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble()),
       child: Bounce(

@@ -40,11 +40,16 @@ class _SelectAndCreateBatsmenPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
-          // backgroundColor: Colors.blueAccent,
+          elevation: 0,
+          backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           title:
-              Text("Select Batsmen (${widget.match.getCurrentBattingTeam()})"),
+              Text(
+                  "Select Batsmen (${widget.match.getCurrentBattingTeam()})",
+                  style: TextStyle(color: Colors.black),
+              ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,7 +72,7 @@ class _SelectAndCreateBatsmenPageState
           List<Widget> playerNames = [];
 
           if (playersData.isEmpty) {
-            return addNewPlayerText();
+            return addNewPlayerIcon();
           }
 
           ///getting isBatting data and filling checkboxes depending upon them
@@ -99,15 +104,14 @@ class _SelectAndCreateBatsmenPageState
   Widget selectPlayerWidget({String playerName}) {
     return Container(
       margin: EdgeInsets.symmetric(
-          vertical: (4 * SizeConfig.oneH).roundToDouble()),
-      // padding: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
+          vertical: (2 * SizeConfig.oneH).roundToDouble()),
       decoration:
           BoxDecoration(
-              color: Colors.grey.withOpacity(0.2)),
+              color: Colors.grey.withOpacity(0.1)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("   $playerName"),
+          Text("   >  $playerName"),
           Checkbox(
             value: checkBoxMap[playerName],
             onChanged: (bool value) {
@@ -170,22 +174,14 @@ class _SelectAndCreateBatsmenPageState
     }
   }
 
-  Widget addNewPlayerText() {
+  Widget addNewPlayerIcon() {
     return Expanded(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.sports_cricket_outlined),
-            Text(
-              "ADD NEW PLAYER",
-              style: TextStyle(
-                  fontSize: (20 * SizeConfig.oneW).roundToDouble(),
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal),
-            ),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("ADD NEW PLAYER",style: TextStyle(fontWeight: FontWeight.bold),),
+          Icon(Icons.keyboard_arrow_down_rounded)
+        ],
       ),
     );
   }
@@ -198,8 +194,9 @@ class _SelectAndCreateBatsmenPageState
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.blueGrey.shade400,
+            color: Colors.blueAccent.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.black12,width: 2)
         ),
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 12),
@@ -221,8 +218,9 @@ class _SelectAndCreateBatsmenPageState
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.blueGrey.shade400,
+            color: Colors.blueAccent.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.black12,width: 2)
         ),
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 12),

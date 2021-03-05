@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
@@ -11,6 +12,7 @@ import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/widgets/Bowler_stats_row.dart';
 import 'package:umiperer/widgets/batsmen_score_row.dart';
 import 'package:umiperer/widgets/headline_widget.dart';
+import 'package:umiperer/widgets/shimmer_container.dart';
 import 'package:umiperer/widgets/over_card.dart';
 
 
@@ -34,11 +36,11 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
     return Container(
       color: Colors.white,
       child: ListView(
-        // shrinkWrap: true,
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          tossLineWidget(),
           widget.match.isFirstInningEnd?
-          HeadLineWidget(headLineString: "First inning ended"):Container(),
+          Center(child: HeadLineWidget(headLineString: "First inning ended")):Container(),
+          HeadLineWidget(headLineString: "SCORECARD"),
           miniScoreCard(),
           HeadLineWidget(headLineString: widget.match.firstBattingTeam),
           batsmenList(),
@@ -91,7 +93,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                 List<BowlerStatsRow> allBowlersList = [];
 
                 if (!snapshot.hasData) {
-                  return loadingData(msg: "Loading bowlers data");
+                  return loadingData();
                 } else {
 
                   final bowlersData = snapshot.data.docs;
@@ -187,7 +189,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                 List<BatsmenScoreRow> listOfBatsmen = [];
 
                 if (!snapshot.hasData) {
-                  return loadingData(msg: "Loading Batsmen Data");
+                  return loadingData();
                 } else {
                   final batsmenData = snapshot.data.docs;
 
@@ -246,84 +248,79 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
         .collection('FirstInning')
         .doc("scoreBoardData").snapshots();
 
-    return StreamBuilder<DocumentSnapshot>(
-        stream: stream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container(child: Center(child: CircularProgressIndicator()));
-          } else {
-            final scoreBoardData = snapshot.data.data();
-            final ballOfTheOver = scoreBoardData['ballOfTheOver'];
-            final currentOverNo = scoreBoardData['currentOverNo'];
-            final totalRuns = scoreBoardData['totalRuns'];
-            final wicketsDown = scoreBoardData['wicketsDown'];
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+          vertical: (10 * SizeConfig.oneH).roundToDouble()),
+      margin: EdgeInsets.symmetric(
+          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+          vertical: (10 * SizeConfig.oneH).roundToDouble()),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12,width: 2)
+      ),
+      child: StreamBuilder<DocumentSnapshot>(
+          stream: stream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container(child: Center(child: CircularProgressIndicator()));
+            } else {
+              final scoreBoardData = snapshot.data.data();
+              final ballOfTheOver = scoreBoardData['ballOfTheOver'];
+              final currentOverNo = scoreBoardData['currentOverNo'];
+              final totalRuns = scoreBoardData['totalRuns'];
+              final wicketsDown = scoreBoardData['wicketsDown'];
 
-            firstInningScoreBoard.currentBallNo=ballOfTheOver;
-            firstInningScoreBoard.currentOverNo = currentOverNo;
-            firstInningScoreBoard.totalRuns = totalRuns;
-            firstInningScoreBoard.totalWicketsDown = wicketsDown;
-            firstInningScoreBoard.battingTeamName = widget.match.firstBattingTeam;
+              firstInningScoreBoard.currentBallNo=ballOfTheOver;
+              firstInningScoreBoard.currentOverNo = currentOverNo;
+              firstInningScoreBoard.totalRuns = totalRuns;
+              firstInningScoreBoard.totalWicketsDown = wicketsDown;
+              firstInningScoreBoard.battingTeamName = widget.match.firstBattingTeam;
 
-            return Column(
-              children: [
-                tossLineWidget(),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: (10 * SizeConfig.oneW).roundToDouble(),
-                      vertical: (10 * SizeConfig.oneH).roundToDouble()),
-                  margin: EdgeInsets.symmetric(
-                      horizontal: (10 * SizeConfig.oneW).roundToDouble(),
-                      vertical: (10 * SizeConfig.oneH).roundToDouble()),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.black12,width: 2)
-                  ),
-                  child: Column(
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: SizeConfig.setWidth(280),
-                                child: Text(
-                                  firstInningScoreBoard.battingTeamName
-                                      .toUpperCase(),
-                                  style: TextStyle(
-                                      fontSize:
-                                      (20 * SizeConfig.oneW).roundToDouble()),
-                                ),
-                              ),
-                              Text(
-                                // runs/wickets (currentOverNumber.currentBallNo)
-                                // "65/3  (13.2)",
-                                firstInningScoreBoard.getFormatedRunsString(),
-                                style: TextStyle(
-                                    fontSize:
-                                    (16 * SizeConfig.oneW).roundToDouble()),
-                              )
-                            ],
+                          SizedBox(
+                            width: SizeConfig.setWidth(280),
+                            child: Text(
+                              firstInningScoreBoard.battingTeamName
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                  fontSize:
+                                  (20 * SizeConfig.oneW).roundToDouble()),
+                            ),
                           ),
-                          Column(
-                            children: [
-                              Text("CRR"),
-                              Text(firstInningScoreBoard.getCrr()),
-                            ],
-                          ),
+                          Text(
+                            // runs/wickets (currentOverNumber.currentBallNo)
+                            // "65/3  (13.2)",
+                            firstInningScoreBoard.getFormatedRunsString(),
+                            style: TextStyle(
+                                fontSize:
+                                (16 * SizeConfig.oneW).roundToDouble()),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text("CRR"),
+                          Text(firstInningScoreBoard.getCrr()),
                         ],
                       ),
                     ],
                   ),
-                ),
-              ],
-            );
-          }
-        });
+                ],
+              );
+            }
+          }),
+    );
   }
 
-  loadingData({String msg}){
+  loadingData(){
     return Container(
         height: (80*SizeConfig.oneH).roundToDouble(),
         child: Center(child: CircularProgressIndicator()));
@@ -362,9 +359,11 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
         padding: EdgeInsets.only(
             left: (12 * SizeConfig.oneW).roundToDouble(),
             top: (12 * SizeConfig.oneH).roundToDouble()),
-        child: Text(
-          "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()}",
-          maxLines: 2,style: TextStyle(fontSize: 12),
+        child: Center(
+          child: Text(
+            "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()}",
+            maxLines: 2,style: TextStyle(fontSize: 12),
+          ),
         ));
   }
 

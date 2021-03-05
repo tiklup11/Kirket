@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:umiperer/modals/UpcomingTournament.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/widgets/back_button_widget.dart';
@@ -129,7 +130,7 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 TextFormField(
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    filled: true,
+                    border: new OutlineInputBorder(),
                     icon: Icon(Icons.whatshot_rounded,),
                     hintText: "Tournament Name",
                     labelText:
@@ -142,7 +143,7 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 sizedBoxSpace,
                 TextFormField(
                   decoration: InputDecoration(
-                    filled: true,
+                    border: new OutlineInputBorder(),
                     icon: Icon(Icons.location_on),
                     hintText: "Location",
                     labelText: "Location",
@@ -155,7 +156,7 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 sizedBoxSpace,
                 TextFormField(
                   decoration: InputDecoration(
-                    filled: true,
+                    border: new OutlineInputBorder(),
                     icon: Icon(Icons.attach_money_rounded,),
                     hintText: "Entry Fees",
                     labelText:
@@ -170,7 +171,7 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 TextFormField
                   (
                   decoration: InputDecoration(
-                    filled: true,
+                    border: new OutlineInputBorder(),
                     icon: Icon(Icons.phone,),
                     hintText: "Contact Number",
                     labelText:
@@ -185,7 +186,7 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                 sizedBoxSpace,
                 TextFormField(
                   decoration: InputDecoration(
-                    filled: true,
+                    border: new OutlineInputBorder(),
                     icon:  Icon(Icons.date_range,),
                     hintText: "Starting Date",
                     labelText:
@@ -196,16 +197,22 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                   },
                 ),
                 sizedBoxSpace,
-                Center(
-                  child: MaterialButton(
-                    elevation: 0,
-                    highlightElevation: 0,
-                    color: Colors.blueAccent.withOpacity(0.9),
-                    child: Text(
-                        "Announce Tournament"),
-                    onPressed: (){
-                      _handleSubmitted();
-                    },
+                Bounce(
+                  onPressed: (){
+                    _handleSubmitted();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.blueAccent.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.black12,width: 2)
+                    ),
+                    margin: EdgeInsets.symmetric(horizontal: 60),
+                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                    child: Center(
+                      child: Text(
+                          "Announce Tournament"),
+                    ),
                   ),
                 ),
                 sizedBoxSpace,

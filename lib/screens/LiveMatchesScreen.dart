@@ -1,25 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Match.dart';
-import 'package:umiperer/screens/MyMatchesScreen.dart';
+import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/zero_doc_screen.dart';
 import 'package:umiperer/widgets/live_match_card.dart';
 
 ///mqd
-final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
 
 class LiveMatchesScreen extends StatefulWidget {
 
-  LiveMatchesScreen({this.currentUser});
+  LiveMatchesScreen({this.currentUser,this.catName});
   final User currentUser;
+  final String catName;
 
   @override
   _LiveMatchesScreenState createState() => _LiveMatchesScreenState();
 }
 
 class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
+
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
 
   @override
@@ -31,7 +39,7 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
     final userId =  "V3lwRvXi2pXYFOnaA9JAC2lgvY42"; //sourabhUID
     //  '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
     return StreamBuilder<QuerySnapshot>(
-        stream: matchesRef.where('isLive',isEqualTo: true,).where('isSecondInningEnd',isEqualTo: false,).snapshots(),
+        stream: matchesRef.where('cat',isEqualTo: widget.catName).where('isLive',isEqualTo: true,).where('isSecondInningEnd',isEqualTo: false,).snapshots(),
         builder: (context,snapshot){
           if(!snapshot.hasData){
             return Container(child: CircularProgressIndicator(),);

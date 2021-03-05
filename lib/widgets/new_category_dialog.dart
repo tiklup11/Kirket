@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:provider/provider.dart';
 import 'package:umiperer/main.dart';
+import 'package:umiperer/modals/CategoryController.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
 ///MQD
@@ -21,6 +23,8 @@ class CreateNewCategoryDialog extends StatefulWidget {
 class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
 
   String playerName;
+  String newCatName;
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -30,23 +34,18 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         child:
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            topAppName(),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: (20*SizeConfig.oneH).roundToDouble(),
-                  horizontal: (20*SizeConfig.oneW).roundToDouble()),
-              height: (300*SizeConfig.oneH).roundToDouble(),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular((8*SizeConfig.oneW).roundToDouble()),
-                    bottomRight: Radius.circular((8*SizeConfig.oneW).roundToDouble())),
-                color: Colors.white,
-              ),
-              child:dialogContent(context),
-            ),
-          ],
+        Container(
+          padding: EdgeInsets.only(top: (0*SizeConfig.oneH).roundToDouble(),
+              left: (20*SizeConfig.oneW).roundToDouble(),
+              right:  (20*SizeConfig.oneW).roundToDouble(),
+            bottom:  (20*SizeConfig.oneW).roundToDouble()
+          ),
+          height: (380*SizeConfig.oneH).roundToDouble(),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular((8*SizeConfig.oneW).roundToDouble()),
+            color: Colors.white,
+          ),
+          child:dialogContent(context),
         )
     );
   }
@@ -88,10 +87,10 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
           height: 18,
         ),
         enterForm(),
-        radioButtonPublicOrPrivate(),
-        SizedBox(
-          height: 16,
-        ),
+        // radioButtonPublicOrPrivate(),
+        // SizedBox(
+        //   height: 16,
+        // ),
         endBtns()
       ],
     );
@@ -99,184 +98,59 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
 
   void onCreateBtnPressed(){
 
-    if(widget.match.getInningNo()==1){
-
-      if(widget.areWeAddingBatsmen){
-        matchesRef.doc(widget.match.getMatchId())
-            .collection('1InningBattingData')
-            .doc(playerName).set(
-            {
-              "name":playerName,
-              "runs":0,
-              "balls":0,
-              "noOf4s":0,
-              "noOf6s":0,
-              "isOnStrike":false,
-              "isBatting":false,
-              "isOut":false,
-            }
-        );
-
-        matchesRef.doc(widget.match.getMatchId())
-            .collection('2InningBowlingData')
-            .doc(playerName).set(
-            {
-              "name":playerName,
-              "runs":0,
-              "overs":0,
-              "wickets":0,
-              "maidens":0,
-              "isBowling":false,
-              "totalBalls":6,
-              "overLength":6,
-              "ballOfTheOver":0,
-            }
-        );
-      }else{
-
-        matchesRef.doc(widget.match.getMatchId())
-            .collection('1InningBowlingData')
-            .doc(playerName).set(
-            {
-              "name":playerName,
-              "runs":0,
-              "overs":0,
-              "wickets":0,
-              "maidens":0,
-              "isBowling":false,
-              "ballOfTheOver":0,
-              "totalBalls":6,
-              "overLength":6,
-            }
-        );
-
-        matchesRef.doc(widget.match.getMatchId())
-            .collection('2InningBattingData')
-            .doc(playerName).set(
-            {
-              "name":playerName,
-              "runs":0,
-              "balls":0,
-              "noOf4s":0,
-              "noOf6s":0,
-              "isOnStrike":false,
-              "isBatting":false,
-              "isOut":false,
-            }
-        );
-      }
-    }
-
-    if(widget.match.getInningNo()==2){
-
-      if(widget.areWeAddingBatsmen){
-        matchesRef.doc(widget.match.getMatchId())
-            .collection('2InningBattingData')
-            .doc(playerName).set(
-            {
-              "name":playerName,
-              "runs":0,
-              "balls":0,
-              "noOf4s":0,
-              "noOf6s":0,
-              "isOnStrike":false,
-              "isBatting":false,
-              "isOut":false,
-
-            }
-        );
-
-        matchesRef.doc(widget.match.getMatchId())
-            .collection('1InningBowlingData')
-            .doc(playerName).set(
-            {
-              "name":playerName,
-              "runs":0,
-              "overs":0,
-              "wickets":0,
-              "maidens":0,
-              "isBowling":false,
-              "ballOfTheOver":0,
-              "totalBalls":6,
-              "overLength":6,
-              "isOut":false,
-
-            }
-        );
-      }else{
-        matchesRef.doc(widget.match.getMatchId())
-            .collection('2InningBowlingData')
-            .doc(playerName).set(
-            {
-              "name":playerName,
-              "runs":0,
-              "overs":0,
-              "wickets":0,
-              "maidens":0,
-              "isBowling":false,
-              "ballOfTheOver":0,
-              "totalBalls":6,
-              "overLength":6,
-            }
-        );
-
-        matchesRef.doc(widget.match.getMatchId())
-            .collection('1InningBattingData')
-            .doc(playerName).set(
-            {
-              "name":playerName,
-              "runs":0,
-              "balls":0,
-              "noOf4s":0,
-              "noOf6s":0,
-              "isOnStrike":false,
-              "isBatting":false,
-              "isOut":false,
-            }
-        );
-      }
-    }
-    Navigator.pop(context);
+    categoryRef.doc().set({
+      "catName":newCatName,
+      // "isPublic": selectedState=="Public"? true:false,
+      "creatorUid":widget.user.uid
+    });
   }
 
   hintTextTop(){
     return Container(
-      child: Text("Category can be your Tournament name, Location etc. Next time you create a similar new match, you can put it in same category.")
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("ADD YOUR CATEGORY",style: TextStyle(fontWeight: FontWeight.bold),),
+          SizedBox(height: SizeConfig.setHeight(10),),
+          Text("Category can be your Tournament name, Location etc. Next time you create a similar new match, you can put it in same category."),
+          SizedBox(height: SizeConfig.setHeight(8),),
+          Text("Public : Other users can also use your category")
+        ],
+      )
     );
   }
 
   String selectedState = "Private";
 
-
   radioButtonPublicOrPrivate(){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        new Radio(
-          value: "Public",
-          groupValue: selectedState,
-          onChanged: (value){
-            setState(() {
-              selectedState=value;
-              print(selectedState);
-            });
-          },
-        ),
-        new Text(
-          'Public',
-        ),
-        new Radio(
-          value: "Private",
-          groupValue: selectedState,
-          onChanged:  (value){
-            setState(() {
-              selectedState=value;
-            });
-          },
-        ),
-        new Text(
-          'Private',),
-      ],
+    return
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new Radio(
+            value: "Public",
+            groupValue: selectedState,
+            onChanged: (value){
+              setState(() {
+                selectedState=value;
+              });
+            },
+          ),
+          new Text(
+            'Public',
+          ),
+          new Radio(
+            value: "Private",
+            groupValue: selectedState,
+            onChanged:  (value){
+              setState(() {
+                selectedState=value;
+              });
+            },
+          ),
+          new Text(
+            'Private',),
+        ],
     );
   }
 
@@ -288,40 +162,49 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
         labelText: "New Category",
       ),
       onChanged: (value) {
-        playerName = value;
+        newCatName = value;
       },
     );
   }
   endBtns(){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Bounce(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Container(
-            color: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
-            margin: EdgeInsets.symmetric(horizontal: 4),
-            child: Text("Cancel"),
-          ),
-        ),
-        Bounce(
-          onPressed: () {
-            // onCreateBtnPressed();
-          },
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 4),
-            padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
-            decoration: BoxDecoration(
-                color: Colors.blueGrey.shade400,
-                borderRadius: BorderRadius.circular(6)
+    return Consumer<CategoryController>(
+      builder: (_,cc,child)=> Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Bounce(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              color: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+              margin: EdgeInsets.symmetric(horizontal: 4),
+              child: Text("Cancel"),
             ),
-            child: Text("Create"),
           ),
-        ),
-      ],
+          Bounce(
+            onPressed: () {
+              // newCatName.trim();
+              final String ncn = newCatName;
+              if(newCatName!=null && ncn.trim().length!=0) {
+                onCreateBtnPressed();
+                cc.setSelectedCategory(to: newCatName);
+                Navigator.pop(context);
+              }
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 4),
+              padding: EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+              decoration: BoxDecoration(
+                  color: Colors.blueAccent.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.black12,width: 2)
+              ),
+              child: Text("Create"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

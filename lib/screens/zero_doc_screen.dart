@@ -13,9 +13,7 @@ class ZeroDocScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     if(showLearnMore==null)
-    {
-      showLearnMore = false;
-    }
+    {showLearnMore = false;}
 
     return Container(
         child:Center(

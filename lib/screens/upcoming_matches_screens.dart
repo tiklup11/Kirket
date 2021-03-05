@@ -31,7 +31,21 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
             }));
           },
         ),
-        body: upcoming());
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 20,top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Upcoming Tournaments"),
+                ],
+              ),
+            ),
+            upcoming(),
+          ],
+        ));
   }
 
   ///
@@ -40,17 +54,19 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
         stream: upcomingTournamentCollectionRef.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Container(child: Center(child: CircularProgressIndicator()));
+            return Expanded(child: Container(child: Center(child: CircularProgressIndicator())));
           } else {
             //ut  = upcomingTournaments
             final utDocList = snapshot.data.docs;
 
             if(utDocList.isEmpty){
-              return ZeroDocScreen(
-                dialogText: "Tab + to announce your Upcoming Tournament and It will be visible to all the users.",
-                textMsg: "Tab + to announce your Upcoming Tournament",
-                showLearnMore: true,
-                iconData: Icons.sports_cricket_outlined,);
+              return Expanded(
+                child: ZeroDocScreen(
+                  dialogText: "Tab + to announce your Upcoming Tournament and It will be visible to all the users.",
+                  textMsg: "Tab + to announce your Upcoming Tournament",
+                  showLearnMore: true,
+                  iconData: Icons.sports_cricket_outlined,),
+              );
             }
 
             List<UpcomingTournamentCard> upcomingTournamentsCardList = [];

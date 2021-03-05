@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/main.dart';
 
@@ -35,18 +34,18 @@ class _AdminCardState extends State<AdminCard> {
                 ],
               ),
               SizedBox(height: 10,),
-              FlutterSwitch(
-                borderRadius: 10,
-                showOnOff: true,
-                activeColor: Colors.blueGrey,
-                value: isSwitched,
-                onToggle: (val) {
-                  setState(() {
-                    setIsLive(val);
-                    isSwitched = val;
-                  });
-                },
-              ),
+              // FlutterSwitch(
+              //   borderRadius: 10,
+              //   showOnOff: true,
+              //   activeColor: Colors.blueGrey,
+              //   value: isSwitched,
+              //   onToggle: (val) {
+              //     setState(() {
+              //       setIsLive(val);
+              //       isSwitched = val;
+              //     });
+              //   },
+              // ),
             ],
           ),
         ),

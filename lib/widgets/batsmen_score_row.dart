@@ -16,7 +16,7 @@ class BatsmenScoreRow extends StatelessWidget {
       return Colors.blueAccent.withOpacity(0.5);
     }
     if(isOnStrike){
-      return ThemeData.light().primaryColor.withOpacity(0.3);
+      return Colors.blueAccent.withOpacity(0.2);
     }
     return Colors.white;
   }

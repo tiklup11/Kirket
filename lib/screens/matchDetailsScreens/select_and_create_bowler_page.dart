@@ -41,10 +41,16 @@ class _SelectAndCreateBowlerPageState
   Widget build(BuildContext context) {
 
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           // backgroundColor: Colors.blueAccent,
-          title: Text("Select Bowler (${widget.match.getCurrentBowlingTeam()})"),
+          title: Text(
+              "Select Bowler (${widget.match.getCurrentBowlingTeam()})",
+            style: TextStyle(color: Colors.black),
+          ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -64,12 +70,12 @@ class _SelectAndCreateBowlerPageState
       builder: (context, snapshot) {
         selectedCheckBox=0;
         if (!snapshot.hasData) {
-          return Expanded(child: Container(child: Center(child: CircularProgressIndicator())));
+          return addNewPlayerGif();
         } else {
           final playersData = snapshot.data.docs;
           List<Widget> playerNames = [];
           if (playersData.isEmpty) {
-            return addNewPlayerText();
+            return addNewPlayerGif();
           }
 
           // updatetotalRunsOfInning1 after everyball
@@ -146,22 +152,14 @@ class _SelectAndCreateBowlerPageState
   }
 
 
-  Widget addNewPlayerText() {
+  Widget addNewPlayerGif() {
     return Expanded(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.sports_handball),
-            Text(
-              "ADD NEW PLAYER",
-              style: TextStyle(
-                  fontSize: (20*SizeConfig.oneW).roundToDouble(),
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal),
-            ),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("ADD NEW PLAYER",style: TextStyle(fontWeight: FontWeight.bold),),
+          Icon(Icons.keyboard_arrow_down_rounded)
+        ],
       ),
     );
   }
@@ -174,8 +172,9 @@ class _SelectAndCreateBowlerPageState
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.blueGrey.shade400,
+            color: Colors.blueAccent.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.black12,width: 2)
         ),
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 12),
@@ -197,8 +196,9 @@ class _SelectAndCreateBowlerPageState
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.blueGrey.shade400,
+            color: Colors.blueAccent.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.black12,width: 2)
         ),
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 12),
