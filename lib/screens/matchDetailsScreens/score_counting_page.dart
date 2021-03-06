@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/main.dart';
@@ -162,147 +163,150 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   Widget build(BuildContext context) {
     // WidgetsBinding.instance.addPostFrameCallback((_) => executeAfterBuild);
 
-    return StreamBuilder<DocumentSnapshot>(
-        stream: dataStreams.getGeneralMatchDataStream(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return LiveScoreLoadingFullPage();
-          } else if (snapshot.hasError) {
-            return LiveScoreLoadingFullPage();
-          } else {
-            final matchData = snapshot.data.data();
-            currentOverNo = matchData['currentOverNumber'];
-            currentBallNo = matchData['currentBallNo'];
-            inningNumber = matchData["inningNumber"];
-            globalCurrentBowler = matchData["currentBowler"];
-            globalOnStrikeBatsmen = matchData['strikerBatsmen'];
-            globalNonStriker = matchData['nonStrikerBatsmen'];
-
-            ///getting data from firebase and setting it to the CricketMatch object
-            final team1Name = matchData['team1name'];
-            final team2Name = matchData['team2name'];
-            final oversCount = matchData['overCount'];
-            final matchId = matchData['matchId'];
-            final playerCount = matchData['playerCount'];
-            final tossWinner = matchData['tossWinner'];
-            final batOrBall = matchData['whatChoose'];
-            final location = matchData['matchLocation'];
-            final isMatchStarted = matchData['isMatchStarted'];
-            final currentOverNumber = matchData['currentOverNumber'];
-            final firstBattingTeam = matchData['firstBattingTeam'];
-            final firstBowlingTeam = matchData['firstBowlingTeam'];
-            final secondBattingTeam = matchData['secondBattingTeam'];
-            final secondBowlingTeam = matchData['secondBowlingTeam'];
-            final currentBattingTeam = matchData['currentBattingTeam'];
-            final isFirstInningStarted = matchData['isFirstInningStarted'];
-            final isFirstInningEnd = matchData['isFirstInningEnd'];
-            final isSecondStartedYet = matchData['isSecondStartedYet'];
-            final isSecondInningEnd = matchData['isSecondInningEnd'];
-            final totalRunsOfInning1 = matchData['totalRunsOfInning1'];
-            final totalRunsOfInning2 = matchData['totalRunsOfInning2'];
-            final totalWicketsOfInning1 = matchData['totalWicketsOfInning1'];
-            final totalWicketsOfInning2 = matchData['totalWicketsOfInning2'];
-            final nonStriker = matchData['nonStrikerBatsmen'];
-            final striker = matchData['strikerBatsmen'];
-
-            if (striker == null) {
-              isStrikerSelected = false;
+    return Consumer<CricketMatch>(
+      builder: (_,match,child)=>
+      StreamBuilder<DocumentSnapshot>(
+          stream: dataStreams.getGeneralMatchDataStream(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return LiveScoreLoadingFullPage();
+            } else if (snapshot.hasError) {
+              return LiveScoreLoadingFullPage();
             } else {
-              isStrikerSelected = true;
-            }
+              final matchData = snapshot.data.data();
+              currentOverNo = matchData['currentOverNumber'];
+              currentBallNo = matchData['currentBallNo'];
+              inningNumber = matchData["inningNumber"];
+              globalCurrentBowler = matchData["currentBowler"];
+              globalOnStrikeBatsmen = matchData['strikerBatsmen'];
+              globalNonStriker = matchData['nonStrikerBatsmen'];
 
-            widget.match.nonStrikerBatsmen = nonStriker;
-            widget.match.strikerBatsmen = striker;
+              ///getting data from firebase and setting it to the CricketMatch object
+              final team1Name = matchData['team1name'];
+              final team2Name = matchData['team2name'];
+              final oversCount = matchData['overCount'];
+              final matchId = matchData['matchId'];
+              final playerCount = matchData['playerCount'];
+              final tossWinner = matchData['tossWinner'];
+              final batOrBall = matchData['whatChoose'];
+              final location = matchData['matchLocation'];
+              final isMatchStarted = matchData['isMatchStarted'];
+              final currentOverNumber = matchData['currentOverNumber'];
+              final firstBattingTeam = matchData['firstBattingTeam'];
+              final firstBowlingTeam = matchData['firstBowlingTeam'];
+              final secondBattingTeam = matchData['secondBattingTeam'];
+              final secondBowlingTeam = matchData['secondBowlingTeam'];
+              final currentBattingTeam = matchData['currentBattingTeam'];
+              final isFirstInningStarted = matchData['isFirstInningStarted'];
+              final isFirstInningEnd = matchData['isFirstInningEnd'];
+              final isSecondStartedYet = matchData['isSecondStartedYet'];
+              final isSecondInningEnd = matchData['isSecondInningEnd'];
+              final totalRunsOfInning1 = matchData['totalRunsOfInning1'];
+              final totalRunsOfInning2 = matchData['totalRunsOfInning2'];
+              final totalWicketsOfInning1 = matchData['totalWicketsOfInning1'];
+              final totalWicketsOfInning2 = matchData['totalWicketsOfInning2'];
+              final nonStriker = matchData['nonStrikerBatsmen'];
+              final striker = matchData['strikerBatsmen'];
 
-            widget.match.isSecondInningEnd = isSecondInningEnd;
-            widget.match.isSecondInningStartedYet = isSecondStartedYet;
-            widget.match.isFirstInningEnd = isFirstInningEnd;
-            widget.match.isFirstInningStartedYet = isFirstInningStarted;
+              if (striker == null) {
+                isStrikerSelected = false;
+              } else {
+                isStrikerSelected = true;
+              }
 
-            widget.match.totalRunsOf1stInning = totalRunsOfInning1;
-            widget.match.totalRunsOf2ndInning = totalRunsOfInning2;
-            widget.match.totalWicketsOf1stInning = totalWicketsOfInning1;
-            widget.match.totalWicketsOf2ndInning = totalWicketsOfInning2;
+              widget.match.nonStrikerBatsmen = nonStriker;
+              widget.match.strikerBatsmen = striker;
 
-            widget.match.firstBattingTeam = firstBattingTeam;
-            widget.match.firstBowlingTeam = firstBowlingTeam;
-            widget.match.secondBattingTeam = secondBattingTeam;
-            widget.match.secondBowlingTeam = secondBowlingTeam;
-            widget.match.setInningNo(inningNumber);
+              widget.match.isSecondInningEnd = isSecondInningEnd;
+              widget.match.isSecondInningStartedYet = isSecondStartedYet;
+              widget.match.isFirstInningEnd = isFirstInningEnd;
+              widget.match.isFirstInningStartedYet = isFirstInningStarted;
 
-            final totalRuns = matchData['totalRuns'];
-            final wicketsDown = matchData['wicketsDown'];
+              widget.match.totalRunsOf1stInning = totalRunsOfInning1;
+              widget.match.totalRunsOf2ndInning = totalRunsOfInning2;
+              widget.match.totalWicketsOf1stInning = totalWicketsOfInning1;
+              widget.match.totalWicketsOf2ndInning = totalWicketsOfInning2;
 
-            if (firstBattingTeam != null &&
-                firstBowlingTeam != null &&
-                secondBattingTeam != null &&
-                secondBowlingTeam != null) {
-              widget.match.setFirstInnings();
-            }
+              widget.match.firstBattingTeam = firstBattingTeam;
+              widget.match.firstBowlingTeam = firstBowlingTeam;
+              widget.match.secondBattingTeam = secondBattingTeam;
+              widget.match.secondBowlingTeam = secondBowlingTeam;
+              widget.match.setInningNo(inningNumber);
 
-            widget.match.currentOver.setCurrentOverNo(currentOverNumber);
-            widget.match.setTeam1Name(team1Name);
-            widget.match.setTeam2Name(team2Name);
-            widget.match.setMatchId(matchId);
-            widget.match.setPlayerCount(playerCount);
-            widget.match.setLocation(location);
-            widget.match.setTossWinner(tossWinner);
-            widget.match.setBatOrBall(batOrBall);
-            widget.match.setOverCount(oversCount);
-            widget.match.setIsMatchStarted(isMatchStarted);
+              final totalRuns = matchData['totalRuns'];
+              final wicketsDown = matchData['wicketsDown'];
 
-            ///this is my stuff tobe done
-            // if (currentOverNo == widget.match.getOverCount()) {
-            //   //updateInningNo;
-            //   updateInningNumberAndOtherStuff();
-            //   // widget.match.setInningNo(2);
-            // }
+              if (firstBattingTeam != null &&
+                  firstBowlingTeam != null &&
+                  secondBattingTeam != null &&
+                  secondBowlingTeam != null) {
+                widget.match.setFirstInnings();
+              }
 
-            if (widget.match.getTotalRunsOf1stInning() <
-                    widget.match.getTotalRunsOf2ndInning() &&
-                (widget.match.getInningNo() == 2)) {
-              matchEnd();
-            }
+              widget.match.currentOver.setCurrentOverNo(currentOverNumber);
+              widget.match.setTeam1Name(team1Name);
+              widget.match.setTeam2Name(team2Name);
+              widget.match.setMatchId(matchId);
+              widget.match.setPlayerCount(playerCount);
+              widget.match.setLocation(location);
+              widget.match.setTossWinner(tossWinner);
+              widget.match.setBatOrBall(batOrBall);
+              widget.match.setOverCount(oversCount);
+              widget.match.setIsMatchStarted(isMatchStarted);
 
-            ///Thing to remove this shit
-            ///TODO: end match by wickets  like above
-            if (globalCurrentBowler != null && currentOverNumber != null && currentBallNo==0) {
-              //set bowlerName in overDoc
-              settingBowlerNameInOverDoc(
-                  bowlerName: globalCurrentBowler, overNo: currentOverNumber);
-            }
+              ///this is my stuff tobe done
+              // if (currentOverNo == widget.match.getOverCount()) {
+              //   //updateInningNo;
+              //   updateInningNumberAndOtherStuff();
+              //   // widget.match.setInningNo(2);
+              // }
 
-            return Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  miniScoreCard(),
-                  buildOversList(),
-                  // textWidget(),
-                  Expanded(
-                    child: Container(
-                      color: Colors.blueAccent.shade100,
-                      margin: EdgeInsets.only(top: SizeConfig.setHeight(16)),
-                      padding: EdgeInsets.symmetric(
-                          vertical: SizeConfig.setHeight(10),
-                          horizontal: SizeConfig.setWidth(20)),
-                      width: double.infinity,
-                      child: whenToDisplayWhatAtBottom(
-                        ballData: Ball(
-                          inningNo: widget.match.getInningNo(),
-                          batsmenName: globalOnStrikeBatsmen,
-                          currentBallNo: currentBallNo,
-                          currentOverNo: currentOverNumber,
-                          bowlerName: globalCurrentBowler,
+              if (widget.match.getTotalRunsOf1stInning() <
+                      widget.match.getTotalRunsOf2ndInning() &&
+                  (widget.match.getInningNo() == 2)) {
+                matchEnd();
+              }
+
+              ///Thing to remove this shit
+              ///TODO: end match by wickets  like above
+              if (globalCurrentBowler != null && currentOverNumber != null && currentBallNo==0) {
+                //set bowlerName in overDoc
+                settingBowlerNameInOverDoc(
+                    bowlerName: globalCurrentBowler, overNo: currentOverNumber);
+              }
+
+              return Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    miniScoreCard(),
+                    buildOversList(),
+                    // textWidget(),
+                    Expanded(
+                      child: Container(
+                        color: Colors.blueAccent.shade100,
+                        margin: EdgeInsets.only(top: SizeConfig.setHeight(16)),
+                        padding: EdgeInsets.symmetric(
+                            vertical: SizeConfig.setHeight(10),
+                            horizontal: SizeConfig.setWidth(20)),
+                        width: double.infinity,
+                        child: whenToDisplayWhatAtBottom(
+                          ballData: Ball(
+                            inningNo: widget.match.getInningNo(),
+                            batsmenName: globalOnStrikeBatsmen,
+                            currentBallNo: currentBallNo,
+                            currentOverNo: currentOverNumber,
+                            bowlerName: globalCurrentBowler,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            );
-          }
-        });
+                    )
+                  ],
+                ),
+              );
+            }
+          }),
+    );
   }
 
   settingBowlerNameInOverDoc({String bowlerName, int overNo}) {

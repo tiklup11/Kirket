@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:umiperer/modals/CategoryController.dart';
+import 'package:umiperer/modals/Match.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/signin_screens/landing_page.dart';
 import 'package:your_splash/your_splash.dart';
@@ -39,8 +40,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<CategoryController>(
-      create: (_)=>CategoryController(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CategoryController>(create: (_)=>CategoryController(),),
+        ChangeNotifierProvider<CricketMatch>(create: (_)=>CricketMatch()),
+      ],
       child: LayoutBuilder(builder: (context, constraints) {
         return OrientationBuilder(builder: (context, orientation) {
           SizeConfig().init(constraints, orientation);

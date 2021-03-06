@@ -1,7 +1,8 @@
 
+import 'package:flutter/material.dart';
 import 'package:umiperer/modals/CricketOver.dart';
 
-class CricketMatch{
+class CricketMatch extends ChangeNotifier{
 
   String _team1Name;
   String _team2Name;
@@ -58,10 +59,28 @@ class CricketMatch{
   List<String> team2List=[];
 
   int getTotalRunsOf1stInning(){return totalRunsOf1stInning;}
+  void setTotalRunsOf1stInning(int val){
+    totalRunsOf1stInning=val;
+    notifyListeners();
+  }
+
   int getTotalRunsOf2ndInning(){return totalRunsOf2ndInning;}
+  void setTotalRunsOf2ndInning(int val){
+    totalRunsOf2ndInning=val;
+    notifyListeners();
+  }
 
   int getTotalWicketsOf1stInning(){return totalWicketsOf1stInning;}
+  void setTotalWicketsOf1stInning(int val){
+    totalWicketsOf1stInning=val;
+    notifyListeners();
+  }
+
   int getTotalWicketsOf2ndInning(){return totalWicketsOf2ndInning;}
+  void setTotalWicketsOf2ndInning(int val){
+    totalWicketsOf2ndInning=val;
+    notifyListeners();
+  }
 
   String getFinalResult(){
 
@@ -84,7 +103,6 @@ class CricketMatch{
     return null;
   }
 
-
   String getCurrentBattingTeam(){
     if(getInningNo()==1){
       return firstBattingTeam;
@@ -101,7 +119,6 @@ class CricketMatch{
     }
     return null;
   }
-
 
   setFirstInnings() {
     if ( ((getTossWinner() == getTeam1Name()) && (getChoosedOption() == "Bat")))
@@ -134,6 +151,8 @@ class CricketMatch{
       secondBowlingTeam = getTeam2Name();
       secondBattingTeam = getTeam1Name();
     }
+    notifyListeners();
+
   }
 
   List<String> getTeamListByTeamName(String teamName){
@@ -146,6 +165,7 @@ class CricketMatch{
 
   void setInningNo(int value){
     _inningNumber = value;
+    notifyListeners();
   }
 
   int getInningNo(){return _inningNumber;}
@@ -165,6 +185,7 @@ class CricketMatch{
 
   void setIsMatchStarted(bool value){
     _isMatchStarted=value;
+    notifyListeners();
   }
 
   String getLocation(){
@@ -173,6 +194,7 @@ class CricketMatch{
 
   void setLocation(String value){
     _location=value;
+    notifyListeners();
   }
 
   String getTossWinner(){
@@ -181,6 +203,7 @@ class CricketMatch{
 
   void setTossWinner(String value){
     _tossWinner=value;
+    notifyListeners();
   }
 
   String getChoosedOption(){
@@ -189,22 +212,26 @@ class CricketMatch{
 
   void setBatOrBall(String value){
     _chooseToBatOrBall=value;
+    notifyListeners();
   }
 
   void setIsMatchLive(String value){
     matchStatus = value;
+    notifyListeners();
   }
 
   void setMatchId(String value){
     _matchId = value;
+    notifyListeners();
   }
 
   String getMatchId(){
     return _matchId;
   }
 
-  void setTeam1Name(String value) {
+  void setTeam1Name(String value){
     _team1Name = value;
+    notifyListeners();
   }
 
   String getTeam1Name(){
@@ -217,6 +244,7 @@ class CricketMatch{
 
   void setTeam2Name(String value){
     _team2Name = value;
+    notifyListeners();
   }
 
   int getOverCount(){
@@ -225,17 +253,15 @@ class CricketMatch{
 
   void setOverCount(int value){
     _oversCount = value;
+    notifyListeners();
   }
 
   int getPlayerCount(){
     return _playersCount;
   }
+
   void setPlayerCount(int value){
     _playersCount = value;
+    notifyListeners();
   }
-
-  ///matchStatus will display the match is for LIVE score
-  // String matchStatus;
-
-
 }

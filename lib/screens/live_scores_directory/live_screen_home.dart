@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/LiveMatchesScreen.dart';
-import 'package:umiperer/screens/live_scores_directory/catergory_screen.dart';
 import 'package:umiperer/screens/live_scores_directory/ended_match_screen.dart';
+import 'package:umiperer/widgets/back_button_widget.dart';
 
 
 ///this is home screen for live matches
@@ -23,8 +22,9 @@ class LiveScreenHome extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Image.asset('assets/images/kirket.png',height: SizeConfig.setHeight(40),width: SizeConfig.setWidth(120),)
-        ,        Builder(
+        Text(catName,style: TextStyle(color: Colors.black),),
+        // Image.asset('assets/images/kirket.png',height: SizeConfig.setHeight(40),width: SizeConfig.setWidth(120),),
+        Builder(
           builder: (BuildContext context)=>Bounce(
             onPressed: (){
               Scaffold.of(context).openDrawer();
@@ -59,7 +59,7 @@ class LiveScreenHome extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          automaticallyImplyLeading: false,
+          leading: CustomBackButton(),
           elevation: 1,
           iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Colors.white,
