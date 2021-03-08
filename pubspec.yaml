@@ -43,10 +43,19 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+  fonts:
+    - family: Poppins
+      fonts:
+       - asset: assets/fonts/Poppins.ttf
+
+    - family: Monteserat
+      fonts:
+       - asset: assets/fonts/Monteserat.ttf
+      
+      
 
   # To add assets to your application, add an assets section, like this:
   assets:
-
    - assets/images/
    - assets/gifs/
    - assets/json/

@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:umiperer/main.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/dialog_custom.dart';
@@ -19,7 +19,7 @@ class SelectAndCreateBatsmenPage extends StatefulWidget {
   @override
   _SelectAndCreateBatsmenPageState createState() =>
       _SelectAndCreateBatsmenPageState();
-  }
+}
 
 class _SelectAndCreateBatsmenPageState
     extends State<SelectAndCreateBatsmenPage> {
@@ -41,20 +41,19 @@ class _SelectAndCreateBatsmenPageState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          automaticallyImplyLeading: false,
-          title:
-              Text(
-                  "Select Batsmen (${widget.match.getCurrentBattingTeam()})",
-                  style: TextStyle(color: Colors.black),
-              ),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Select Batsmen (${widget.match.getCurrentBattingTeam()})",
+          style: TextStyle(color: Colors.black),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [batsmensList(), addNewPlayerBtn(), saveBtn()],
-        ),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [batsmensList(), addNewPlayerBtn(), saveBtn()],
+      ),
     );
   }
 
@@ -103,11 +102,9 @@ class _SelectAndCreateBatsmenPageState
 
   Widget selectPlayerWidget({String playerName}) {
     return Container(
-      margin: EdgeInsets.symmetric(
-          vertical: (2 * SizeConfig.oneH).roundToDouble()),
-      decoration:
-          BoxDecoration(
-              color: Colors.grey.withOpacity(0.1)),
+      margin:
+          EdgeInsets.symmetric(vertical: (2 * SizeConfig.oneH).roundToDouble()),
+      decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -179,7 +176,10 @@ class _SelectAndCreateBatsmenPageState
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("ADD NEW PLAYER",style: TextStyle(fontWeight: FontWeight.bold),),
+          Text(
+            "ADD NEW PLAYER",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           Icon(Icons.keyboard_arrow_down_rounded)
         ],
       ),
@@ -190,14 +190,13 @@ class _SelectAndCreateBatsmenPageState
     return Bounce(
       onPressed: () {
         //TODO: update current batsmen name and other related stuff
-          openDialog();
+        openDialog();
       },
       child: Container(
         decoration: BoxDecoration(
             color: Colors.blueAccent.withOpacity(0.6),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black12,width: 2)
-        ),
+            border: Border.all(color: Colors.black12, width: 2)),
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 12),
         margin: EdgeInsets.only(
@@ -220,8 +219,7 @@ class _SelectAndCreateBatsmenPageState
         decoration: BoxDecoration(
             color: Colors.blueAccent.withOpacity(0.6),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black12,width: 2)
-        ),
+            border: Border.all(color: Colors.black12, width: 2)),
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 12),
         margin: EdgeInsets.only(

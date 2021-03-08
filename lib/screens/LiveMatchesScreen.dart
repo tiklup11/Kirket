@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:umiperer/main.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/zero_doc_screen.dart';
 import 'package:umiperer/widgets/live_match_card.dart';
@@ -11,8 +11,7 @@ import 'package:umiperer/widgets/live_match_card.dart';
 ///mqd
 
 class LiveMatchesScreen extends StatefulWidget {
-
-  LiveMatchesScreen({this.currentUser,this.catName});
+  LiveMatchesScreen({this.currentUser, this.catName});
   final User currentUser;
   final String catName;
 
@@ -21,7 +20,6 @@ class LiveMatchesScreen extends StatefulWidget {
 }
 
 class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
-
   int _selectedIndex = 0;
   void _onItemTapped(int index) {
     setState(() {
@@ -29,34 +27,46 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return buildCards();
   }
 
-  buildCards(){
-    final userId =  "V3lwRvXi2pXYFOnaA9JAC2lgvY42"; //sourabhUID
+  buildCards() {
+    final userId = "V3lwRvXi2pXYFOnaA9JAC2lgvY42"; //sourabhUID
     //  '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
     return StreamBuilder<QuerySnapshot>(
-        stream: matchesRef.where('cat',isEqualTo: widget.catName).where('isLive',isEqualTo: true,).where('isSecondInningEnd',isEqualTo: false,).snapshots(),
-        builder: (context,snapshot){
-          if(!snapshot.hasData){
-            return Container(child: CircularProgressIndicator(),);
-          }else{
+        stream: matchesRef
+            .where('cat', isEqualTo: widget.catName)
+            .where(
+              'isLive',
+              isEqualTo: true,
+            )
+            .where(
+              'isSecondInningEnd',
+              isEqualTo: false,
+            )
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container(
+              child: CircularProgressIndicator(),
+            );
+          } else {
             List<LiveMatchCard> listOfLiveMatches = [];
 
             final allMatchData = snapshot.data.docs;
 
-            if(allMatchData.isEmpty){
+            if (allMatchData.isEmpty) {
               print("HELLO");
               return ZeroDocScreen(
                 iconData: Icons.live_tv_rounded,
-                textMsg: "Live matches scores will be shown here. To create your match, go to MyMatches.",);
+                textMsg:
+                    "Live matches scores will be shown here. To create your match, go to MyMatches.",
+              );
             }
 
             allMatchData.forEach((match) {
-
               final matchId = match.id;
               CricketMatch cricketMatch = CricketMatch();
 
@@ -104,7 +114,6 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
               cricketMatch.isFirstInningEnd = isFirstInningEnd;
               cricketMatch.isFirstInningStartedYet = isFirstInningStarted;
 
-
               cricketMatch.totalRunsOf1stInning = totalRunsOfInning1;
               cricketMatch.totalRunsOf2ndInning = totalRunsOfInning2;
               cricketMatch.totalWicketsOf1stInning = totalWicketsOfInning1;
@@ -117,12 +126,11 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
               cricketMatch.setInningNo(inningNo);
               cricketMatch.setMatchId(matchId);
 
-
               final totalRuns = matchData['totalRuns'];
               final wicketsDown = matchData['wicketsDown'];
 
               cricketMatch.totalRuns = totalRuns;
-              cricketMatch.wicketDown=wicketsDown;
+              cricketMatch.wicketDown = wicketsDown;
 
               if (firstBattingTeam != null &&
                   firstBowlingTeam != null &&
@@ -139,7 +147,7 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
               cricketMatch.setPlayerCount(playerCount);
               cricketMatch.setLocation(location);
               cricketMatch.setTossWinner(tossWinner);
-              cricketMatch.setBatOrBall(batOrBall);
+              cricketMatch..setBatOrBall(batOrBall);
               cricketMatch.setOverCount(oversCount);
               cricketMatch.setIsMatchStarted(isMatchStarted);
 
@@ -153,12 +161,10 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
 
             return ListView.builder(
                 itemCount: listOfLiveMatches.length,
-                itemBuilder: (context,index){
+                itemBuilder: (context, index) {
                   return listOfLiveMatches[index];
                 });
           }
-
         });
   }
-
-  }
+}

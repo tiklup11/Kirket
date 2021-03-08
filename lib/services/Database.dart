@@ -10,7 +10,8 @@ import 'package:umiperer/widgets/back_button_widget.dart';
 
 //where actual counting happens
 class TossScreen extends StatefulWidget {
-  TossScreen({this.match, this.user});
+
+  TossScreen({this.match,this.user});
 
   final CricketMatch match;
   final User user;
@@ -19,31 +20,33 @@ class TossScreen extends StatefulWidget {
 }
 
 class _TossScreenState extends State<TossScreen> {
+
   String tossWinner = "who";
   String batOrBall = "";
   Color unSelectedColor = Colors.black12;
   Color selectedColor = Colors.blueAccent;
 
-  final double outerRadius = (40 * SizeConfig.oneW).roundToDouble();
-  final double innerRadius = (26 * SizeConfig.oneW).roundToDouble();
+  final double outerRadius = (40*SizeConfig.oneW).roundToDouble();
+  final double innerRadius = (26*SizeConfig.oneW).roundToDouble();
 
-  bool isTeam1Selected = false;
-  bool isTeam2Selected = false;
+  bool isTeam1Selected=false;
+  bool isTeam2Selected=false;
 
   bool isBattingSelected = false;
   bool isBowlingSelected = false;
 
+
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
         appBar: AppBar(
           leading: CustomBackButton(),
           elevation: 0,
           iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Colors.white,
           title: Text(
-            "${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()}",
-            style: TextStyle(color: Colors.black),
+              "${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()}",
+          style: TextStyle(color: Colors.black),
           ),
         ),
         body: Container(
@@ -60,37 +63,35 @@ class _TossScreenState extends State<TossScreen> {
         ));
   }
 
-  whoWonTossWidget() {
+
+
+
+  whoWonTossWidget(){
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12, width: 2)),
-      margin: EdgeInsets.symmetric(
-          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
-          vertical: (10 * SizeConfig.oneH).roundToDouble()),
-      padding: EdgeInsets.symmetric(
-          horizontal: (20 * SizeConfig.oneW).roundToDouble(),
-          vertical: (20 * SizeConfig.oneH).roundToDouble()),
+          border: Border.all(color: Colors.black12,width: 2)
+      ),
+      margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (10*SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble(),vertical: (20*SizeConfig.oneH).roundToDouble()),
       child: Column(
         // crossAxisAlignment: ,
         children: [
           Text("$tossWinner won toss"),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: 10,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Bounce(
                 duration: Duration(milliseconds: 150),
-                onPressed: () {
+                onPressed: (){
                   setState(() {
-                    isTeam1Selected = !isTeam1Selected;
-                    isTeam2Selected = false;
-                    if (isTeam1Selected) {
+                    isTeam1Selected=!isTeam1Selected;
+                    isTeam2Selected=false;
+                    if(isTeam1Selected){
                       tossWinner = widget.match.getTeam1Name();
-                    } else {
+                    } else{
                       tossWinner = "who";
                     }
                   });
@@ -100,35 +101,32 @@ class _TossScreenState extends State<TossScreen> {
                   child: Column(
                     children: [
                       CircleAvatar(
-                        backgroundColor:
-                            isTeam1Selected ? selectedColor : unSelectedColor,
+                        backgroundColor: isTeam1Selected? selectedColor:unSelectedColor,
                         radius: outerRadius,
                         child: CircleAvatar(
                           radius: innerRadius,
                           child: Image.asset(
                             'assets/images/team1.png',
-                            scale: (17 * SizeConfig.oneW).roundToDouble(),
+                            scale: (17*SizeConfig.oneW).roundToDouble(),
                           ),
                         ),
                       ),
                       Text(
                         widget.match.getTeam1Name(),
-                        maxLines: 3,
-                        textAlign: TextAlign.left,
-                      )
+                        maxLines: 3,textAlign: TextAlign.left,)
                     ],
                   ),
                 ),
               ),
               Bounce(
                 duration: Duration(milliseconds: 150),
-                onPressed: () {
+                onPressed: (){
                   setState(() {
-                    isTeam2Selected = !isTeam2Selected;
-                    isTeam1Selected = false;
-                    if (isTeam2Selected) {
+                    isTeam2Selected=!isTeam2Selected;
+                    isTeam1Selected=false;
+                    if(isTeam2Selected){
                       tossWinner = widget.match.getTeam2Name();
-                    } else {
+                    } else{
                       tossWinner = "who";
                     }
                   });
@@ -138,20 +136,17 @@ class _TossScreenState extends State<TossScreen> {
                   child: Column(
                     children: [
                       CircleAvatar(
-                        backgroundColor:
-                            isTeam2Selected ? selectedColor : unSelectedColor,
+                        backgroundColor: isTeam2Selected? selectedColor:unSelectedColor,
                         radius: outerRadius,
                         child: CircleAvatar(
                           radius: innerRadius,
                           child: Image.asset(
                             'assets/images/team2.png',
-                            scale: (17 * SizeConfig.oneW).roundToDouble(),
+                            scale: (17*SizeConfig.oneW).roundToDouble(),
                           ),
                         ),
                       ),
-                      Text(
-                        widget.match.getTeam2Name(),
-                        maxLines: 3,
+                      Text(widget.match.getTeam2Name(),maxLines: 3,
                       )
                     ],
                   ),
@@ -164,18 +159,15 @@ class _TossScreenState extends State<TossScreen> {
     );
   }
 
-  andChooseToWidget() {
+  andChooseToWidget(){
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12, width: 2)),
-      margin: EdgeInsets.symmetric(
-          horizontal: (10 * SizeConfig.oneW).roundToDouble(),
-          vertical: (10 * SizeConfig.oneH).roundToDouble()),
-      padding: EdgeInsets.symmetric(
-          horizontal: (20 * SizeConfig.oneW).roundToDouble(),
-          vertical: (20 * SizeConfig.oneH).roundToDouble()),
+          border: Border.all(color: Colors.black12,width: 2)
+      ),
+      margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (10*SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble(),vertical: (20*SizeConfig.oneH).roundToDouble()),
       child: Column(
         // crossAxisAlignment: ,
         children: [
@@ -185,13 +177,13 @@ class _TossScreenState extends State<TossScreen> {
             children: [
               Bounce(
                 duration: Duration(milliseconds: 150),
-                onPressed: () {
+                onPressed: (){
                   setState(() {
-                    isBattingSelected = !isBattingSelected;
-                    isBowlingSelected = false;
-                    if (isBattingSelected) {
+                    isBattingSelected=!isBattingSelected;
+                    isBowlingSelected=false;
+                    if(isBattingSelected){
                       batOrBall = "Bat";
-                    } else {
+                    } else{
                       batOrBall = "";
                     }
                   });
@@ -199,8 +191,7 @@ class _TossScreenState extends State<TossScreen> {
                 child: SizedBox(
                   width: SizeConfig.setWidth(140),
                   child: CircleAvatar(
-                    backgroundColor:
-                        isBattingSelected ? selectedColor : unSelectedColor,
+                    backgroundColor: isBattingSelected? selectedColor:unSelectedColor,
                     radius: outerRadius,
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
@@ -212,13 +203,14 @@ class _TossScreenState extends State<TossScreen> {
               ),
               Bounce(
                 duration: Duration(milliseconds: 150),
-                onPressed: () {
+                onPressed: (){
                   setState(() {
-                    isBowlingSelected = !isBowlingSelected;
-                    isBattingSelected = false;
-                    if (isBowlingSelected) {
+                    isBowlingSelected=!isBowlingSelected;
+                    isBattingSelected=false;
+                    if(isBowlingSelected)
+                    {
                       batOrBall = "Bowl";
-                    } else {
+                    } else{
                       batOrBall = "";
                     }
                   });
@@ -226,8 +218,7 @@ class _TossScreenState extends State<TossScreen> {
                 child: SizedBox(
                   width: SizeConfig.setWidth(140),
                   child: CircleAvatar(
-                    backgroundColor:
-                        isBowlingSelected ? selectedColor : unSelectedColor,
+                    backgroundColor: isBowlingSelected? selectedColor:unSelectedColor,
                     radius: outerRadius,
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
@@ -244,34 +235,41 @@ class _TossScreenState extends State<TossScreen> {
     );
   }
 
-  continueButton() {
+  continueButton(){
     return Container(
-      margin: EdgeInsets.only(top: (10 * SizeConfig.oneH).roundToDouble()),
-      padding: EdgeInsets.symmetric(
-          horizontal: (10 * SizeConfig.oneW).roundToDouble()),
+
+      margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble()),
       child: Bounce(
         duration: Duration(milliseconds: 150),
         child: Container(
+
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.black12, width: 2),
-              color: Colors.blueAccent.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(10)),
+              border: Border.all(color: Colors.black12,width: 2),
+            color: Colors.blueAccent.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(10)
+          ),
           width: double.infinity,
-          height: (40 * SizeConfig.oneH).roundToDouble(),
+          height: (40*SizeConfig.oneH).roundToDouble(),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text("Continue"), Icon(Icons.arrow_forward)],
+            children: [
+              Text("Continue"),
+              Icon(Icons.arrow_forward)
+            ],
           ),
         ),
-        onPressed: () {
+        onPressed: (){
           uploadTossDataToCloud();
         },
       ),
     );
   }
 
-  uploadTossDataToCloud() {
-    if (tossWinner != "who" && batOrBall != "") {
+  uploadTossDataToCloud(){
+
+    if(tossWinner != "who" && batOrBall != "")
+    {
       widget.match.setBatOrBall(batOrBall);
       widget.match.setTossWinner(tossWinner);
 
@@ -289,19 +287,17 @@ class _TossScreenState extends State<TossScreen> {
       });
 
       ///matchDoc > FirstInningCollection > scoreBoardDataDoc >
-      matchesRef.doc(widget.match.getMatchId()).update({
+      matchesRef.doc(widget.match.getMatchId())
+          .update({
         "battingTeam": widget.match.firstBattingTeam,
-        "totalRuns": 0,
-        "wicketsDown": 0
+        "totalRuns":0,
+        "wicketsDown":0
       });
       // buildPlayersName();
       Navigator.pop(context);
       //TODO: navigate to counterPage
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return MatchDetails(
-          match: widget.match,
-          user: widget.user,
-        );
+      Navigator.push(context, MaterialPageRoute(builder: (context){
+        return MatchDetails(match: widget.match,user: widget.user,);
       }));
     }
   }

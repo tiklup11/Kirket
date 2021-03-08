@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/main.dart';
 
 class AdminCard extends StatefulWidget {
-
-  AdminCard({this.match,this.creatorUID,});
+  AdminCard({
+    this.match,
+    this.creatorUID,
+  });
   final CricketMatch match;
   final String creatorUID;
 
@@ -13,7 +15,6 @@ class AdminCard extends StatefulWidget {
 }
 
 class _AdminCardState extends State<AdminCard> {
-
   bool isSwitched;
 
   @override
@@ -30,10 +31,22 @@ class _AdminCardState extends State<AdminCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("${widget.match.getTeam1Name()}   VS    ${widget.match.getTeam2Name()}",style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text(
+                    "${widget.match.getTeam1Name()}   VS    ${widget.match.getTeam2Name()}",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                child:
+                    widget.match.isMatchLive ? Text("TurnOFF") : Text("TurnON"),
+                onPressed: () {
+                  widget.match.isMatchLive ? setIsLive(false) : setIsLive(true);
+                },
+              )
               // FlutterSwitch(
               //   borderRadius: 10,
               //   showOnOff: true,
@@ -55,9 +68,6 @@ class _AdminCardState extends State<AdminCard> {
 
   setIsLive(bool value) {
     // print("Setting isLive to $value");
-      matchesRef.doc(widget.match.getMatchId()).update(
-       {
-        "isLive": value
-       });
+    matchesRef.doc(widget.match.getMatchId()).update({"isLive": value});
   }
 }

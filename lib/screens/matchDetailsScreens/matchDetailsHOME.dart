@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/main.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/first_in_sc.dart';
 import 'package:umiperer/screens/full_score_card_for_audience.dart';
@@ -11,8 +11,7 @@ import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
 import 'package:umiperer/screens/second_inn_sc.dart';
 
 class MatchDetails extends StatefulWidget {
-
-  MatchDetails({this.match,this.user});
+  MatchDetails({this.match, this.user});
 
   final CricketMatch match;
   final User user;
@@ -22,7 +21,6 @@ class MatchDetails extends StatefulWidget {
 }
 
 class _MatchDetailsState extends State<MatchDetails> {
-
   List tabBarView;
 
   @override
@@ -30,14 +28,25 @@ class _MatchDetailsState extends State<MatchDetails> {
     // TODO: implement initState
     super.initState();
     tabBarView = [
-      TeamDetails(match: widget.match,),
-      ScoreCountingPage(user: widget.user,match: widget.match,),
+      TeamDetails(
+        match: widget.match,
+      ),
+      ScoreCountingPage(
+        user: widget.user,
+        match: widget.match,
+      ),
       FirstInningScoreCard(creatorUID: widget.user.uid, match: widget.match),
-      widget.match.getInningNo()==1?
-      Container(
-        color: Colors.white,
-        child: Center(child: zeroData(msg: "2nd Inning not started yet",iconData: Icons.sports_cricket_outlined),),):
-      SecondInningScoreCard(creatorUID: widget.user.uid, match: widget.match)
+      widget.match.getInningNo() == 1
+          ? Container(
+              color: Colors.white,
+              child: Center(
+                child: zeroData(
+                    msg: "2nd Inning not started yet",
+                    iconData: Icons.sports_cricket_outlined),
+              ),
+            )
+          : SecondInningScoreCard(
+              creatorUID: widget.user.uid, match: widget.match)
       // BallByBallPage()
       // Overs(),
     ];
@@ -54,7 +63,6 @@ class _MatchDetailsState extends State<MatchDetails> {
       // "Overs"
     ];
 
-
     return DefaultTabController(
       initialIndex: 0,
       length: tabs.length,
@@ -65,9 +73,9 @@ class _MatchDetailsState extends State<MatchDetails> {
           actions: [
             PopupMenuButton<String>(
               padding: EdgeInsets.zero,
-              onSelected: (value){
+              onSelected: (value) {
                 //TODO: make switch cases
-                switch (value){
+                switch (value) {
                   case "Delete Match":
                     deleteTheMatchFromCloud(context);
                     break;
@@ -76,21 +84,23 @@ class _MatchDetailsState extends State<MatchDetails> {
                     break;
                 }
               },
-              itemBuilder: (context){
+              itemBuilder: (context) {
                 return <PopupMenuItem<String>>[
                   PopupMenuItem<String>(
                     value: "Share match",
-                    child: Text("Share match"),),
+                    child: Text("Share match"),
+                  ),
                   PopupMenuItem<String>(
                     value: "Delete Match",
-                    child: Text("Delete Match"),),
+                    child: Text("Delete Match"),
+                  ),
                 ];
               },
-              ),
+            ),
           ],
           automaticallyImplyLeading: false,
           title: Text(
-              "${widget.match.getTeam1Name().toUpperCase()} v ${widget.match.getTeam2Name().toUpperCase()}",
+            "${widget.match.getTeam1Name().toUpperCase()} v ${widget.match.getTeam2Name().toUpperCase()}",
             style: TextStyle(color: Colors.black),
           ),
           bottom: TabBar(
@@ -103,68 +113,96 @@ class _MatchDetailsState extends State<MatchDetails> {
         ),
         body: TabBarView(
           children: [
-            for (final tab in tabBarView)
-              tab,
+            for (final tab in tabBarView) tab,
           ],
         ),
       ),
     );
   }
 
-  deleteTheMatchFromCloud(BuildContext context) async{
+  deleteTheMatchFromCloud(BuildContext context) async {
     ///when we delete a collection,
     ///inner collections are not deleted, so we have to delete inner collections also
 
     Navigator.pop(context);
     // print("deleting the docs");
 
-    final batsmen1Ref = await matchesRef.doc(widget.match.getMatchId()).collection("1InningBattingData").get();
-    for(var docs in batsmen1Ref.docs){
+    final batsmen1Ref = await matchesRef
+        .doc(widget.match.getMatchId())
+        .collection("1InningBattingData")
+        .get();
+    for (var docs in batsmen1Ref.docs) {
       docs.reference.delete();
     }
 
-    final batsmen2Ref = await matchesRef.doc(widget.match.getMatchId()).collection("2InningBattingData").get();
-    for(var docs in batsmen2Ref.docs){
+    final batsmen2Ref = await matchesRef
+        .doc(widget.match.getMatchId())
+        .collection("2InningBattingData")
+        .get();
+    for (var docs in batsmen2Ref.docs) {
       docs.reference.delete();
     }
 
-    final bowler1Ref = await matchesRef.doc(widget.match.getMatchId()).collection("1InningBowlingData").get();
-    for(var docs in bowler1Ref.docs){
+    final bowler1Ref = await matchesRef
+        .doc(widget.match.getMatchId())
+        .collection("1InningBowlingData")
+        .get();
+    for (var docs in bowler1Ref.docs) {
       docs.reference.delete();
     }
 
-    final bowler2Ref = await matchesRef.doc(widget.match.getMatchId()).collection("2InningBowlingData").get();
-    for(var docs in bowler2Ref.docs){
+    final bowler2Ref = await matchesRef
+        .doc(widget.match.getMatchId())
+        .collection("2InningBowlingData")
+        .get();
+    for (var docs in bowler2Ref.docs) {
       docs.reference.delete();
     }
 
-    matchesRef.doc(widget.match.getMatchId()).collection("FirstInning").doc("scoreBoardData").delete();
+    matchesRef
+        .doc(widget.match.getMatchId())
+        .collection("FirstInning")
+        .doc("scoreBoardData")
+        .delete();
 
-    matchesRef.doc(widget.match.getMatchId()).collection("SecondInning").doc("scoreBoardData").delete();
+    matchesRef
+        .doc(widget.match.getMatchId())
+        .collection("SecondInning")
+        .doc("scoreBoardData")
+        .delete();
 
-    final overs1Ref = await matchesRef.doc(widget.match.getMatchId()).collection("inning1overs").get();
-    for(var docs in overs1Ref.docs){
+    final overs1Ref = await matchesRef
+        .doc(widget.match.getMatchId())
+        .collection("inning1overs")
+        .get();
+    for (var docs in overs1Ref.docs) {
       docs.reference.delete();
     }
 
-    final overs2Ref = await matchesRef.doc(widget.match.getMatchId()).collection("inning2overs").get();
-    for(var docs in overs2Ref.docs){
-       docs.reference.delete();
+    final overs2Ref = await matchesRef
+        .doc(widget.match.getMatchId())
+        .collection("inning2overs")
+        .get();
+    for (var docs in overs2Ref.docs) {
+      docs.reference.delete();
     }
 
-    final chatCollection = await matchesRef.doc(widget.match.getMatchId()).collection("chatData").get();
-    for(var docs in chatCollection.docs){
+    final chatCollection = await matchesRef
+        .doc(widget.match.getMatchId())
+        .collection("chatData")
+        .get();
+    for (var docs in chatCollection.docs) {
       docs.reference.delete();
     }
 
     matchesRef.doc(widget.match.getMatchId()).delete();
-
   }
 
   _shareMatch(BuildContext context) {
-
-    final String playStoreUrl = "https://play.google.com/store/apps/details?id=com.okays.umiperer";
-    final String msg = "Watch live score of Cricket Match between ${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()} on Kirket app. $playStoreUrl";
+    final String playStoreUrl =
+        "https://play.google.com/store/apps/details?id=com.okays.umiperer";
+    final String msg =
+        "Watch live score of Cricket Match between ${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()} on Kirket app. $playStoreUrl";
 
     final RenderBox box = context.findRenderObject();
     final sharingText = msg;
@@ -173,14 +211,16 @@ class _MatchDetailsState extends State<MatchDetails> {
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
-  zeroData({String msg, IconData iconData}){
+  zeroData({String msg, IconData iconData}) {
     return Container(
-      height: (80*SizeConfig.oneH).roundToDouble(),
+      height: (80 * SizeConfig.oneH).roundToDouble(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(iconData),
-          SizedBox(width: (4*SizeConfig.oneW).roundToDouble(),),
+          SizedBox(
+            width: (4 * SizeConfig.oneW).roundToDouble(),
+          ),
           Text(msg),
         ],
       ),

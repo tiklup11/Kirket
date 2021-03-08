@@ -204,9 +204,12 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },
-                    child: CircleAvatar(
-                      radius: SizeConfig.setWidth(16),
-                      backgroundImage: AssetImage("assets/images/logo.png"),
+                    child: Hero(
+                      tag: "Logo",
+                      child: CircleAvatar(
+                        radius: SizeConfig.setWidth(16),
+                        backgroundImage: AssetImage("assets/images/logo.png"),
+                      ),
                     ),
                   ),
             ),

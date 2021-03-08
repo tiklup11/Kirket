@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Ball.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/runUpdater.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/widgets/score_button_widget.dart';
 
 class RunOutOptions extends StatefulWidget {
-
-  RunOutOptions({this.ball,this.match,this.userUID,
-    this.setRunOutToFalse,this.setUpdatingDataToTrue,this.setUpdatingDataToFalse,this.nonStriker,this.striker
-  });
+  RunOutOptions(
+      {this.ball,
+      this.match,
+      this.userUID,
+      this.setRunOutToFalse,
+      this.setUpdatingDataToTrue,
+      this.setUpdatingDataToFalse,
+      this.nonStriker,
+      this.striker});
 
   final Ball ball;
   final CricketMatch match;
@@ -17,48 +22,52 @@ class RunOutOptions extends StatefulWidget {
   final Function setRunOutToFalse;
   final Function setUpdatingDataToTrue;
   final Function setUpdatingDataToFalse;
-  final String striker,nonStriker;
+  final String striker, nonStriker;
 
   @override
   _RunOutOptionsState createState() => _RunOutOptionsState();
 }
 
 class _RunOutOptionsState extends State<RunOutOptions> {
-
-  final scoreSelectionAreaLength = (220*SizeConfig.oneH).roundToDouble();
+  final scoreSelectionAreaLength = (220 * SizeConfig.oneH).roundToDouble();
   RunUpdater runUpdater;
-  final double buttonWidth = (60*SizeConfig.oneW).roundToDouble();
+  final double buttonWidth = (60 * SizeConfig.oneW).roundToDouble();
   final btnColor = Colors.black12;
 
   String selectedRunOutBatsmen;
-  List<DropdownMenuItem<String>> playersList=[];
+  List<DropdownMenuItem<String>> playersList = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    print("BS ; ${ widget.nonStriker}");
-    print("BS ; ${ widget.striker}");
+    print("BS ; ${widget.nonStriker}");
+    print("BS ; ${widget.striker}");
 
-    if(widget.striker!=null){
+    if (widget.striker != null) {
       widget.ball.strikerName = widget.striker;
-      selectedRunOutBatsmen=widget.ball.strikerName;
-      playersList.add(DropdownMenuItem(
-        child: Text(widget.striker),
-        value: widget.striker,
-      ),);
+      selectedRunOutBatsmen = widget.ball.strikerName;
+      playersList.add(
+        DropdownMenuItem(
+          child: Text(widget.striker),
+          value: widget.striker,
+        ),
+      );
     }
-    if(widget.nonStriker!=null){
+    if (widget.nonStriker != null) {
       widget.ball.nonStrikerName = widget.nonStriker;
-      playersList.add(DropdownMenuItem(
-        child: Text(widget.nonStriker),
-        value: widget.nonStriker,
-      ),);
+      playersList.add(
+        DropdownMenuItem(
+          child: Text(widget.nonStriker),
+          value: widget.nonStriker,
+        ),
+      );
     }
     runUpdater = RunUpdater(
-      matchId: widget.match.getMatchId(),userUID: widget.userUID,
-      context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse,
+      matchId: widget.match.getMatchId(), userUID: widget.userUID,
+      context: context,
+      setIsUploadingDataToFalse: widget.setUpdatingDataToFalse,
       // setWideToFalse: widget.setWideToFalse
     );
   }
@@ -67,6 +76,7 @@ class _RunOutOptionsState extends State<RunOutOptions> {
   Widget build(BuildContext context) {
     return runOutOptions();
   }
+
   ///this is placed at the bottom, contains many run buttons
   runOutOptions() {
     final spaceBtwn = SizedBox(
@@ -81,7 +91,6 @@ class _RunOutOptionsState extends State<RunOutOptions> {
             crossAxisAlignment: CrossAxisAlignment.center,
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               ///Radio Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -132,11 +141,10 @@ class _RunOutOptionsState extends State<RunOutOptions> {
     );
   }
 
-
-  dropDownListOfBatsmen(){
+  dropDownListOfBatsmen() {
     return DropdownButton(
-        value:selectedRunOutBatsmen,
-        items:playersList,
+        value: selectedRunOutBatsmen,
+        items: playersList,
         onChanged: (value) {
           setState(() {
             selectedRunOutBatsmen = value;
@@ -145,15 +153,15 @@ class _RunOutOptionsState extends State<RunOutOptions> {
   }
 
   ///this is the wideCustom btn
-  customButton({int runScored,String btnText,String toShowOnUI}){
+  customButton({int runScored, String btnText, String toShowOnUI}) {
     return ScoreButton(
         onPressed: () {
           widget.ball.strikerName = widget.striker;
-          widget.ball.nonStrikerName  =widget.nonStriker;
+          widget.ball.nonStrikerName = widget.nonStriker;
           widget.setUpdatingDataToTrue();
-          widget.ball.runScoredOnThisBall=runScored;
-          widget.ball.runToShowOnUI=toShowOnUI;
-          widget.ball.batsmenName=selectedRunOutBatsmen;
+          widget.ball.runScoredOnThisBall = runScored;
+          widget.ball.runToShowOnUI = toShowOnUI;
+          widget.ball.batsmenName = selectedRunOutBatsmen;
           runUpdater.updateRunOut(ballData: widget.ball);
           widget.setRunOutToFalse();
         },

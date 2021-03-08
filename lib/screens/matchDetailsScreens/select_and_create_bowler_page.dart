@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:umiperer/main.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/dialog_custom.dart';
@@ -21,12 +21,11 @@ class SelectAndCreateBowlerPage extends StatefulWidget {
       _SelectAndCreateBowlerPageState();
 }
 
-class _SelectAndCreateBowlerPageState
-    extends State<SelectAndCreateBowlerPage> {
+class _SelectAndCreateBowlerPageState extends State<SelectAndCreateBowlerPage> {
   DataStreams _dataStreams;
   bool isPlayerSelected = false;
-  HashMap<String,bool> checkBoxMap = HashMap();
-  int maximumCheckBox=1;
+  HashMap<String, bool> checkBoxMap = HashMap();
+  int maximumCheckBox = 1;
   int selectedCheckBox;
 
   @override
@@ -39,7 +38,6 @@ class _SelectAndCreateBowlerPageState
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -48,27 +46,22 @@ class _SelectAndCreateBowlerPageState
           automaticallyImplyLeading: false,
           // backgroundColor: Colors.blueAccent,
           title: Text(
-              "Select Bowler (${widget.match.getCurrentBowlingTeam()})",
+            "Select Bowler (${widget.match.getCurrentBowlingTeam()})",
             style: TextStyle(color: Colors.black),
           ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            bowlersList(),
-            addNewPlayerBtn(),
-            saveBtn()
-          ],
+          children: [bowlersList(), addNewPlayerBtn(), saveBtn()],
         ));
   }
 
   Widget bowlersList() {
-
     return StreamBuilder<QuerySnapshot>(
       stream:
-      _dataStreams.bowlersData(inningNumber: widget.match.getInningNo()),
+          _dataStreams.bowlersData(inningNumber: widget.match.getInningNo()),
       builder: (context, snapshot) {
-        selectedCheckBox=0;
+        selectedCheckBox = 0;
         if (!snapshot.hasData) {
           return addNewPlayerGif();
         } else {
@@ -82,15 +75,14 @@ class _SelectAndCreateBowlerPageState
 
           ///getting isBatting data and filling checkboxes depending upon them
           playersData.forEach((player) {
-
-            if(player.data()['isBowling']==false){
-              checkBoxMap[player.id]=false;
+            if (player.data()['isBowling'] == false) {
+              checkBoxMap[player.id] = false;
             }
-            if(player.data()['isBowling']==true){
-              checkBoxMap[player.id]=true;
+            if (player.data()['isBowling'] == true) {
+              checkBoxMap[player.id] = true;
               selectedCheckBox++;
             }
-            playerNames.add(playerText(playerName:player.id));
+            playerNames.add(playerText(playerName: player.id));
           });
 
           print("XXXXXXXXXXXXXXXXXXXXD $selectedCheckBox");
@@ -107,14 +99,12 @@ class _SelectAndCreateBowlerPageState
     );
   }
 
-
   Widget playerText({String playerName}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: SizeConfig.setWidth(10)),
-        margin: EdgeInsets.symmetric(vertical: (4*SizeConfig.oneH).roundToDouble()),
-      decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.2)
-      ),
+      margin:
+          EdgeInsets.symmetric(vertical: (4 * SizeConfig.oneH).roundToDouble()),
+      decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -122,11 +112,11 @@ class _SelectAndCreateBowlerPageState
           Checkbox(
             value: checkBoxMap[playerName],
             onChanged: (bool value) {
-              if(selectedCheckBox<maximumCheckBox || !value){
-                updateIsBowling(playerName: playerName,value: value);
+              if (selectedCheckBox < maximumCheckBox || !value) {
+                updateIsBowling(playerName: playerName, value: value);
                 setState(() {
                   checkBoxMap[playerName] = value;
-                  if(!value){
+                  if (!value) {
                     selectedCheckBox--;
                   }
                 });
@@ -138,26 +128,26 @@ class _SelectAndCreateBowlerPageState
     );
   }
 
-  void updateIsBowling({String playerName, bool value}){
+  void updateIsBowling({String playerName, bool value}) {
     matchesRef
         .doc(widget.match.getMatchId())
         .collection('${widget.match.getInningNo()}InningBowlingData')
         .doc(playerName)
-        .update({
-      "isBowling":value
-    });
-    matchesRef.doc(widget.match.getMatchId()).update({
-      "currentBowler":playerName
-    });
+        .update({"isBowling": value});
+    matchesRef
+        .doc(widget.match.getMatchId())
+        .update({"currentBowler": playerName});
   }
-
 
   Widget addNewPlayerGif() {
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("ADD NEW PLAYER",style: TextStyle(fontWeight: FontWeight.bold),),
+          Text(
+            "ADD NEW PLAYER",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           Icon(Icons.keyboard_arrow_down_rounded)
         ],
       ),
@@ -165,7 +155,7 @@ class _SelectAndCreateBowlerPageState
   }
 
   Widget addNewPlayerBtn() {
-    return  Bounce(
+    return Bounce(
       onPressed: () {
         //TODO: update current batsmen name and other related stuff
         openDialog();
@@ -174,8 +164,7 @@ class _SelectAndCreateBowlerPageState
         decoration: BoxDecoration(
             color: Colors.blueAccent.withOpacity(0.6),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black12,width: 2)
-        ),
+            border: Border.all(color: Colors.black12, width: 2)),
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 12),
         margin: EdgeInsets.only(
@@ -198,8 +187,7 @@ class _SelectAndCreateBowlerPageState
         decoration: BoxDecoration(
             color: Colors.blueAccent.withOpacity(0.6),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black12,width: 2)
-        ),
+            border: Border.all(color: Colors.black12, width: 2)),
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 12),
         margin: EdgeInsets.only(
@@ -210,9 +198,6 @@ class _SelectAndCreateBowlerPageState
       ),
     );
   }
-
-
-
 
   openDialog() {
     return showDialog(

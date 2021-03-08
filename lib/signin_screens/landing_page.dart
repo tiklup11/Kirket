@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
+import 'package:provider/provider.dart';
 import 'package:umiperer/screens/MatchScreens.dart';
+import 'package:umiperer/services/Database.dart';
 import 'package:umiperer/signin_screens/sign_in_screen.dart';
 
 //MediaQuery r2d
@@ -17,13 +19,11 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
 
-
   void initState() {
     super.initState();
     auth.FirebaseAuth.instance.authStateChanges().listen((user) {
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,6 @@ class _LandingPageState extends State<LandingPage> {
   }
 }
 
-// ignore: must_be_immutable
 class LandingPageBody extends StatefulWidget {
   @override
   _LandingPageBodyState createState() => _LandingPageBodyState();
@@ -71,10 +70,8 @@ class _LandingPageBodyState extends State<LandingPageBody> {
                       if (snapshot.connectionState == ConnectionState.active) {
                         final user = snapshot.data;
                         if (user == null) {
-                          // print('qwerty ::${user?.uid}');
                           return SignInPage();
                         } else{
-                          // print('qwerty ::${user?.uid}');
                           return
                             MatchHomeScreens(user: user,);
                         }

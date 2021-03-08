@@ -5,7 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/ScoreBoardData.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
@@ -14,7 +14,6 @@ import 'package:umiperer/widgets/batsmen_score_row.dart';
 import 'package:umiperer/widgets/headline_widget.dart';
 import 'package:umiperer/widgets/shimmer_container.dart';
 import 'package:umiperer/widgets/over_card.dart';
-
 
 class FirstInningScoreCard extends StatefulWidget {
   FirstInningScoreCard({this.creatorUID, this.match});
@@ -32,14 +31,15 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
   ScoreBoardData firstInningScoreBoard = ScoreBoardData();
   @override
   Widget build(BuildContext context) {
-
     return Container(
       color: Colors.white,
       child: ListView(
         children: [
           tossLineWidget(),
-          widget.match.isFirstInningEnd?
-          Center(child: HeadLineWidget(headLineString: "First inning ended")):Container(),
+          widget.match.isFirstInningEnd
+              ? Center(
+                  child: HeadLineWidget(headLineString: "First inning ended"))
+              : Container(),
           HeadLineWidget(headLineString: "SCORECARD"),
           miniScoreCard(),
           HeadLineWidget(headLineString: widget.match.firstBattingTeam),
@@ -52,7 +52,8 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
       ),
     );
   }
-  bowlersList(){
+
+  bowlersList() {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: (10 * SizeConfig.oneW).roundToDouble(),
@@ -62,8 +63,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12,width: 2)
-      ),
+          border: Border.all(color: Colors.black12, width: 2)),
       child: Column(
         children: [
           BowlerStatsRow(
@@ -86,16 +86,16 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           StreamBuilder<QuerySnapshot>(
               stream: matchesRef
                   .doc(widget.match.getMatchId())
-                  .collection('1InningBowlingData').where('overs',isGreaterThan: 0).orderBy("overs",descending: true)
+                  .collection('1InningBowlingData')
+                  .where('overs', isGreaterThan: 0)
+                  .orderBy("overs", descending: true)
                   .snapshots(),
-
               builder: (context, snapshot) {
                 List<BowlerStatsRow> allBowlersList = [];
 
                 if (!snapshot.hasData) {
                   return loadingData();
                 } else {
-
                   final bowlersData = snapshot.data.docs;
 
                   bowlersData.forEach((playerData) {
@@ -109,7 +109,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
 
                     double eco = 0;
                     try {
-                      eco = (runs / ((overs) +(ballOfThatOver/6)));
+                      eco = (runs / ((overs) + (ballOfThatOver / 6)));
                     } catch (e) {
                       eco = 0;
                     }
@@ -132,8 +132,10 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                     ));
                   });
                 }
-                if(allBowlersList.isEmpty){
-                  return zeroData(iconData: Icons.sports_handball,msg: "Bowlers data is shown here");
+                if (allBowlersList.isEmpty) {
+                  return zeroData(
+                      iconData: Icons.sports_handball,
+                      msg: "Bowlers data is shown here");
                 }
                 return Column(
                   children: allBowlersList,
@@ -144,7 +146,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
     );
   }
 
-  batsmenList(){
+  batsmenList() {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: (10 * SizeConfig.oneW).roundToDouble(),
@@ -154,8 +156,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12,width: 2)
-      ),
+          border: Border.all(color: Colors.black12, width: 2)),
       child: Column(
         children: [
           BatsmenScoreRow(
@@ -181,10 +182,11 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           StreamBuilder<QuerySnapshot>(
               stream: matchesRef
                   .doc(widget.match.getMatchId())
-                  .collection('1InningBattingData').orderBy('balls',descending: true).where('balls',isGreaterThan: 0)
+                  .collection('1InningBattingData')
+                  .orderBy('balls', descending: true)
+                  .where('balls', isGreaterThan: 0)
                   // .where('isOut', isEqualTo: true)
                   .snapshots(),
-
               builder: (context, snapshot) {
                 List<BatsmenScoreRow> listOfBatsmen = [];
 
@@ -228,8 +230,10 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                     ));
                   });
                 }
-                if(listOfBatsmen.isEmpty){
-                  return zeroData(iconData: Icons.sports_cricket_outlined,msg: "Batsmen data is shown here");
+                if (listOfBatsmen.isEmpty) {
+                  return zeroData(
+                      iconData: Icons.sports_cricket_outlined,
+                      msg: "Batsmen data is shown here");
                 }
                 return Column(
                   children: listOfBatsmen,
@@ -246,7 +250,8 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
     stream = matchesRef
         .doc(widget.match.getMatchId())
         .collection('FirstInning')
-        .doc("scoreBoardData").snapshots();
+        .doc("scoreBoardData")
+        .snapshots();
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -257,13 +262,13 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12,width: 2)
-      ),
+          border: Border.all(color: Colors.black12, width: 2)),
       child: StreamBuilder<DocumentSnapshot>(
           stream: stream,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Container(child: Center(child: CircularProgressIndicator()));
+              return Container(
+                  child: Center(child: CircularProgressIndicator()));
             } else {
               final scoreBoardData = snapshot.data.data();
               final ballOfTheOver = scoreBoardData['ballOfTheOver'];
@@ -271,11 +276,12 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
               final totalRuns = scoreBoardData['totalRuns'];
               final wicketsDown = scoreBoardData['wicketsDown'];
 
-              firstInningScoreBoard.currentBallNo=ballOfTheOver;
+              firstInningScoreBoard.currentBallNo = ballOfTheOver;
               firstInningScoreBoard.currentOverNo = currentOverNo;
               firstInningScoreBoard.totalRuns = totalRuns;
               firstInningScoreBoard.totalWicketsDown = wicketsDown;
-              firstInningScoreBoard.battingTeamName = widget.match.firstBattingTeam;
+              firstInningScoreBoard.battingTeamName =
+                  widget.match.firstBattingTeam;
 
               return Column(
                 children: [
@@ -292,7 +298,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                                   .toUpperCase(),
                               style: TextStyle(
                                   fontSize:
-                                  (20 * SizeConfig.oneW).roundToDouble()),
+                                      (20 * SizeConfig.oneW).roundToDouble()),
                             ),
                           ),
                           Text(
@@ -301,7 +307,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
                             firstInningScoreBoard.getFormatedRunsString(),
                             style: TextStyle(
                                 fontSize:
-                                (16 * SizeConfig.oneW).roundToDouble()),
+                                    (16 * SizeConfig.oneW).roundToDouble()),
                           )
                         ],
                       ),
@@ -320,9 +326,9 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
     );
   }
 
-  loadingData(){
+  loadingData() {
     return Container(
-        height: (80*SizeConfig.oneH).roundToDouble(),
+        height: (80 * SizeConfig.oneH).roundToDouble(),
         child: Center(child: CircularProgressIndicator()));
   }
 
@@ -336,8 +342,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12,width: 2)
-      ),
+          border: Border.all(color: Colors.black12, width: 2)),
       child: ListView.builder(
         shrinkWrap: true,
         controller: ScrollController(),
@@ -346,8 +351,8 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
         itemBuilder: (BuildContext context, int index) => DummyOverCard(
           inningNo: 1,
           creatorUID: widget.creatorUID,
-            match: widget.match,
-            overNoOnCard: (index + 1),
+          match: widget.match,
+          overNoOnCard: (index + 1),
         ),
       ),
     );
@@ -362,25 +367,25 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
         child: Center(
           child: Text(
             "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()}",
-            maxLines: 2,style: TextStyle(fontSize: 12),
+            maxLines: 2,
+            style: TextStyle(fontSize: 12),
           ),
         ));
   }
 
-
-  zeroData({String msg, IconData iconData}){
+  zeroData({String msg, IconData iconData}) {
     return Container(
-      height: (80*SizeConfig.oneH).roundToDouble(),
+      height: (80 * SizeConfig.oneH).roundToDouble(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(iconData),
-          SizedBox(width: (4*SizeConfig.oneW).roundToDouble(),),
+          SizedBox(
+            width: (4 * SizeConfig.oneW).roundToDouble(),
+          ),
           Text(msg),
         ],
       ),
     );
   }
-
-
 }

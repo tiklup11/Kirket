@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/ScoreBoardData.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
@@ -29,7 +29,6 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
   ScoreBoardData secondInningScoreBoard = ScoreBoardData();
   @override
   Widget build(BuildContext context) {
-
     final Batsmen dummyBatsmen = Batsmen(
         isClickable: false,
         isOnStrike: false,
@@ -41,26 +40,27 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
         balls: "-");
 
     return
-      // widget.match.getInningNo()==2?
-      Container(
-          color: Colors.white,
-          child: ListView(
-        children: [
-          widget.match.isSecondInningEnd?
-          HeadLineWidget(headLineString: "Second inning ended"):Container(),
-          HeadLineWidget(headLineString: "SCORECARD"),
-          miniScoreCard(),
-          HeadLineWidget(headLineString: widget.match.secondBattingTeam),
-          batsmenList(),
-          HeadLineWidget(headLineString: widget.match.secondBowlingTeam),
-          bowlersList(),
-          HeadLineWidget(headLineString: "OVERS"),
-          buildOversList()
-        ],
-      ));
+        // widget.match.getInningNo()==2?
+        Container(
+            color: Colors.white,
+            child: ListView(
+              children: [
+                widget.match.isSecondInningEnd
+                    ? HeadLineWidget(headLineString: "Second inning ended")
+                    : Container(),
+                HeadLineWidget(headLineString: "SCORECARD"),
+                miniScoreCard(),
+                HeadLineWidget(headLineString: widget.match.secondBattingTeam),
+                batsmenList(),
+                HeadLineWidget(headLineString: widget.match.secondBowlingTeam),
+                bowlersList(),
+                HeadLineWidget(headLineString: "OVERS"),
+                buildOversList()
+              ],
+            ));
   }
 
-  bowlersList(){
+  bowlersList() {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: (10 * SizeConfig.oneW).roundToDouble(),
@@ -70,8 +70,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12,width: 2)
-      ),
+          border: Border.all(color: Colors.black12, width: 2)),
       child: Column(
         children: [
           BowlerStatsRow(
@@ -90,11 +89,12 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           ),
           //Batsman's data
           StreamBuilder<QuerySnapshot>(
-              stream:matchesRef
+              stream: matchesRef
                   .doc(widget.match.getMatchId())
-                  .collection('2InningBowlingData').where('overs',isGreaterThan: 0).orderBy("overs",descending: true)
+                  .collection('2InningBowlingData')
+                  .where('overs', isGreaterThan: 0)
+                  .orderBy("overs", descending: true)
                   .snapshots(),
-
               builder: (context, snapshot) {
                 List<BowlerStatsRow> allBowlersList = [];
 
@@ -112,11 +112,12 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                     final runs = playerData.data()['runs'];
                     final isBowling = playerData.data()['isBowling'];
                     final totalBalls = playerData.data()['totalBalls'];
-                    final overLengthToFinishTheOver = playerData.data()['overLength'];
+                    final overLengthToFinishTheOver =
+                        playerData.data()['overLength'];
 
                     double eco = 0;
                     try {
-                      eco = (runs / ((overs) +(ballOfThatOver/6)));
+                      eco = (runs / ((overs) + (ballOfThatOver / 6)));
                     } catch (e) {
                       eco = 0;
                     }
@@ -139,8 +140,10 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                     ));
                   });
                 }
-                if(allBowlersList.isEmpty){
-                  return zeroData(iconData: Icons.sports_handball,msg: "Bowlers data is shown here");
+                if (allBowlersList.isEmpty) {
+                  return zeroData(
+                      iconData: Icons.sports_handball,
+                      msg: "Bowlers data is shown here");
                 }
                 return Column(
                   children: allBowlersList,
@@ -151,7 +154,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
     );
   }
 
-  batsmenList(){
+  batsmenList() {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: (10 * SizeConfig.oneW).roundToDouble(),
@@ -161,8 +164,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12,width: 2)
-      ),
+          border: Border.all(color: Colors.black12, width: 2)),
       child: Column(
         children: [
           BatsmenScoreRow(
@@ -186,18 +188,19 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
 
           //Batsman's data
           StreamBuilder<QuerySnapshot>(
-              stream:
-                  matchesRef.doc(widget.match.getMatchId())
-                  .collection('2InningBattingData').orderBy("balls",descending: true).where('balls',isGreaterThan: 0)
+              stream: matchesRef
+                  .doc(widget.match.getMatchId())
+                  .collection('2InningBattingData')
+                  .orderBy("balls", descending: true)
+                  .where('balls', isGreaterThan: 0)
                   // .where('isOut', isEqualTo: true).where('isBatting',isEqualTo: true)
                   .snapshots(),
-
               builder: (context, snapshot) {
                 List<BatsmenScoreRow> listOfBatsmen = [];
 
                 if (!snapshot.hasData) {
                   return loadingData(msg: "Loading batsmen data");
-                } else{
+                } else {
                   final batsmenData = snapshot.data.docs;
 
                   batsmenData.forEach((playerData) {
@@ -235,9 +238,11 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                     ));
                   });
                 }
-                  print("LIST:: ${listOfBatsmen.length}");
-                if(listOfBatsmen.isEmpty){
-                  return zeroData(iconData: Icons.sports_cricket_outlined,msg: "Batsmen data is shown here");
+                print("LIST:: ${listOfBatsmen.length}");
+                if (listOfBatsmen.isEmpty) {
+                  return zeroData(
+                      iconData: Icons.sports_cricket_outlined,
+                      msg: "Batsmen data is shown here");
                 }
                 return Column(
                   children: listOfBatsmen,
@@ -254,7 +259,8 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
     stream = matchesRef
         .doc(widget.match.getMatchId())
         .collection('SecondInning')
-        .doc("scoreBoardData").snapshots();
+        .doc("scoreBoardData")
+        .snapshots();
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -265,13 +271,13 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12,width: 2)
-      ),
+          border: Border.all(color: Colors.black12, width: 2)),
       child: StreamBuilder<DocumentSnapshot>(
           stream: stream,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Container(child: Center(child: CircularProgressIndicator()));
+              return Container(
+                  child: Center(child: CircularProgressIndicator()));
             } else {
               final scoreBoardData = snapshot.data.data();
               final ballOfTheOver = scoreBoardData['ballOfTheOver'];
@@ -279,11 +285,12 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
               final totalRuns = scoreBoardData['totalRuns'];
               final wicketsDown = scoreBoardData['wicketsDown'];
 
-              secondInningScoreBoard.currentBallNo=ballOfTheOver;
+              secondInningScoreBoard.currentBallNo = ballOfTheOver;
               secondInningScoreBoard.currentOverNo = currentOverNo;
               secondInningScoreBoard.totalRuns = totalRuns;
               secondInningScoreBoard.totalWicketsDown = wicketsDown;
-              secondInningScoreBoard.battingTeamName = widget.match.secondBattingTeam;
+              secondInningScoreBoard.battingTeamName =
+                  widget.match.secondBattingTeam;
 
               return Column(
                 children: [
@@ -300,7 +307,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                                   .toUpperCase(),
                               style: TextStyle(
                                   fontSize:
-                                  (20 * SizeConfig.oneW).roundToDouble()),
+                                      (20 * SizeConfig.oneW).roundToDouble()),
                             ),
                           ),
                           Text(
@@ -309,7 +316,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
                             secondInningScoreBoard.getFormatedRunsString(),
                             style: TextStyle(
                                 fontSize:
-                                (16 * SizeConfig.oneW).roundToDouble()),
+                                    (16 * SizeConfig.oneW).roundToDouble()),
                           )
                         ],
                       ),
@@ -338,8 +345,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           vertical: (10 * SizeConfig.oneH).roundToDouble()),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12,width: 2)
-      ),
+          border: Border.all(color: Colors.black12, width: 2)),
       child: ListView.builder(
         shrinkWrap: true,
         controller: ScrollController(),
@@ -355,30 +361,35 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
     );
   }
 
-  loadingData({String msg}){
+  loadingData({String msg}) {
     return Container(
-        height: (80*SizeConfig.oneH).roundToDouble(),
+        height: (80 * SizeConfig.oneH).roundToDouble(),
         child: Center(child: CircularProgressIndicator()));
   }
 
-  zeroData({String msg, IconData iconData}){
+  zeroData({String msg, IconData iconData}) {
     return Container(
-      height: (80*SizeConfig.oneH).roundToDouble(),
+      height: (80 * SizeConfig.oneH).roundToDouble(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(iconData),
-          SizedBox(width: (4*SizeConfig.oneW).roundToDouble(),),
+          SizedBox(
+            width: (4 * SizeConfig.oneW).roundToDouble(),
+          ),
           Text(msg),
         ],
       ),
     );
   }
 
-  teamName({String teamName}){
-    return  Container(
-      margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble(),bottom: (2*SizeConfig.oneH).roundToDouble()),
-      padding: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),
+  teamName({String teamName}) {
+    return Container(
+      margin: EdgeInsets.only(
+          top: (10 * SizeConfig.oneH).roundToDouble(),
+          bottom: (2 * SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.only(
+        left: (16 * SizeConfig.oneW).roundToDouble(),
       ),
       child: Text(
         teamName.toUpperCase(),

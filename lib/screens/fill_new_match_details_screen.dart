@@ -6,13 +6,12 @@ import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:provider/provider.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CategoryController.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/widgets/new_category_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 ///media querydone
-
 class FillNewMatchDetailsPage extends StatelessWidget {
    FillNewMatchDetailsPage({this.user});
    final User user;
@@ -53,7 +52,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
 
     ///null checking and then generating MatchID, then uploading
     ///data to cloud.
-
     if (newMatch.getOverCount()!=null && newMatch.getPlayerCount()!=null &&
     newMatch.getTeam1Name()!=null && newMatch.getTeam2Name()!=null && newMatch.getLocation()!=null &&
         newMatch.getOverCount().toString()!='' && newMatch.getPlayerCount().toString()!='' &&

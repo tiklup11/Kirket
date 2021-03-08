@@ -4,7 +4,7 @@ import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/Batsmen.dart';
 import 'package:umiperer/modals/Bowler.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/ScoreBoardData.dart';
 import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
@@ -17,8 +17,7 @@ import 'package:umiperer/widgets/batsmen_score_row.dart';
 //add into tabBarView along with other shit
 ///mqd
 class LiveScorePage extends StatefulWidget {
-
-  LiveScorePage({this.creatorUID,this.matchUID,this.match});
+  LiveScorePage({this.creatorUID, this.matchUID, this.match});
 
   String creatorUID;
   String matchUID;
@@ -29,7 +28,6 @@ class LiveScorePage extends StatefulWidget {
 }
 
 class _LiveScorePageState extends State<LiveScorePage> {
-
   final scoreSelectionAreaLength = (220 * SizeConfig.oneH).roundToDouble();
   List<Batsmen> currentBothBatsmen;
   ScrollController _scrollController;
@@ -53,123 +51,117 @@ class _LiveScorePageState extends State<LiveScorePage> {
     super.initState();
     // FirebaseAdMob.instance.initialize(appId: "ca-app-pub-7348080910995117/5980363458");
     _scoreBoardData = new ScoreBoardData();
-    currentBothBatsmen=[];
+    currentBothBatsmen = [];
     _scrollController = ScrollController(keepScrollOffset: true);
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     // Timer(Duration(seconds: 5), (){
     // _bannerAd..load();
     //   _bannerAd?.show();
 
-
     return StreamBuilder<DocumentSnapshot>(
-          stream: matchesRef.doc(widget.matchUID).snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return CircularProgressIndicator();
-            } else {
-              final matchData = snapshot.data.data();
-              ///
-              ///getting data from firebase and setting it to the CricketMatch object
-              final team1Name = matchData['team1name'];
-              final team2Name = matchData['team2name'];
-              final oversCount = matchData['overCount'];
-              // final matchId = matchData['matchId'];
-              final playerCount = matchData['playerCount'];
-              final tossWinner = matchData['tossWinner'];
-              final batOrBall = matchData['whatChoose'];
-              final location = matchData['matchLocation'];
-              final isMatchStarted = matchData['isMatchStarted'];
-              final currentOverNumber = matchData['currentOverNumber'];
-              final firstBattingTeam = matchData['firstBattingTeam'];
-              final firstBowlingTeam = matchData['firstBowlingTeam'];
-              final secondBattingTeam = matchData['secondBattingTeam'];
-              final secondBowlingTeam = matchData['secondBowlingTeam'];
-              final currentBattingTeam = matchData['currentBattingTeam'];
-              final isFirstInningStarted = matchData['isFirstInningStarted'];
-              final isFirstInningEnd = matchData['isFirstInningEnd'];
-              final isSecondStartedYet = matchData['isSecondStartedYet'];
-              final isSecondInningEnd = matchData['isSecondInningEnd'];
-              final totalRunsOfInning1 = matchData['totalRunsOfInning1'];
-              final totalRunsOfInning2 = matchData['totalRunsOfInning2'];
-              final totalWicketsOfInning1 = matchData['totalWicketsOfInning1'];
-              final totalWicketsOfInning2 = matchData['totalWicketsOfInning1'];
-              final nonStriker = matchData['nonStrikerBatsmen'];
-              final striker = matchData['strikerBatsmen'];
-              final inningNo = matchData['inningNumber'];
-              final currentBallNo = matchData['currentBallNo'];
+        stream: matchesRef.doc(widget.matchUID).snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return CircularProgressIndicator();
+          } else {
+            final matchData = snapshot.data.data();
 
-              widget.match.nonStrikerBatsmen = nonStriker;
-              widget.match.strikerBatsmen = striker;
+            ///
+            ///getting data from firebase and setting it to the CricketMatch object
+            final team1Name = matchData['team1name'];
+            final team2Name = matchData['team2name'];
+            final oversCount = matchData['overCount'];
+            // final matchId = matchData['matchId'];
+            final playerCount = matchData['playerCount'];
+            final tossWinner = matchData['tossWinner'];
+            final batOrBall = matchData['whatChoose'];
+            final location = matchData['matchLocation'];
+            final isMatchStarted = matchData['isMatchStarted'];
+            final currentOverNumber = matchData['currentOverNumber'];
+            final firstBattingTeam = matchData['firstBattingTeam'];
+            final firstBowlingTeam = matchData['firstBowlingTeam'];
+            final secondBattingTeam = matchData['secondBattingTeam'];
+            final secondBowlingTeam = matchData['secondBowlingTeam'];
+            final currentBattingTeam = matchData['currentBattingTeam'];
+            final isFirstInningStarted = matchData['isFirstInningStarted'];
+            final isFirstInningEnd = matchData['isFirstInningEnd'];
+            final isSecondStartedYet = matchData['isSecondStartedYet'];
+            final isSecondInningEnd = matchData['isSecondInningEnd'];
+            final totalRunsOfInning1 = matchData['totalRunsOfInning1'];
+            final totalRunsOfInning2 = matchData['totalRunsOfInning2'];
+            final totalWicketsOfInning1 = matchData['totalWicketsOfInning1'];
+            final totalWicketsOfInning2 = matchData['totalWicketsOfInning1'];
+            final nonStriker = matchData['nonStrikerBatsmen'];
+            final striker = matchData['strikerBatsmen'];
+            final inningNo = matchData['inningNumber'];
+            final currentBallNo = matchData['currentBallNo'];
 
-              widget.match.isSecondInningEnd = isSecondInningEnd;
-              widget.match.isSecondInningStartedYet = isSecondStartedYet;
-              widget.match.isFirstInningEnd = isFirstInningEnd;
-              widget.match.isFirstInningStartedYet = isFirstInningStarted;
+            widget.match.nonStrikerBatsmen = nonStriker;
+            widget.match.strikerBatsmen = striker;
 
-              widget.match.totalRunsOf1stInning = totalRunsOfInning1;
-              widget.match.totalRunsOf2ndInning = totalRunsOfInning2;
-              widget.match.totalWicketsOf1stInning = totalWicketsOfInning1;
-              widget.match.totalWicketsOf2ndInning = totalWicketsOfInning2;
+            widget.match.isSecondInningEnd = isSecondInningEnd;
+            widget.match.isSecondInningStartedYet = isSecondStartedYet;
+            widget.match.isFirstInningEnd = isFirstInningEnd;
+            widget.match.isFirstInningStartedYet = isFirstInningStarted;
 
-              widget.match.firstBattingTeam = firstBattingTeam;
-              widget.match.firstBowlingTeam = firstBowlingTeam;
-              widget.match.secondBattingTeam = secondBattingTeam;
-              widget.match.secondBowlingTeam = secondBowlingTeam;
-              widget.match.setInningNo(inningNo);
-              // widget.match.setMatchId(matchId);
+            widget.match.totalRunsOf1stInning = totalRunsOfInning1;
+            widget.match.totalRunsOf2ndInning = totalRunsOfInning2;
+            widget.match.totalWicketsOf1stInning = totalWicketsOfInning1;
+            widget.match.totalWicketsOf2ndInning = totalWicketsOfInning2;
 
-              final totalRuns = matchData['totalRuns'];
-              final wicketsDown = matchData['wicketsDown'];
+            widget.match.firstBattingTeam = firstBattingTeam;
+            widget.match.firstBowlingTeam = firstBowlingTeam;
+            widget.match.secondBattingTeam = secondBattingTeam;
+            widget.match.secondBowlingTeam = secondBowlingTeam;
+            widget.match.setInningNo(inningNo);
+            // widget.match.setMatchId(matchId);
 
-              widget.match.totalRuns = totalRuns;
-              widget.match.wicketDown=wicketsDown;
+            final totalRuns = matchData['totalRuns'];
+            final wicketsDown = matchData['wicketsDown'];
 
+            widget.match.totalRuns = totalRuns;
+            widget.match.wicketDown = wicketsDown;
 
-              widget.match.currentOver.setCurrentOverNo(currentOverNumber);
-              widget.match.currentOver.setCurrentBallNo(currentBallNo);
-              widget.match.setTeam1Name(team1Name);
-              widget.match.setTeam2Name(team2Name);
-              // widget.match.setMatchId(matchId);
-              widget.match.setPlayerCount(playerCount);
-              widget.match.setLocation(location);
-              widget.match.setTossWinner(tossWinner);
-              widget.match.setBatOrBall(batOrBall);
-              widget.match.setOverCount(oversCount);
-              widget.match.setIsMatchStarted(isMatchStarted);
+            widget.match.currentOver.setCurrentOverNo(currentOverNumber);
+            widget.match.currentOver.setCurrentBallNo(currentBallNo);
+            widget.match.setTeam1Name(team1Name);
+            widget.match.setTeam2Name(team2Name);
+            // widget.match.setMatchId(matchId);
+            widget.match.setPlayerCount(playerCount);
+            widget.match.setLocation(location);
+            widget.match.setTossWinner(tossWinner);
+            widget.match.setBatOrBall(batOrBall);
+            widget.match.setOverCount(oversCount);
+            widget.match.setIsMatchStarted(isMatchStarted);
 
-              if (firstBattingTeam != null &&
-                  firstBowlingTeam != null &&
-                  secondBattingTeam != null &&
-                  secondBowlingTeam != null) {
-                widget.match.setFirstInnings();
-              }
-
-
-              print("INNING NO:: $inningNo");
-              print("Batting:: ${firstBattingTeam}");
-
-              return Container(
-                color: Colors.white,
-                child: ListView(
-                  shrinkWrap: true,
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    miniScoreCard(),
-                    buildOversList(),
-                  ],
-                ),
-              );
+            if (firstBattingTeam != null &&
+                firstBowlingTeam != null &&
+                secondBattingTeam != null &&
+                secondBowlingTeam != null) {
+              widget.match.setFirstInnings();
             }
+
+            print("INNING NO:: $inningNo");
+            print("Batting:: ${firstBattingTeam}");
+
+            return Container(
+              color: Colors.white,
+              child: ListView(
+                shrinkWrap: true,
+                // mainAxisSize: MainAxisSize.min,
+                children: [
+                  miniScoreCard(),
+                  buildOversList(),
+                ],
+              ),
+            );
           }
-    );
+        });
   }
 
   ///
@@ -183,22 +175,21 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
   ///upper scorecard with team runs and stuff
   miniScoreCard() {
-
     // widget.creatorUID = '4VwUugdc6XVPJkR2yltZtFGh4HN2'; //pulkitUID
     Stream<DocumentSnapshot> stream;
 
-    if(widget.match.getInningNo()==1){
-
-      stream =matchesRef
+    if (widget.match.getInningNo() == 1) {
+      stream = matchesRef
           .doc(widget.matchUID)
           .collection('FirstInning')
-          .doc("scoreBoardData").snapshots();
-
-    } else if(widget.match.getInningNo()==2){
+          .doc("scoreBoardData")
+          .snapshots();
+    } else if (widget.match.getInningNo() == 2) {
       stream = matchesRef
           .doc(widget.matchUID)
           .collection('SecondInning')
-          .doc("scoreBoardData").snapshots();
+          .doc("scoreBoardData")
+          .snapshots();
     }
 
     return StreamBuilder<DocumentSnapshot>(
@@ -213,7 +204,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
             final totalRuns = scoreBoardData['totalRuns'];
             final wicketsDown = scoreBoardData['wicketsDown'];
 
-            _scoreBoardData.currentBallNo=ballOfTheOver;
+            _scoreBoardData.currentBallNo = ballOfTheOver;
             _scoreBoardData.currentOverNo = currentOverNo;
             _scoreBoardData.totalRuns = totalRuns;
             _scoreBoardData.totalWicketsDown = wicketsDown;
@@ -228,9 +219,9 @@ class _LiveScorePageState extends State<LiveScorePage> {
                       vertical: (10 * SizeConfig.oneH).roundToDouble()),
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border.all(color: Colors.black12,width: 2),
-                      borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
-                  ),
+                      border: Border.all(color: Colors.black12, width: 2),
+                      borderRadius: BorderRadius.circular(
+                          (10 * SizeConfig.oneW).roundToDouble())),
                   child: Column(
                     children: [
                       Text("Inning ${widget.match.getInningNo()}"),
@@ -247,8 +238,8 @@ class _LiveScorePageState extends State<LiveScorePage> {
                                       .getCurrentBattingTeam()
                                       .toUpperCase(),
                                   style: TextStyle(
-                                      fontSize:
-                                      (20 * SizeConfig.oneW).roundToDouble()),
+                                      fontSize: (20 * SizeConfig.oneW)
+                                          .roundToDouble()),
                                 ),
                               ),
                               Text(
@@ -257,7 +248,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
                                 _scoreBoardData.getFormatedRunsString(),
                                 style: TextStyle(
                                     fontSize:
-                                    (16 * SizeConfig.oneW).roundToDouble()),
+                                        (16 * SizeConfig.oneW).roundToDouble()),
                               )
                             ],
                           ),
@@ -277,18 +268,17 @@ class _LiveScorePageState extends State<LiveScorePage> {
                       horizontal: (10 * SizeConfig.oneW).roundToDouble(),
                       vertical: (10 * SizeConfig.oneH).roundToDouble()),
                   margin: EdgeInsets.only(
-                      left: (10 * SizeConfig.oneW).roundToDouble(),
-                      right: (10 * SizeConfig.oneW).roundToDouble(),
+                    left: (10 * SizeConfig.oneW).roundToDouble(),
+                    right: (10 * SizeConfig.oneW).roundToDouble(),
                     bottom: (10 * SizeConfig.oneW).roundToDouble(),
                   ),
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border.all(color: Colors.black12,width: 2),
-                      borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
-                  ),
+                      border: Border.all(color: Colors.black12, width: 2),
+                      borderRadius: BorderRadius.circular(
+                          (10 * SizeConfig.oneW).roundToDouble())),
                   child: playersScore(),
                 )
-
               ],
             );
           }
@@ -307,9 +297,9 @@ class _LiveScorePageState extends State<LiveScorePage> {
       ),
       decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: Colors.black12,width: 2),
-          borderRadius: BorderRadius.circular((10*SizeConfig.oneW).roundToDouble())
-      ),
+          border: Border.all(color: Colors.black12, width: 2),
+          borderRadius:
+              BorderRadius.circular((10 * SizeConfig.oneW).roundToDouble())),
       child: ListView.builder(
         shrinkWrap: true,
         controller: _scrollController,
@@ -351,92 +341,93 @@ class _LiveScorePageState extends State<LiveScorePage> {
             horizontal: (4 * SizeConfig.oneW).roundToDouble()),
         decoration: BoxDecoration(
             borderRadius:
-            BorderRadius.circular((5 * SizeConfig.oneW).roundToDouble()),
+                BorderRadius.circular((5 * SizeConfig.oneW).roundToDouble()),
             color: overNoOnCard == currentOver ? Colors.white : Colors.white60),
         // height: (60 * SizeConfig.oneH).roundToDouble(),
         // color: Colors.black26,
         child: currentOver == 0
             ? Row(children: zeroOverBalls)
             : StreamBuilder<DocumentSnapshot>(
-          stream: matchesRef
-              .doc(widget.matchUID)
-              .collection('inning${widget.match.getInningNo()}overs')
-              .doc("over${overNoOnCard}")
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Text("Loading");
-            } else {
-              final overData = snapshot.data.data();
+                stream: matchesRef
+                    .doc(widget.matchUID)
+                    .collection('inning${widget.match.getInningNo()}overs')
+                    .doc("over${overNoOnCard}")
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("Loading");
+                  } else {
+                    final overData = snapshot.data.data();
 
-              final overLength = overData['overLength'];
+                    final overLength = overData['overLength'];
 
-              List<Widget> balls = [];
+                    List<Widget> balls = [];
 
-              for (int i = 0; i < overLength; i++) {
-                balls.add(BallWidget());
-              }
+                    for (int i = 0; i < overLength; i++) {
+                      balls.add(BallWidget());
+                    }
 
-              Map<String, dynamic> fullOverData =
-              overData['fullOverData'];
-              final isThisCurrentOver = overData["isThisCurrentOver"];
+                    Map<String, dynamic> fullOverData =
+                        overData['fullOverData'];
+                    final isThisCurrentOver = overData["isThisCurrentOver"];
 
-              final bowlerOfThisOver = overData['bowlerName'];
-              final currentBallNo = overData['currentBall'];
+                    final bowlerOfThisOver = overData['bowlerName'];
+                    final currentBallNo = overData['currentBall'];
 
-              //decoding the map [ballNo:::RunsScores]
-              fullOverData.forEach((ballNo, runsScored) {
-                Ball ball = Ball(
-                  currentBallNo: int.parse(ballNo),
-                  runToShowOnUI: runsScored,
-                  cardOverNo: overNoOnCard,
-                  currentOverNo: widget.match.currentOver.getCurrentOverNo(),
-                );
+                    //decoding the map [ballNo:::RunsScores]
+                    fullOverData.forEach((ballNo, runsScored) {
+                      Ball ball = Ball(
+                        currentBallNo: int.parse(ballNo),
+                        runToShowOnUI: runsScored,
+                        cardOverNo: overNoOnCard,
+                        currentOverNo:
+                            widget.match.currentOver.getCurrentOverNo(),
+                      );
 
-                if (runsScored != null) {
-                  balls[int.parse(ballNo) - 1] = BallWidget(
-                    currentBall: ball,
-                  );
-                } else {
-                  print("Ball??????????  $runsScored");
-                  balls[int.parse(ballNo) - 1] = BallWidget(
-                    currentBall: currentBall,
-                  );
-                }
-              });
-              return Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: (6*SizeConfig.oneW).roundToDouble()),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      if (runsScored != null) {
+                        balls[int.parse(ballNo) - 1] = BallWidget(
+                          currentBall: ball,
+                        );
+                      } else {
+                        print("Ball??????????  $runsScored");
+                        balls[int.parse(ballNo) - 1] = BallWidget(
+                          currentBall: currentBall,
+                        );
+                      }
+                    });
+                    return Column(
                       children: [
-                        Text("OVER NO: $overNoOnCard"),
-                        SizedBox(
-                          width: (30*SizeConfig.oneW).roundToDouble(),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  (6 * SizeConfig.oneW).roundToDouble()),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("OVER NO: $overNoOnCard"),
+                              SizedBox(
+                                width: (30 * SizeConfig.oneW).roundToDouble(),
+                              ),
+                              bowlerOfThisOver == null
+                                  ? Container()
+                                  : Text("🏐 : $bowlerOfThisOver"),
+                            ],
+                          ),
                         ),
-                        bowlerOfThisOver == null
-                            ? Container()
-                            : Text("🏐 : $bowlerOfThisOver"),
+                        Container(
+                          height: (60 * SizeConfig.oneH).roundToDouble(),
+                          child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: balls),
+                        ),
                       ],
-                    ),
-                  ),
-                  Container(
-                    height: (60*SizeConfig.oneH).roundToDouble(),
-                    child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: balls),
-                  ),
-                ],
-              );
-            }
-          },
-        ),
+                    );
+                  }
+                },
+              ),
       );
     }
   }
-
-
 
   playersScore() {
     final Batsmen dummyBatsmen = Batsmen(
@@ -647,7 +638,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
                     double eco = 0;
                     try {
-                      eco = (runs / ((overs) +(ballOfThatOver/6)));
+                      eco = (runs / ((overs) + (ballOfThatOver / 6)));
                     } catch (e) {
                       eco = 0;
                     }

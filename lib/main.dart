@@ -6,18 +6,16 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:umiperer/modals/CategoryController.dart';
-import 'package:umiperer/modals/Match.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/signin_screens/landing_page.dart';
 import 'package:your_splash/your_splash.dart';
-
 
 final matchesRef = FirebaseFirestore.instance.collection('allMatches');
 final categoryRef = FirebaseFirestore.instance.collection('categories');
 // final usersRef = FirebaseFirestore.instance.collection('users');
 
 // final String adMobId = "ca-app-pub-3940256099942544~3347511713";
-
 
 PackageInfo packageInfo;
 void main() async {
@@ -42,8 +40,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<CategoryController>(create: (_)=>CategoryController(),),
-        ChangeNotifierProvider<CricketMatch>(create: (_)=>CricketMatch()),
+        ChangeNotifierProvider<CategoryController>(
+          create: (_) => CategoryController(),
+        ),
+        ChangeNotifierProvider<CricketMatch>(create: (_) => CricketMatch()),
       ],
       child: LayoutBuilder(builder: (context, constraints) {
         return OrientationBuilder(builder: (context, orientation) {
@@ -51,11 +51,12 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
+              fontFamily: 'Poppins',
               primaryColor: Colors.blueAccent,
               // focusColor: Colors.blueGrey,
             ),
             home: SplashScreen.timed(
-              seconds: 2,
+              seconds: 1,
               route: MaterialPageRoute(builder: (_) => AfterSplashScreen()),
               body: Scaffold(
                 backgroundColor: Colors.white,
@@ -64,7 +65,12 @@ class _MyAppState extends State<MyApp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.asset('assets/gifs/load5.gif',scale: 12,),
+                      Hero(
+                          tag: "Logo",
+                          child: Image.asset(
+                            'assets/gifs/load5.gif',
+                            scale: 12,
+                          )),
                       Text("Loading..")
                     ],
                   ),
