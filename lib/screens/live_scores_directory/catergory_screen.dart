@@ -3,13 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/live_scores_directory/live_screen_home.dart';
 
 class CategoryPage extends StatefulWidget {
   CategoryPage({this.user});
-  User user;
+  final User user;
   @override
   _CategoryPageState createState() => _CategoryPageState();
 }
@@ -58,15 +59,16 @@ class _CategoryPageState extends State<CategoryPage> {
 
 class CatCard extends StatelessWidget {
   CatCard({this.catName,this.user});
-  String catName;
-  User user;
+  final String catName;
+  final User user;
   @override
   Widget build(BuildContext context) {
     return Bounce(
       onPressed: (){
-        Navigator.push(context, CupertinoPageRoute(builder: (context){
-          return LiveScreenHome(user: user,catName: catName,);
-        }));
+        Navigator.push(context, PageTransition(
+          child: LiveScreenHome(catName: catName,user: user,),
+          type: PageTransitionType.rightToLeft
+        ));
       },
       child: Container(
         decoration: BoxDecoration(
