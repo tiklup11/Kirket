@@ -1,21 +1,18 @@
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
-import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
-import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/dialog_custom.dart';
+import 'package:umiperer/services/database_updater.dart';
 
 ///MQD
 ///
 class SelectAndCreateBatsmenPage extends StatefulWidget {
-  SelectAndCreateBatsmenPage({this.match, this.user});
+  SelectAndCreateBatsmenPage({this.match});
 
   final CricketMatch match;
-  final User user;
   @override
   _SelectAndCreateBatsmenPageState createState() =>
       _SelectAndCreateBatsmenPageState();
@@ -23,19 +20,10 @@ class SelectAndCreateBatsmenPage extends StatefulWidget {
 
 class _SelectAndCreateBatsmenPageState
     extends State<SelectAndCreateBatsmenPage> {
-  DataStreams _dataStreams;
   bool isPlayerSelected = false;
   HashMap<String, bool> checkBoxMap = HashMap();
   int maximumCheckBox = 2;
   int selectedCheckBox;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _dataStreams = DataStreams(
-        userUID: widget.user.uid, matchId: widget.match.getMatchId());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +47,17 @@ class _SelectAndCreateBatsmenPageState
 
   Widget batsmensList() {
     return StreamBuilder<QuerySnapshot>(
-      stream:
-          _dataStreams.batsmenData(inningNumber: widget.match.getInningNo()),
+      stream: DatabaseController.getBatsmenCollRef(
+              inningNo: widget.match.getInningNo(),
+              matchId: widget.match.getMatchId())
+          .snapshots(),
       builder: (context, snapshot) {
         selectedCheckBox = 0;
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
         } else {
           final playersData = snapshot.data.docs;
+          print("PlayerData :: $playersData");
 
           List<Widget> playerNames = [];
 
@@ -91,6 +82,7 @@ class _SelectAndCreateBatsmenPageState
           print(checkBoxMap);
           return Expanded(
             child: ListView(
+              cacheExtent: 11,
               shrinkWrap: true,
               children: playerNames,
             ),
@@ -131,39 +123,41 @@ class _SelectAndCreateBatsmenPageState
 
   void updateIsBatting({String playerName, bool value}) {
     if (selectedCheckBox == 0) {
-      matchesRef
-          .doc(widget.match.getMatchId())
-          .collection('${widget.match.getInningNo()}InningBattingData')
-          .doc(playerName)
+      DatabaseController.getBatsmenDocRef(
+              batsmenName: playerName,
+              inningNo: widget.match.getInningNo(),
+              matchId: widget.match.getMatchId())
           .update({
         "isBatting": value,
         "isOnStrike": true,
       });
 
-      matchesRef
-          .doc(widget.match.getMatchId())
+      DatabaseController.getScoreBoardDocRef(
+              inningNo: widget.match.getInningNo(),
+              matchId: widget.match.getMatchId())
           .update({"strikerBatsmen": playerName});
     }
 
     if (selectedCheckBox == 1) {
-      matchesRef
-          .doc(widget.match.getMatchId())
-          .collection('${widget.match.getInningNo()}InningBattingData')
-          .doc(playerName)
+      DatabaseController.getBatsmenDocRef(
+              batsmenName: playerName,
+              inningNo: widget.match.getInningNo(),
+              matchId: widget.match.getMatchId())
           .update({
         "isBatting": value,
-        // "isOnStrike":true,
       });
-      matchesRef
-          .doc(widget.match.getMatchId())
+
+      DatabaseController.getScoreBoardDocRef(
+              inningNo: widget.match.getInningNo(),
+              matchId: widget.match.getMatchId())
           .update({"nonStrikerBatsmen": playerName});
     }
 
     if (!value) {
-      matchesRef
-          .doc(widget.match.getMatchId())
-          .collection('${widget.match.getInningNo()}InningBattingData')
-          .doc(playerName)
+      DatabaseController.getBatsmenDocRef(
+              batsmenName: playerName,
+              inningNo: widget.match.getInningNo(),
+              matchId: widget.match.getMatchId())
           .update({
         "isBatting": value,
         "isOnStrike": value,
@@ -237,7 +231,6 @@ class _SelectAndCreateBatsmenPageState
         builder: (context) {
           return AddPlayerDialog(
             areWeAddingBatsmen: true,
-            user: widget.user,
             match: widget.match,
           );
         });

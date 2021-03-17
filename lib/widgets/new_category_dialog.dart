@@ -25,6 +25,10 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
   String playerName;
   String newCatName;
 
+  void showInSnackBar(String value) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -100,10 +104,11 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
   }
 
   void onCreateBtnPressed() {
-    categoryRef.doc().set({
+    categoryRef.doc(newCatName).set({
       "catName": newCatName,
       // "isPublic": selectedState=="Public"? true:false,
-      "creatorUid": widget.user.uid
+      "creatorUid": widget.user.uid,
+      "count": 0,
     });
   }
 
@@ -176,6 +181,13 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
     );
   }
 
+  onCreateButtonPressed() async {
+    final catDoc = await categoryRef.doc(newCatName).get();
+    if (catDoc.exists) {
+      //
+    } else {}
+  }
+
   endBtns() {
     return Consumer<CategoryController>(
       builder: (_, cc, child) => Row(
@@ -192,14 +204,20 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
               child: Text("Cancel"),
             ),
           ),
+          // ignore: missing_required_param
           Bounce(
-            onPressed: () {
-              // newCatName.trim();
-              final String ncn = newCatName;
-              if (newCatName != null && ncn.trim().length != 0) {
-                onCreateBtnPressed();
-                cc.setSelectedCategory(to: newCatName);
-                Navigator.pop(context);
+            onPressed: () async {
+              final catDoc = await categoryRef.doc(newCatName).get();
+
+              if (!catDoc.exists) {
+                final String ncn = newCatName;
+                if (newCatName != null && ncn.trim().length != 0) {
+                  onCreateBtnPressed();
+                  cc.setSelectedCategory(to: newCatName);
+                  Navigator.pop(context);
+                }
+              } else {
+                showInSnackBar("Category already exist, enter new name");
               }
             },
             child: Container(

@@ -7,8 +7,8 @@ import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CategoryController.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/fill_new_match_details_screen.dart';
-import 'package:umiperer/screens/zero_doc_screen.dart';
+import 'package:umiperer/screens/other_match_screens/fill_new_match_details_screen.dart';
+import 'package:umiperer/screens/other_match_screens/zero_doc_screen.dart';
 import 'package:umiperer/widgets/match_card_for_my_matches.dart';
 
 ///MQD
@@ -46,7 +46,12 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   // SizedBox(width: 20,),
-                  Text("Your Matches"),
+                  Text(
+                    "Your Matches",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -94,74 +99,43 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                 for (var matchData in matchesData) {
                   final CricketMatch match = CricketMatch();
 
-                  final team1Name = matchData.data()['team1name'];
-                  final team2Name = matchData.data()['team2name'];
+                  match.setTeam1Name(matchData.data()['team1name']);
+                  match.setTeam2Name(matchData.data()['team2name']);
+                  match.setOverCount(matchData.data()['overCount']);
 
-                  final oversCount = matchData.data()['overCount'];
+                  match.setMatchId(matchData.data()['matchId']);
+                  match.creatorUid = matchData.data()['creatorUid'];
+                  match.setPlayerCount(matchData.data()['playerCount']);
+                  match.setTossWinner(matchData.data()['tossWinner']);
+                  match.setBatOrBall(matchData.data()['whatChoose']);
+                  match.setLocation(matchData.data()['matchLocation']);
+                  match.setIsMatchStarted(matchData.data()['isMatchStarted']);
 
-                  final matchId = matchData.data()['matchId'];
-                  final creatorUid = matchData.data()['creatorUid'];
-                  final playerCount = matchData.data()['playerCount'];
-                  final tossWinner = matchData.data()['tossWinner'];
-                  final batOrBall = matchData.data()['whatChoose'];
-                  final location = matchData.data()['matchLocation'];
-                  final isMatchStarted = matchData.data()['isMatchStarted'];
-                  final currentOverNumber =
-                      matchData.data()['currentOverNumber'];
-                  final isSecondInningEnd =
+                  match.isSecondInningEnd =
                       matchData.data()['isSecondInningEnd'];
 
-                  final firstBattingTeam = matchData.data()['firstBattingTeam'];
-                  final firstBowlingTeam = matchData.data()['firstBowlingTeam'];
-                  final secondBattingTeam =
-                      matchData.data()['secondBattingTeam'];
-                  final secondBowlingTeam =
-                      matchData.data()['secondBowlingTeam'];
-
                   match.isFirstInningEnd = matchData.data()['isFirstInningEnd'];
-                  match.isFirstInningStartedYet=(
-                      matchData.data()['isFirstInningStarted']);
-                  match.isSecondInningStartedYet=(
-                      matchData.data()['isSecondStartedYet']);
+                  match.isFirstInningStartedYet =
+                      (matchData.data()['isFirstInningStarted']);
+                  match.isSecondInningStartedYet =
+                      (matchData.data()['isSecondStartedYet']);
                   match.setInningNo(matchData.data()['inningNumber']);
 
                   match.isMatchLive = matchData.data()['isLive'];
                   match.isLiveChatOn = matchData.data()['isLiveChatOn'];
 
-                  match.firstBattingTeam = firstBattingTeam;
-                  match.firstBowlingTeam = firstBowlingTeam;
-                  match.creatorUid = creatorUid;
-                  match.secondBattingTeam = secondBattingTeam;
-                  match.secondBowlingTeam = secondBowlingTeam;
-                  match.isSecondInningEnd = isSecondInningEnd;
+                  /**
+                   * Players list of both team ,may be used later
+                   */
+                  // if (matchData.data()['teamAPlayers'] != null) {
+                  //   final teamAPlayers =
+                  //       matchData.data()['teamAPlayers'].cast<String>();
+                  //   final teamBPlayers =
+                  //       matchData.data()['teamBPlayers'].cast<String>();
 
-                  if (firstBattingTeam != null &&
-                      firstBowlingTeam != null &&
-                      secondBattingTeam != null &&
-                      secondBowlingTeam != null) {
-                    match.setFirstInnings();
-                  }
-
-                  if (matchData.data()['teamAPlayers'] != null) {
-                    final teamAPlayers =
-                        matchData.data()['teamAPlayers'].cast<String>();
-                    final teamBPlayers =
-                        matchData.data()['teamBPlayers'].cast<String>();
-
-                    match.team1List = teamAPlayers;
-                    match.team2List = teamBPlayers;
-                  }
-
-                  match.currentOver.setCurrentOverNo(currentOverNumber);
-                  match.setTeam1Name(team1Name);
-                  match.setTeam2Name(team2Name);
-                  match.setMatchId(matchId);
-                  match.setPlayerCount(playerCount);
-                  match.setLocation(location);
-                  match.setTossWinner(tossWinner);
-                  match.setBatOrBall(batOrBall);
-                  match.setOverCount(oversCount);
-                  match.setIsMatchStarted(isMatchStarted);
+                  //   match.team1List = teamAPlayers;
+                  //   match.team2List = teamBPlayers;
+                  // }
 
                   matchCards.add(MatchCardForCounting(
                     match: match,

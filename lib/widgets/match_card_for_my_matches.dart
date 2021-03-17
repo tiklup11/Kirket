@@ -8,7 +8,8 @@ import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
-import 'package:umiperer/screens/toss_page.dart';
+import 'package:umiperer/screens/other_match_screens/toss_page.dart';
+import 'package:umiperer/services/database_updater.dart';
 
 ///mqd
 
@@ -27,7 +28,6 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     RewardedVideoAd.instance.load(
         adUnitId: "ca-app-pub-7348080910995117/3729480926",
@@ -143,80 +143,6 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
     );
   }
 
-  void _deleteMatch() async {
-    ///when we delete a collection,
-    ///inner collections are not deleted, so we have to delete inner collections also
-
-    final batsmen1Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("1InningBattingData")
-        .get();
-    for (var docs in batsmen1Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final batsmen2Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("2InningBattingData")
-        .get();
-    for (var docs in batsmen2Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final bowler1Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("1InningBowlingData")
-        .get();
-    for (var docs in bowler1Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final bowler2Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("2InningBowlingData")
-        .get();
-    for (var docs in bowler2Ref.docs) {
-      docs.reference.delete();
-    }
-
-    matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("FirstInning")
-        .doc("scoreBoardData")
-        .delete();
-
-    matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("SecondInning")
-        .doc("scoreBoardData")
-        .delete();
-
-    final overs1Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("inning1overs")
-        .get();
-    for (var docs in overs1Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final overs2Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("inning2overs")
-        .get();
-    for (var docs in overs2Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final chatCollection = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("chatData")
-        .get();
-    for (var docs in chatCollection.docs) {
-      docs.reference.delete();
-    }
-
-    matchesRef.doc(widget.match.getMatchId()).delete();
-  }
 
   mainBtn() {
     return Bounce(
@@ -421,7 +347,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                         iconData: Icons.delete,
                         onPressed: () {
                           Navigator.pop(context);
-                          _deleteMatch();
+                          DatabaseController.deleteMatch(matchId: widget.match.getMatchId());
                           // print("pressed");
                         },
                         btnText: "DELETE MATCH")

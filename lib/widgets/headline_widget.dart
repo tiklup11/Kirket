@@ -8,17 +8,19 @@ class HeadLineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return headLine(headLineString:headLineString);
+    return headLine(headLineString: headLineString);
   }
 
-  headLine({String headLineString}){
-    return  Container(
-      margin: EdgeInsets.only(top: (10*SizeConfig.oneH).roundToDouble()),
-      padding: EdgeInsets.only(left: (16*SizeConfig.oneW).roundToDouble(),
+  headLine({String headLineString}) {
+    return Container(
+      margin: EdgeInsets.only(top: (10 * SizeConfig.oneH).roundToDouble()),
+      padding: EdgeInsets.only(
+        left: (16 * SizeConfig.oneW).roundToDouble(),
       ),
       child: Text(
         headLineString.toUpperCase(),
         maxLines: 2,
+        style: TextStyle(fontWeight: FontWeight.w600),
       ),
     );
   }

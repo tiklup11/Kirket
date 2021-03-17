@@ -1,51 +1,138 @@
-import 'package:flutter/material.dart';
-import 'package:umiperer/modals/CricketOver.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CricketMatch extends ChangeNotifier{
-
-  String _team1Name;
-  String _team2Name;
+class CricketMatch {
+  String team1Name;
+  String team2Name;
   String category;
 
-  int _oversCount;
-  int _playersCount;
-  int _inningNumber=1;
-
-  int totalRunsOf1stInning;
-  int totalRunsOf2ndInning;
-  int totalWicketsOf1stInning;
-  int totalWicketsOf2ndInning;
-  int totalRuns;
-  int wicketDown;
+  int oversCount;
+  int playersCount;
+  int inningNumber;
 
   bool isLiveChatOn;
   bool isMatchLive;
 
-
-  CricketOver currentOver = CricketOver();
-  String _matchId;
+  String matchId;
   String creatorUid;
-  String _location;
-  bool _isMatchStarted;
-  bool isFirstOverStarted;
+  String location;
+  bool isMatchStarted;
 
+  String tossWinner;
+  String chooseToBatOrBall;
 
-  String _tossWinner;
-  String _chooseToBatOrBall;
-  //this will decide weather match is []
-  String matchStatus;
+  factory CricketMatch.from(DocumentSnapshot doc) {
+    final data = doc.data();
+    return CricketMatch(
+        category: data['cat'],
+        chooseToBatOrBall: data['whatChoose'],
+        creatorUid: data['creatorUid'],
+        inningNumber: data['inningNumber'],
+        isFirstInningEnd: data['isFirstInningEnd'],
+        isFirstInningStartedYet: data['isFirstInningStarted'],
+        isMatchLive: data['isLive'],
+        isLiveChatOn: data['isLiveChatOn'],
+        isMatchStarted: data['isMatchStarted'],
+        oversCount: data['overCount'],
+        playersCount: data['playerCount'],
+        team1Name: data['team1name'],
+        team2Name: data['team2name'],
+        tossWinner: data['tossWinner'],
+        isSecondInningStartedYet: data['isSecondStartedYet'],
+        isSecondInningEnd: data['isSecondInningEnd'],
+        location: data['matchLocation'],
+        matchId: data['matchId'],
+        winningMsg: data['winningMsg']);
+  }
 
-  String firstBattingTeam;
-  String firstBowlingTeam;
+  CricketMatch({
+    this.category,
+    this.chooseToBatOrBall,
+    this.creatorUid,
+    this.inningNumber,
+    this.isFirstInningEnd,
+    this.isFirstInningStartedYet,
+    this.isLiveChatOn,
+    this.isMatchLive,
+    this.isMatchStarted,
+    this.isSecondInningEnd,
+    this.isSecondInningStartedYet,
+    this.matchId,
+    this.location,
+    this.oversCount,
+    this.playersCount,
+    this.team1Name,
+    this.team2Name,
+    this.tossWinner,
+    this.winningMsg,
+  });
 
-  String secondBattingTeam;
-  String secondBowlingTeam;
+  String getCurrentBattingTeam() {
+    if (inningNumber == 1) {
+      return getFirstBattingTeam();
+    } else {
+      return getSecondBattingTeam();
+    }
+  }
 
-  String currentBowler;
-  String currentBatsmen1;
-  String currentBatsmen2;
-  String nonStrikerBatsmen;
-  String strikerBatsmen;
+  String _firstBattingTeam;
+  setFirstBattingTeam(String val) {
+    _firstBattingTeam = val;
+  }
+
+  getFirstBattingTeam() {
+    if (getTossWinner() == getTeam1Name() && getChoosedOption() == 'Bat' ||
+        getTossWinner() == getTeam2Name() && getChoosedOption() == 'Bowl') {
+      _firstBattingTeam = getTeam1Name();
+    } else {
+      _firstBattingTeam = getTeam2Name();
+    }
+    return _firstBattingTeam;
+  }
+
+  String _firstBowlingTeam;
+  setFirstBowlingTeam(String val) {
+    _firstBowlingTeam = val;
+  }
+
+  getFirstBowlingTeam() {
+    if (getTossWinner() == getTeam1Name() && getChoosedOption() == 'Bowl' ||
+        getTossWinner() == getTeam2Name() && getChoosedOption() == 'Bat') {
+      _firstBowlingTeam = getTeam1Name();
+    } else {
+      _firstBowlingTeam = getTeam2Name();
+    }
+    return _firstBowlingTeam;
+  }
+
+  String _secondBattingTeam;
+  setSecondBattingTeam(String val) {
+    _secondBattingTeam = val;
+  }
+
+  getSecondBattingTeam() {
+    if (getTossWinner() == getTeam1Name() && getChoosedOption() == 'Bat' ||
+        getTossWinner() == getTeam2Name() && getChoosedOption() == 'Bowl') {
+      _secondBattingTeam = getTeam2Name();
+    } else {
+      _secondBattingTeam = getTeam1Name();
+    }
+    return _secondBattingTeam;
+  }
+
+  String _secondBowlingTeam;
+  setSecondBowlingTeam(String val) {
+    _secondBowlingTeam = val;
+  }
+
+  getSecondBowlingTeam() {
+    if (getTossWinner() == getTeam1Name() && getChoosedOption() == 'Bat' ||
+        getTossWinner() == getTeam2Name() && getChoosedOption() == 'Bowl') {
+      _secondBowlingTeam = getTeam1Name();
+    } else {
+      _secondBowlingTeam = getTeam2Name();
+    }
+    return _secondBowlingTeam;
+  }
 
   String winningMsg;
 
@@ -54,213 +141,178 @@ class CricketMatch extends ChangeNotifier{
   bool isSecondInningStartedYet;
   bool isSecondInningEnd;
 
-  List<String> team1List=[];
-  List<String> team2List=[];
+  List<String> team1List = [];
+  List<String> team2List = [];
 
-  int getTotalRunsOf1stInning(){return totalRunsOf1stInning;}
-  void setTotalRunsOf1stInning(int val){
-    totalRunsOf1stInning=val;
-    notifyListeners();
-  }
-
-  int getTotalRunsOf2ndInning(){return totalRunsOf2ndInning;}
-  void setTotalRunsOf2ndInning(int val){
-    totalRunsOf2ndInning=val;
-    notifyListeners();
-  }
-
-  int getTotalWicketsOf1stInning(){return totalWicketsOf1stInning;}
-  void setTotalWicketsOf1stInning(int val){
-    totalWicketsOf1stInning=val;
-    notifyListeners();
-  }
-
-  int getTotalWicketsOf2ndInning(){return totalWicketsOf2ndInning;}
-  void setTotalWicketsOf2ndInning(int val){
-    totalWicketsOf2ndInning=val;
-    notifyListeners();
-  }
-
-  String getFinalResult(){
-
+  String getFinalResult() {
     String resultLine;
 
-    if(totalRunsOf1stInning!=null && totalWicketsOf2ndInning!=null && getInningNo()==2) {
-      if (totalRunsOf1stInning > totalRunsOf2ndInning) {
-        resultLine =
-        "${firstBattingTeam.toUpperCase()} won by ${totalRunsOf1stInning -
-            totalRunsOf2ndInning} runs";
-        return resultLine;
-      }
-      if (totalRunsOf1stInning < totalRunsOf2ndInning) {
-        resultLine =
-        "${secondBattingTeam.toUpperCase()} won by ${getPlayerCount() - 1 -
-            totalWicketsOf2ndInning} wickets";
-        return resultLine;
-      }
-    }
+    // if (totalRunsOf1stInning != null &&
+    //     totalWicketsOf2ndInning != null &&
+    //     getInningNo() == 2) {
+    //   if (totalRunsOf1stInning > totalRunsOf2ndInning) {
+    //     resultLine =
+    //         "${firstBattingTeam.toUpperCase()} won by ${totalRunsOf1stInning - totalRunsOf2ndInning} runs";
+    //     return resultLine;
+    //   }
+    //   if (totalRunsOf1stInning < totalRunsOf2ndInning) {
+    //     resultLine =
+    //         "${secondBattingTeam.toUpperCase()} won by ${getPlayerCount() - 1 - totalWicketsOf2ndInning} wickets";
+    //     return resultLine;
+    //   }
+    // }
     return null;
   }
 
-  String getCurrentBattingTeam(){
-    if(getInningNo()==1){
-      return firstBattingTeam;
-    } else{
-      return secondBattingTeam;
+  String getCurrentBowlingTeam() {
+    if (inningNumber == 1) {
+      return getFirstBowlingTeam();
+    } else {
+      return getSecondBowlingTeam();
     }
-  }
-  String getCurrentBowlingTeam(){
-    if(getCurrentBattingTeam()==getTeam1Name()){
-      return getTeam2Name();
-    }
-    if(getCurrentBattingTeam()==getTeam2Name()){
-      return getTeam1Name();
-    }
-    return null;
   }
 
   setFirstInnings() {
-    if ( ((getTossWinner() == getTeam1Name()) && (getChoosedOption() == "Bat")))
-    {
-      firstBattingTeam = getTeam1Name();
-      firstBowlingTeam = getTeam2Name();
+    if (((getTossWinner() == getTeam1Name()) &&
+        (getChoosedOption() == "Bat"))) {
+      _firstBattingTeam = getTeam1Name();
+      _firstBowlingTeam = getTeam2Name();
 
-      secondBowlingTeam = getTeam1Name();
-      secondBattingTeam = getTeam2Name();
+      _secondBowlingTeam = getTeam1Name();
+      _secondBattingTeam = getTeam2Name();
+    } else if (((getTossWinner() == getTeam2Name()) &&
+        (getChoosedOption() == "Bowl"))) {
+      _firstBattingTeam = getTeam1Name();
+      _firstBowlingTeam = getTeam2Name();
 
-    } else if(((getTossWinner() == getTeam2Name()) && (getChoosedOption() == "Bowl")))
-    {
-      firstBattingTeam = getTeam1Name();
-      firstBowlingTeam = getTeam2Name();
+      _secondBowlingTeam = getTeam1Name();
+      _secondBattingTeam = getTeam2Name();
+    } else if (((getTossWinner() == getTeam1Name()) &&
+        (getChoosedOption() == "Bowl"))) {
+      _firstBattingTeam = getTeam2Name();
+      _firstBowlingTeam = getTeam1Name();
 
-      secondBowlingTeam = getTeam1Name();
-      secondBattingTeam = getTeam2Name();
+      _secondBowlingTeam = getTeam2Name();
+      _secondBattingTeam = getTeam1Name();
+    } else if (((getTossWinner() == getTeam2Name()) &&
+        (getChoosedOption() == "Bat"))) {
+      _firstBattingTeam = getTeam2Name();
+      _firstBowlingTeam = getTeam1Name();
 
-    } else if(((getTossWinner() == getTeam1Name()) && (getChoosedOption() == "Bowl"))){
-      firstBattingTeam = getTeam2Name();
-      firstBowlingTeam=getTeam1Name();
-
-      secondBowlingTeam = getTeam2Name();
-      secondBattingTeam = getTeam1Name();
+      _secondBowlingTeam = getTeam2Name();
+      _secondBattingTeam = getTeam1Name();
     }
-     else if(((getTossWinner() == getTeam2Name()) && (getChoosedOption() == "Bat"))){
-      firstBattingTeam = getTeam2Name();
-      firstBowlingTeam=getTeam1Name();
-
-      secondBowlingTeam = getTeam2Name();
-      secondBattingTeam = getTeam1Name();
-    }
-    notifyListeners();
-
+    //notifyListeners();
   }
 
-  List<String> getTeamListByTeamName(String teamName){
-    if(teamName==getTeam1Name()){
+  List<String> getTeamListByTeamName(String teamName) {
+    if (teamName == getTeam1Name()) {
       return getTeam1List();
     } else {
       return getTeam2List();
     }
   }
 
-  void setInningNo(int value){
-    _inningNumber = value;
-    notifyListeners();
+  void setInningNo(int value) {
+    inningNumber = value;
+    //notifyListeners();
   }
 
-  int getInningNo(){return _inningNumber;}
+  int getInningNo() {
+    return inningNumber;
+  }
 
-
-  List<String> getTeam1List(){
+  List<String> getTeam1List() {
     return team1List;
   }
 
-  List<String> getTeam2List(){
+  List<String> getTeam2List() {
     return team2List;
   }
 
-  bool getIsMatchStarted(){
-    return _isMatchStarted;
+  bool getIsMatchStarted() {
+    return isMatchStarted;
   }
 
-  void setIsMatchStarted(bool value){
-    _isMatchStarted=value;
-    notifyListeners();
+  void setIsMatchStarted(bool value) {
+    isMatchStarted = value;
+    //notifyListeners();
   }
 
-  String getLocation(){
-    return _location;
+  String getLocation() {
+    return location;
   }
 
-  void setLocation(String value){
-    _location=value;
-    notifyListeners();
+  void setLocation(String value) {
+    location = value;
+    //notifyListeners();
   }
 
-  String getTossWinner(){
-    return _tossWinner;
+  String getTossWinner() {
+    return tossWinner;
   }
 
-  void setTossWinner(String value){
-    _tossWinner=value;
-    notifyListeners();
+  void setTossWinner(String value) {
+    tossWinner = value;
+    //notifyListeners();
   }
 
-  String getChoosedOption(){
-    return _chooseToBatOrBall;
+  String getChoosedOption() {
+    return chooseToBatOrBall;
   }
 
-  void setBatOrBall(String value){
-    _chooseToBatOrBall=value;
-    notifyListeners();
+  void setBatOrBall(String value) {
+    chooseToBatOrBall = value;
+    //notifyListeners();
   }
 
-  void setIsMatchLive(String value){
-    matchStatus = value;
-    notifyListeners();
+  void setIsMatchLive(String value) {
+    setIsMatchLive(value);
+    //notifyListeners();
   }
 
-  void setMatchId(String value){
-    _matchId = value;
-    notifyListeners();
+  void setMatchId(String value) {
+    matchId = value;
+    //notifyListeners();
   }
 
-  String getMatchId(){
-    return _matchId;
+  String getMatchId() {
+    return matchId;
   }
 
-  void setTeam1Name(String value){
-    _team1Name = value;
-    notifyListeners();
+  void setTeam1Name(String value) {
+    team1Name = value;
+    //notifyListeners();
   }
 
-  String getTeam1Name(){
-    return _team1Name;
+  String getTeam1Name() {
+    return team1Name;
   }
 
-  String getTeam2Name(){
-    return _team2Name;
+  String getTeam2Name() {
+    return team2Name;
   }
 
-  void setTeam2Name(String value){
-    _team2Name = value;
-    notifyListeners();
+  void setTeam2Name(String value) {
+    team2Name = value;
+    //notifyListeners();
   }
 
-  int getOverCount(){
-    return _oversCount;
+  int getOverCount() {
+    return oversCount;
   }
 
-  void setOverCount(int value){
-    _oversCount = value;
-    notifyListeners();
+  void setOverCount(int value) {
+    oversCount = value;
+    //notifyListeners();
   }
 
-  int getPlayerCount(){
-    return _playersCount;
+  int getPlayerCount() {
+    return playersCount;
   }
 
-  void setPlayerCount(int value){
-    _playersCount = value;
-    notifyListeners();
+  void setPlayerCount(int value) {
+    playersCount = value;
+    //notifyListeners();
   }
 }

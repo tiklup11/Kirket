@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/first_in_sc.dart';
-import 'package:umiperer/screens/second_inn_sc.dart';
+import 'package:umiperer/screens/other_match_screens/first_in_sc.dart';
+import 'package:umiperer/screens/other_match_screens/second_inn_sc.dart';
 
 ///mqd
 class ScoreCard extends StatefulWidget {

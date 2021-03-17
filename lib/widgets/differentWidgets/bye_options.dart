@@ -30,9 +30,8 @@ class _ByeOptionsState extends State<ByeOptions> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    runUpdater = RunUpdater(matchId: widget.matchId,userUID: widget.userUID,context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse);
+    runUpdater = RunUpdater(matchId: widget.matchId,context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse);
   }
 
   @override

@@ -1,36 +1,63 @@
-class ScoreBoardData {
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:umiperer/modals/CricketMatch.dart';
 
-  ScoreBoardData({this.totalWicketsDown,this.totalRuns,this.currentOverNo,this.battingTeamName,
-    this.currentBallNo,this.bowlingTeam,this.inningNo,this.team1name,this.team2name});
+class ScoreBoardData {
+  ScoreBoardData(
+      {this.totalWicketsDown,
+      this.totalRuns,
+      this.currentOverNo,
+      this.battingTeamName,
+      this.currentBallNo,
+      this.bowlingTeam,
+      this.dummyBallNo,
+      this.matchData,
+      this.bowlerName,
+      this.nonStrikerName,
+      this.strikerName});
+
+  factory ScoreBoardData.from(DocumentSnapshot doc) {
+    return ScoreBoardData(
+        strikerName: doc.data()['strikerBatsmen'],
+        nonStrikerName: doc.data()['nonStrikerBatsmen'],
+        dummyBallNo: doc.data()['dummyBallOfTheOver'],
+        currentBallNo: doc.data()['ballOfTheOver'],
+        currentOverNo: doc.data()['currentOverNo'] + 1,
+        bowlerName: doc.data()['currentBowler'],
+        battingTeamName: doc.data()['battingTeam'],
+        bowlingTeam: doc.data()['bowlingTeam'],
+        totalRuns: doc.data()['totalRuns'],
+        totalWicketsDown: doc.data()['wicketsDown']);
+  }
+
+  CricketMatch matchData;
 
   String battingTeamName;
   String bowlingTeam;
-  int inningNo;
   int totalRuns;
   int totalWicketsDown;
   int currentOverNo;
   int currentBallNo;
-  String team1name;
-  String team2name;
+  int dummyBallNo;
+  String nonStrikerName;
+  String strikerName;
+  String bowlerName;
 
-  String getCrr(){
+  String getCrr() {
     double crr;
     try {
-      crr= totalRuns / (currentOverNo + currentBallNo / 6);
+      crr = totalRuns / (currentOverNo + currentBallNo / 6);
     } catch (e) {
       crr = 0.0;
     }
-    if(crr.isNaN){
-      crr=0.0;
+    if (crr.isNaN) {
+      crr = 0.0;
     }
     return crr.toStringAsFixed(2);
   }
 
-  String getFormatedRunsString(){
+  String getFormatedRunsString() {
     String runsFormat =
-        "$totalRuns/$totalWicketsDown ($currentOverNo.$currentBallNo)";
+        "$totalRuns/$totalWicketsDown (${currentOverNo - 1}.$currentBallNo)";
     return runsFormat;
   }
-
-
 }

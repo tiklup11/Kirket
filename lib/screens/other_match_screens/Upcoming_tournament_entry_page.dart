@@ -64,7 +64,6 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
       //2. Navigate to a screen and pass Match
       Navigator.pop(context);
 
-      //TODO: show toast msg instead
       // showInSnackBar("Match Created");
 
       print('exiting handling sub');
@@ -97,7 +96,6 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     tournament = UpcomingTournament();
   }

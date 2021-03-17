@@ -79,6 +79,7 @@ class _LiveChatPageState extends State<LiveChatPage> {
 
             return Expanded(
               child: ListView.builder(
+                cacheExtent: 10,
                   shrinkWrap: true,
                   reverse: true,
                   itemCount: allMsgList.length,

@@ -3,14 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/UpcomingTournament.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/Upcoming_tournament_entry_page.dart';
-import 'package:umiperer/screens/zero_doc_screen.dart';
+import 'package:umiperer/screens/other_match_screens/Upcoming_tournament_entry_page.dart';
+import 'package:umiperer/screens/other_match_screens/zero_doc_screen.dart';
 import 'package:umiperer/widgets/upcoming_tour_card_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 ///mqr
 class UpcomingMatchesScreen extends StatefulWidget {
-
   UpcomingMatchesScreen({this.user});
   final User user;
 
@@ -27,7 +26,9 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
           child: Icon(Icons.add),
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return AnnounceNewTournament(user: widget.user,);
+              return AnnounceNewTournament(
+                user: widget.user,
+              );
             }));
           },
         ),
@@ -35,11 +36,16 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 20,top: 10),
+              padding: EdgeInsets.only(left: 20, top: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text("Upcoming Tournaments"),
+                  Text(
+                    "Upcoming Tournaments",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -54,18 +60,22 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
         stream: upcomingTournamentCollectionRef.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Expanded(child: Container(child: Center(child: CircularProgressIndicator())));
+            return Expanded(
+                child: Container(
+                    child: Center(child: CircularProgressIndicator())));
           } else {
             //ut  = upcomingTournaments
             final utDocList = snapshot.data.docs;
 
-            if(utDocList.isEmpty){
+            if (utDocList.isEmpty) {
               return Expanded(
                 child: ZeroDocScreen(
-                  dialogText: "Tab + to announce your Upcoming Tournament and It will be visible to all the users.",
+                  dialogText:
+                      "Tab + to announce your Upcoming Tournament and It will be visible to all the users.",
                   textMsg: "Tab + to announce your Upcoming Tournament",
                   showLearnMore: true,
-                  iconData: Icons.sports_cricket_outlined,),
+                  iconData: Icons.sports_cricket_outlined,
+                ),
               );
             }
 
@@ -88,9 +98,7 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
                   upcomingTournamentData['location'];
               upcomingTournament.entryFees =
                   upcomingTournamentData['entryFees'];
-              upcomingTournament.creatorUID =
-                  upcomingTournamentData['userUID'];
-
+              upcomingTournament.creatorUID = upcomingTournamentData['userUID'];
 
               print("UPcoming :::::  ${upcomingTournament.startingDate}");
 
@@ -118,8 +126,8 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
         context: context,
         builder: (builder) {
           return Container(
-            padding: EdgeInsets.all((20*SizeConfig.oneW).roundToDouble()),
-            height: (350.0*SizeConfig.oneH).roundToDouble(),
+            padding: EdgeInsets.all((20 * SizeConfig.oneW).roundToDouble()),
+            height: (350.0 * SizeConfig.oneH).roundToDouble(),
             color: Colors.transparent,
             child: Column(
               children: [
@@ -128,66 +136,90 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
                   children: [
                     Text(
                       upcomingTournament.tournamentName.toUpperCase(),
-                      style: TextStyle(fontSize: (30*SizeConfig.oneW).roundToDouble(), color: Colors.black),
+                      style: TextStyle(
+                          fontSize: (30 * SizeConfig.oneW).roundToDouble(),
+                          color: Colors.black),
                     ),
-                    customListTile(text: "Location",data: upcomingTournament.matchLocation,iconData: Icons.location_on),
-                    customListTile(text: "Entry Fee",data: upcomingTournament.entryFees.toString(),iconData: Icons.attach_money_rounded),
-                    customListTile(text: "Contact no",data: upcomingTournament.contactNumber.toString(),iconData: Icons.phone),
-                    customListTile(text: "Starting data",data: upcomingTournament.startingDate,iconData: Icons.date_range),
+                    customListTile(
+                        text: "Location",
+                        data: upcomingTournament.matchLocation,
+                        iconData: Icons.location_on),
+                    customListTile(
+                        text: "Entry Fee",
+                        data: upcomingTournament.entryFees.toString(),
+                        iconData: Icons.attach_money_rounded),
+                    customListTile(
+                        text: "Contact no",
+                        data: upcomingTournament.contactNumber.toString(),
+                        iconData: Icons.phone),
+                    customListTile(
+                        text: "Starting data",
+                        data: upcomingTournament.startingDate,
+                        iconData: Icons.date_range),
                   ],
                 ),
-                upcomingTournament.creatorUID==widget.user.uid?
+                upcomingTournament.creatorUID == widget.user.uid
+                    ?
                     //Remove Btn
-                MaterialButton(
-                    minWidth: double.infinity,
-                    // animationDuration: Duration(milliseconds: 1),
-                    elevation: 0,
-                    highlightElevation: 0,
-                    color: Colors.blueGrey.shade400,
-                    child: Text("Remove"),
-                    onPressed: (){
-                      showAlertDialog(context: context,tournamentUID: upcomingTournament.tournamentUID);
-                    }):
-                Column(
-                  children: [
                     MaterialButton(
                         minWidth: double.infinity,
                         // animationDuration: Duration(milliseconds: 1),
                         elevation: 0,
                         highlightElevation: 0,
                         color: Colors.blueGrey.shade400,
-                        child: Text("Call"),
-                        onPressed: (){
-                          _launchCaller(phoneNo: upcomingTournament.contactNumber.toString());
-                          Navigator.pop(context);
-                        }),
-                    MaterialButton(
-                        minWidth: double.infinity,
-                        // animationDuration: Duration(milliseconds: 1),
-                        elevation: 0,
-                        highlightElevation: 0,
-                        color: Colors.blueGrey.shade400,
-                        child: Text("Whatsapp"),
-                        onPressed: (){
-                          _launchWhatsapp(phoneNo: upcomingTournament.contactNumber.toString());
-                          Navigator.pop(context);
-                        }),
-                  ],
-                )
+                        child: Text("Remove"),
+                        onPressed: () {
+                          showAlertDialog(
+                              context: context,
+                              tournamentUID: upcomingTournament.tournamentUID);
+                        })
+                    : Column(
+                        children: [
+                          MaterialButton(
+                              minWidth: double.infinity,
+                              // animationDuration: Duration(milliseconds: 1),
+                              elevation: 0,
+                              highlightElevation: 0,
+                              color: Colors.blueGrey.shade400,
+                              child: Text("Call"),
+                              onPressed: () {
+                                _launchCaller(
+                                    phoneNo: upcomingTournament.contactNumber
+                                        .toString());
+                                Navigator.pop(context);
+                              }),
+                          MaterialButton(
+                              minWidth: double.infinity,
+                              // animationDuration: Duration(milliseconds: 1),
+                              elevation: 0,
+                              highlightElevation: 0,
+                              color: Colors.blueGrey.shade400,
+                              child: Text("Whatsapp"),
+                              onPressed: () {
+                                _launchWhatsapp(
+                                    phoneNo: upcomingTournament.contactNumber
+                                        .toString());
+                                Navigator.pop(context);
+                              }),
+                        ],
+                      )
               ],
             ),
           );
         });
   }
 
-  removeThisTournament({String docUID}){
+  removeThisTournament({String docUID}) {
     upcomingTournamentCollectionRef.doc(docUID).delete();
   }
 
-  customListTile({String text,String data,IconData iconData}){
-    final space = SizedBox(width: (8*SizeConfig.oneW).roundToDouble(),);
+  customListTile({String text, String data, IconData iconData}) {
+    final space = SizedBox(
+      width: (8 * SizeConfig.oneW).roundToDouble(),
+    );
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: (4*SizeConfig.oneH).roundToDouble()),
+      padding:
+          EdgeInsets.symmetric(vertical: (4 * SizeConfig.oneH).roundToDouble()),
       child: Row(
         children: [
           Icon(iconData),
@@ -212,15 +244,14 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
   }
 
   _launchWhatsapp({String phoneNo}) async {
-
-      var whatsappUrl = "whatsapp://send?phone=$phoneNo";
-      await canLaunch(whatsappUrl) != null
-          ? launch(whatsappUrl)
-          : print(
-          "open WhatsApp app link or do a snackbar with notification that there is no WhatsApp installed");
+    var whatsappUrl = "whatsapp://send?phone=$phoneNo";
+    await canLaunch(whatsappUrl) != null
+        ? launch(whatsappUrl)
+        : print(
+            "open WhatsApp app link or do a snackbar with notification that there is no WhatsApp installed");
   }
 
-  showAlertDialog({BuildContext context,String tournamentUID}) {
+  showAlertDialog({BuildContext context, String tournamentUID}) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
@@ -230,12 +261,11 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
     );
     Widget continueButton = TextButton(
       child: Text("Delete"),
-      onPressed: () async{
+      onPressed: () async {
         Navigator.pop(context);
         //remove this tournament from firebase
         await removeThisTournament(docUID: tournamentUID);
         Navigator.pop(context);
-
       },
     );
 
@@ -257,5 +287,4 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
       },
     );
   }
-
 }

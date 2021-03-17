@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
-import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
+import 'package:umiperer/services/database_updater.dart';
 import 'package:umiperer/widgets/back_button_widget.dart';
 
 //where actual counting happens
@@ -277,24 +277,29 @@ class _TossScreenState extends State<TossScreen> {
 
       widget.match.setFirstInnings();
 
-      matchesRef.doc(widget.match.getMatchId()).update({
+      DatabaseController.getGeneralMatchDoc(matchId: widget.match.getMatchId())
+          .update({
         "whatChoose": widget.match.getChoosedOption(),
         "tossWinner": widget.match.getTossWinner(),
         "isMatchStarted": true,
-        "firstBattingTeam": widget.match.firstBattingTeam,
-        "firstBowlingTeam": widget.match.firstBowlingTeam,
-        "secondBattingTeam": widget.match.secondBattingTeam,
-        "secondBowlingTeam": widget.match.secondBowlingTeam,
-        "currentBattingTeam": widget.match.getCurrentBattingTeam(),
       });
 
-      ///matchDoc > FirstInningCollection > scoreBoardDataDoc >
-      matchesRef.doc(widget.match.getMatchId()).update({
-        "battingTeam": widget.match.firstBattingTeam,
-        "totalRuns": 0,
-        "wicketsDown": 0
+      DatabaseController.getScoreBoardDocRef(
+        inningNo: 1,
+        matchId: widget.match.getMatchId(),
+      ).update({
+        "battingTeam": widget.match.getFirstBattingTeam(),
+        "bowlingTeam": widget.match.getFirstBowlingTeam()
       });
-      // buildPlayersName();
+
+      DatabaseController.getScoreBoardDocRef(
+        inningNo: 2,
+        matchId: widget.match.getMatchId(),
+      ).update({
+        "battingTeam": widget.match.getSecondBattingTeam(),
+        "bowlingTeam": widget.match.getSecondBowlingTeam(),
+      });
+
       Navigator.pop(context);
       //TODO: navigate to counterPage
       Navigator.push(context, MaterialPageRoute(builder: (context) {

@@ -3,13 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
-import 'package:umiperer/screens/MyMatchesScreen.dart';
-import 'package:umiperer/screens/zero_doc_screen.dart';
+import 'package:umiperer/screens/other_match_screens/zero_doc_screen.dart';
 import 'package:umiperer/widgets/live_match_card.dart';
 
 ///after 2nd inning ends, we are setting isLive to false,
 ///and all those matches are here
-// final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
 
 class EndMatchesScreen extends StatefulWidget {
   EndMatchesScreen({this.currentUser, this.catName});
@@ -72,7 +70,6 @@ class _EndMatchesScreenState extends State<EndMatchesScreen> {
               final batOrBall = matchData['whatChoose'];
               final location = matchData['matchLocation'];
               final isMatchStarted = matchData['isMatchStarted'];
-              final currentOverNumber = matchData['currentOverNumber'];
               final firstBattingTeam = matchData['firstBattingTeam'];
               final firstBowlingTeam = matchData['firstBowlingTeam'];
               final secondBattingTeam = matchData['secondBattingTeam'];
@@ -94,9 +91,6 @@ class _EndMatchesScreenState extends State<EndMatchesScreen> {
               cricketMatch.isMatchLive = matchData['isLive'];
               cricketMatch.isLiveChatOn = matchData['isLiveChatOn'];
 
-              cricketMatch.nonStrikerBatsmen = nonStriker;
-              cricketMatch.strikerBatsmen = striker;
-
               cricketMatch.winningMsg = winningMsg;
 
               cricketMatch.isSecondInningEnd = isSecondInningEnd;
@@ -104,23 +98,23 @@ class _EndMatchesScreenState extends State<EndMatchesScreen> {
               cricketMatch.isFirstInningEnd = isFirstInningEnd;
               cricketMatch.isFirstInningStartedYet = isFirstInningStarted;
 
-              cricketMatch.totalRunsOf1stInning = totalRunsOfInning1;
-              cricketMatch.totalRunsOf2ndInning = totalRunsOfInning2;
-              cricketMatch.totalWicketsOf1stInning = totalWicketsOfInning1;
-              cricketMatch.totalWicketsOf2ndInning = totalWicketsOfInning2;
+              // cricketMatch.totalRunsOf1stInning = totalRunsOfInning1;
+              // cricketMatch.totalRunsOf2ndInning = totalRunsOfInning2;
+              // cricketMatch.totalWicketsOf1stInning = totalWicketsOfInning1;
+              // cricketMatch.totalWicketsOf2ndInning = totalWicketsOfInning2;
 
-              cricketMatch.firstBattingTeam = firstBattingTeam;
-              cricketMatch.firstBowlingTeam = firstBowlingTeam;
-              cricketMatch.secondBattingTeam = secondBattingTeam;
-              cricketMatch.secondBowlingTeam = secondBowlingTeam;
+              // cricketMatch.firstBattingTeam = firstBattingTeam;
+              // cricketMatch.firstBowlingTeam = firstBowlingTeam;
+              // cricketMatch.secondBattingTeam = secondBattingTeam;
+              // cricketMatch.secondBowlingTeam = secondBowlingTeam;
               cricketMatch.setInningNo(inningNo);
               cricketMatch.setMatchId(matchId);
 
               final totalRuns = matchData['totalRuns'];
               final wicketsDown = matchData['wicketsDown'];
 
-              cricketMatch.totalRuns = totalRuns;
-              cricketMatch.wicketDown = wicketsDown;
+              // cricketMatch.totalRuns = totalRuns;
+              // cricketMatch.wicketDown = wicketsDown;
 
               if (firstBattingTeam != null &&
                   firstBowlingTeam != null &&
@@ -129,8 +123,6 @@ class _EndMatchesScreenState extends State<EndMatchesScreen> {
                 cricketMatch.setFirstInnings();
               }
 
-              cricketMatch.currentOver.setCurrentOverNo(currentOverNumber);
-              cricketMatch.currentOver.setCurrentBallNo(currentBallNo);
               cricketMatch.setTeam1Name(team1Name);
               cricketMatch.setTeam2Name(team2Name);
               cricketMatch.setMatchId(matchId);
@@ -150,6 +142,7 @@ class _EndMatchesScreenState extends State<EndMatchesScreen> {
             });
 
             return ListView.builder(
+              cacheExtent: 5,
                 itemCount: listOfLiveMatches.length,
                 itemBuilder: (context, index) {
                   return listOfLiveMatches[index];

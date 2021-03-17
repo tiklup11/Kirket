@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
-import 'package:umiperer/screens/MatchScreens.dart';
+import 'package:umiperer/screens/other_match_screens/MatchScreens.dart';
 import 'package:umiperer/services/Database.dart';
 import 'package:umiperer/signin_screens/sign_in_screen.dart';
 
@@ -42,7 +42,6 @@ class _LandingPageBodyState extends State<LandingPageBody> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getPackageInfo();
   }

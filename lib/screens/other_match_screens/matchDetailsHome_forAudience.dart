@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/first_in_sc.dart';
-import 'package:umiperer/screens/full_score_card_for_audience.dart';
+import 'package:umiperer/screens/other_match_screens/first_in_sc.dart';
 import 'package:umiperer/screens/live_chat_screens/live_chat_page.dart';
-import 'package:umiperer/screens/live_score_page.dart';
+import 'package:umiperer/screens/other_match_screens/live_score_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
-import 'package:umiperer/screens/second_inn_sc.dart';
+import 'package:umiperer/screens/other_match_screens/second_inn_sc.dart';
 
 ///this contains 3-4 tabs and show to audience
 class MatchDetailsHomeForAudience extends StatefulWidget {
@@ -54,7 +53,6 @@ class _MatchDetailsHomeForAudienceState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _bannerAd = createBannerAd()..load();
     _bannerAd?.show(
@@ -129,7 +127,6 @@ class _MatchDetailsHomeForAudienceState
             PopupMenuButton<String>(
               padding: EdgeInsets.zero,
               onSelected: (value) {
-                //TODO: make switch cases
                 switch (value) {
                   case "Share match":
                     _shareMatch(context);
@@ -149,7 +146,7 @@ class _MatchDetailsHomeForAudienceState
           automaticallyImplyLeading: false,
           title: Text(
             "${widget.match.getTeam1Name().toUpperCase()} v ${widget.match.getTeam2Name().toUpperCase()}",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           bottom: TabBar(
             labelColor: Colors.black,

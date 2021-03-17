@@ -31,10 +31,9 @@ class _WideBallOptionsState extends State<WideBallOptions> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     runUpdater = RunUpdater(
-        matchId: widget.matchId,userUID: widget.userUID,
+        matchId: widget.matchId,
         context: context,setIsUploadingDataToFalse: widget.setUpdatingDataToFalse,
         // setWideToFalse: widget.setWideToFalse
     );

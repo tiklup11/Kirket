@@ -18,7 +18,6 @@ class _TeamDetailsState extends State<TeamDetails> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -27,6 +26,7 @@ class _TeamDetailsState extends State<TeamDetails> {
     return Container(
       color: Colors.white,
       child: ListView(
+        physics: BouncingScrollPhysics(),
         children: [
           //matchINFO
           Container(

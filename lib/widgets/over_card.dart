@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/Ball.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
+import 'package:umiperer/modals/ScoreBoardData.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/widgets/ball_widget.dart';
 import 'package:umiperer/main.dart';
@@ -11,11 +12,13 @@ class DummyOverCard extends StatefulWidget {
       {this.match,
       this.overNoOnCard,
       this.creatorUID,
+      this.scoreBoardData,
       @required this.inningNo});
 
   String creatorUID;
   int overNoOnCard;
   CricketMatch match;
+  ScoreBoardData scoreBoardData;
   int inningNo;
 
   @override
@@ -40,6 +43,7 @@ class _DummyOverCardState extends State<DummyOverCard> {
     Ball currentBall = null;
 
     return Container(
+        // width: 400,
         margin: EdgeInsets.symmetric(
             vertical: (4 * SizeConfig.oneH).roundToDouble(),
             horizontal: (10 * SizeConfig.oneW).roundToDouble()),
@@ -79,10 +83,8 @@ class _DummyOverCardState extends State<DummyOverCard> {
                 //decoding the map [ballNo:::RunsScores]
                 fullOverData.forEach((ballNo, runsScored) {
                   Ball ball = Ball(
-                    currentBallNo: int.parse(ballNo),
                     runToShowOnUI: runsScored,
                     cardOverNo: widget.overNoOnCard,
-                    currentOverNo: widget.match.currentOver.getCurrentOverNo(),
                   );
 
                   if (runsScored != null) {
@@ -111,7 +113,10 @@ class _DummyOverCardState extends State<DummyOverCard> {
                     Container(
                       height: (60 * SizeConfig.oneH).roundToDouble(),
                       child: ListView(
-                          scrollDirection: Axis.horizontal, children: balls),
+                        cacheExtent: 10,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          children: balls),
                     ),
                   ],
                 );

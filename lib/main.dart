@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:umiperer/modals/CategoryController.dart';
-import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/signin_screens/landing_page.dart';
 import 'package:your_splash/your_splash.dart';
@@ -39,13 +38,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<CategoryController>(
-          create: (_) => CategoryController(),
-        ),
-        ChangeNotifierProvider<CricketMatch>(create: (_) => CricketMatch()),
-      ],
-      child: LayoutBuilder(builder: (context, constraints) {
+          providers: [
+            ChangeNotifierProvider(create: (context)=>CategoryController())
+          ],
+          child: LayoutBuilder(builder: (context, constraints) {
         return OrientationBuilder(builder: (context, orientation) {
           SizeConfig().init(constraints, orientation);
           return MaterialApp(
@@ -93,7 +89,7 @@ class AfterSplashScreen extends StatefulWidget {
 class _AfterSplashScreenState extends State<AfterSplashScreen> {
   @override
   void initState() {
-    // TODO: implement initState
+    //  implement initState
     super.initState();
   }
 

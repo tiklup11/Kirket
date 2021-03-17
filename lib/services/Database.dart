@@ -279,17 +279,17 @@ class _TossScreenState extends State<TossScreen> {
         "whatChoose": widget.match.getChoosedOption(),
         "tossWinner": widget.match.getTossWinner(),
         "isMatchStarted": true,
-        "firstBattingTeam": widget.match.firstBattingTeam,
-        "firstBowlingTeam": widget.match.firstBowlingTeam,
-        "secondBattingTeam": widget.match.secondBattingTeam,
-        "secondBowlingTeam": widget.match.secondBowlingTeam,
+        "firstBattingTeam": widget.match.getFirstBattingTeam(),
+        "firstBowlingTeam": widget.match.getFirstBowlingTeam(),
+        "secondBattingTeam": widget.match.getSecondBattingTeam(),
+        "secondBowlingTeam": widget.match.getSecondBowlingTeam(),
         "currentBattingTeam": widget.match.getCurrentBattingTeam(),
       });
 
       ///matchDoc > FirstInningCollection > scoreBoardDataDoc >
       matchesRef.doc(widget.match.getMatchId())
           .update({
-        "battingTeam": widget.match.firstBattingTeam,
+        "battingTeam": widget.match.getFirstBattingTeam(),
         "totalRuns":0,
         "wicketsDown":0
       });

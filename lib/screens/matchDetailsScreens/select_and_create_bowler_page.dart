@@ -1,40 +1,28 @@
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
-import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
-import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/dialog_custom.dart';
-
-///MQD
+import 'package:umiperer/services/database_updater.dart';
 
 class SelectAndCreateBowlerPage extends StatefulWidget {
-  SelectAndCreateBowlerPage({this.match, this.user});
+  SelectAndCreateBowlerPage({this.match, this.currentOverNo});
 
   final CricketMatch match;
-  final User user;
+  final int currentOverNo;
+
   @override
   _SelectAndCreateBowlerPageState createState() =>
       _SelectAndCreateBowlerPageState();
 }
 
 class _SelectAndCreateBowlerPageState extends State<SelectAndCreateBowlerPage> {
-  DataStreams _dataStreams;
   bool isPlayerSelected = false;
   HashMap<String, bool> checkBoxMap = HashMap();
   int maximumCheckBox = 1;
   int selectedCheckBox;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _dataStreams = DataStreams(
-        userUID: widget.user.uid, matchId: widget.match.getMatchId());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +46,10 @@ class _SelectAndCreateBowlerPageState extends State<SelectAndCreateBowlerPage> {
 
   Widget bowlersList() {
     return StreamBuilder<QuerySnapshot>(
-      stream:
-          _dataStreams.bowlersData(inningNumber: widget.match.getInningNo()),
+      stream: DatabaseController.getBowlersCollRef(
+              inningNo: widget.match.getInningNo(),
+              matchId: widget.match.getMatchId())
+          .snapshots(),
       builder: (context, snapshot) {
         selectedCheckBox = 0;
         if (!snapshot.hasData) {
@@ -70,7 +60,6 @@ class _SelectAndCreateBowlerPageState extends State<SelectAndCreateBowlerPage> {
           if (playersData.isEmpty) {
             return addNewPlayerGif();
           }
-
           // updatetotalRunsOfInning1 after everyball
 
           ///getting isBatting data and filling checkboxes depending upon them
@@ -90,6 +79,7 @@ class _SelectAndCreateBowlerPageState extends State<SelectAndCreateBowlerPage> {
           print(checkBoxMap);
           return Expanded(
             child: ListView(
+              cacheExtent: 11,
               shrinkWrap: true,
               children: playerNames,
             ),
@@ -129,14 +119,24 @@ class _SelectAndCreateBowlerPageState extends State<SelectAndCreateBowlerPage> {
   }
 
   void updateIsBowling({String playerName, bool value}) {
-    matchesRef
-        .doc(widget.match.getMatchId())
-        .collection('${widget.match.getInningNo()}InningBowlingData')
-        .doc(playerName)
-        .update({"isBowling": value});
-    matchesRef
-        .doc(widget.match.getMatchId())
-        .update({"currentBowler": playerName});
+    DatabaseController.getBowlerDocRef(
+            bowlerName: playerName,
+            inningNo: widget.match.getInningNo(),
+            matchId: widget.match.getMatchId())
+        .update({
+      "isBowling": value,
+    });
+
+    DatabaseController.getOverDoc(
+            inningNo: widget.match.getInningNo(),
+            matchId: widget.match.getMatchId(),
+            overNo: widget.currentOverNo)
+        .update({"bowlerName": playerName});
+
+    DatabaseController.getScoreBoardDocRef(
+      inningNo: widget.match.getInningNo(),
+      matchId: widget.match.getMatchId(),
+    ).update({"currentBowler": playerName});
   }
 
   Widget addNewPlayerGif() {
@@ -157,7 +157,6 @@ class _SelectAndCreateBowlerPageState extends State<SelectAndCreateBowlerPage> {
   Widget addNewPlayerBtn() {
     return Bounce(
       onPressed: () {
-        //TODO: update current batsmen name and other related stuff
         openDialog();
       },
       child: Container(
@@ -179,7 +178,6 @@ class _SelectAndCreateBowlerPageState extends State<SelectAndCreateBowlerPage> {
   Widget saveBtn() {
     return Bounce(
       onPressed: () {
-        //TODO: update current batsmen name and other related stuff
         // onSaveBtnPressed();
         Navigator.pop(context);
       },
@@ -205,7 +203,6 @@ class _SelectAndCreateBowlerPageState extends State<SelectAndCreateBowlerPage> {
         builder: (context) {
           return AddPlayerDialog(
             areWeAddingBatsmen: false,
-            user: widget.user,
             match: widget.match,
           );
         });

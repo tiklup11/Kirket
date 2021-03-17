@@ -2,168 +2,139 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/Ball.dart';
-
+import 'package:umiperer/services/database_updater.dart';
 
 class RunUpdater {
-  RunUpdater({this.matchId, this.userUID, @required this.context,this.setIsUploadingDataToFalse}){
-    matchDocReference = matchesRef
-        .doc(matchId);
-  }
+  RunUpdater(
+      {this.matchId, @required this.context, this.setIsUploadingDataToFalse});
 
   final String matchId;
-  final String userUID;
   final BuildContext context;
   final Function setIsUploadingDataToFalse;
 
-  DocumentReference matchDocReference;
-
   //[1,2,3,4,5,6]
-  void updateNormalRuns({Ball ballData}) {
+  void updateNormalRuns({@required Ball ballData}) {
+    final scoreBoardRef = DatabaseController.getScoreBoardDocRef(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
 
-    if(ballData.inningNo!=null && ballData.runScoredOnThisBall!=null && ballData.batsmenName!=null &&ballData.bowlerName!=null && ballData.currentOverNo!=null) {
+    final batsmenDocRef = DatabaseController.getBatsmenDocRef(
+        batsmenName: ballData.scoreBoardData.strikerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final bowlerDocRef = DatabaseController.getBowlerDocRef(
+        bowlerName: ballData.scoreBoardData.bowlerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final overDocRef = DatabaseController.getOverDoc(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId,
+        overNo: ballData.scoreBoardData.currentOverNo);
+
+    print('printing ballData: 1: ${ballData.scoreBoardData.strikerName}'
+        '2: ${ballData.scoreBoardData.nonStrikerName}  3: ${ballData.scoreBoardData.bowlerName} 4: Over: ${ballData.scoreBoardData.currentOverNo}');
+
+    if (ballData.scoreBoardData.matchData.getInningNo() != null &&
+        ballData.runScoredOnThisBall != null &&
+        ballData.outBatsmenName != null &&
+        ballData.scoreBoardData.bowlerName != null &&
+        ballData.scoreBoardData.currentOverNo != null) {
       //1. generalMatchData
-      matchDocReference.update({
-        "currentBallNo": FieldValue.increment(1),
-        "realBallNo": FieldValue.increment(1),
+      scoreBoardRef.update({
+        "dummyBallOfTheOver": FieldValue.increment(1),
+        "ballOfTheOver": FieldValue.increment(1),
         "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-        "totalRunsOfInning${ballData.inningNo}": FieldValue.increment(
-            ballData.runScoredOnThisBall),
       });
-
-      //2. scoreBoardData
-      if (ballData.inningNo == 1) {
-       matchDocReference.collection('FirstInning')
-            .doc("scoreBoardData")
-            .update(
-            {
-              "ballOfTheOver": FieldValue.increment(1),
-              "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-            });
-      }
-      if (ballData.inningNo == 2) {
-       matchDocReference.collection('SecondInning')
-            .doc("scoreBoardData")
-            .update(
-            {
-              "ballOfTheOver": FieldValue.increment(1),
-              "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-            });
-      }
 
       //3. batsmenData
       if (ballData.runScoredOnThisBall == 6) {
-       matchDocReference.collection(
-            '${ballData.inningNo}InningBattingData')
-            .doc(ballData.batsmenName)
-            .update(
-            {
-              "balls": FieldValue.increment(1),
-              "runs": FieldValue.increment(ballData.runScoredOnThisBall),
-              "noOf6s": FieldValue.increment(1),
-            });
+        batsmenDocRef.update({
+          "balls": FieldValue.increment(1),
+          "runs": FieldValue.increment(ballData.runScoredOnThisBall),
+          "noOf6s": FieldValue.increment(1),
+        });
       } else if (ballData.runScoredOnThisBall == 4) {
-       matchDocReference.collection(
-            '${ballData.inningNo}InningBattingData')
-            .doc(ballData.batsmenName)
-            .update(
-            {
-              "balls": FieldValue.increment(1),
-              "runs": FieldValue.increment(ballData.runScoredOnThisBall),
-              "noOf4s": FieldValue.increment(1),
-            });
+        batsmenDocRef.update({
+          "balls": FieldValue.increment(1),
+          "runs": FieldValue.increment(ballData.runScoredOnThisBall),
+          "noOf4s": FieldValue.increment(1),
+        });
       } else {
-       matchDocReference.collection(
-            '${ballData.inningNo}InningBattingData')
-            .doc(ballData.batsmenName)
-            .update(
-            {
-              "balls": FieldValue.increment(1),
-              "runs": FieldValue.increment(ballData.runScoredOnThisBall),
-            });
+        batsmenDocRef.update({
+          "balls": FieldValue.increment(1),
+          "runs": FieldValue.increment(ballData.runScoredOnThisBall),
+        });
       }
 
       //4.bowlerData
-       matchDocReference.collection(
-          '${ballData.inningNo}InningBowlingData')
-          .doc(ballData.bowlerName)
-          .update(
-          {
-            "ballOfTheOver": FieldValue.increment(1),
-            "runs": FieldValue.increment(ballData.runScoredOnThisBall),
-          });
+      bowlerDocRef
+        ..update({
+          "ballOfTheOver": FieldValue.increment(1),
+          "runs": FieldValue.increment(ballData.runScoredOnThisBall),
+        });
 
       //5. particular over data
-       matchDocReference.collection('inning${ballData.inningNo}overs').doc(
-          "over${ballData.currentOverNo}").update(
-          {
-            "fullOverData.${ballData.currentBallNo + 1}": ballData
-                .runToShowOnUI,
-            "currentBall": FieldValue.increment(1)
-          });
+      overDocRef.update({
+        "fullOverData.${ballData.scoreBoardData.dummyBallNo + 1}":
+            ballData.runToShowOnUI,
+        "currentBall": FieldValue.increment(1)
+      });
     }
     setIsUploadingDataToFalse();
-
   }
 
   //bye and legBye
   void updateLegByeAndBye({Ball ballData}) {
+    final scoreBoardRef = DatabaseController.getScoreBoardDocRef(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
 
-    if(ballData.inningNo!=null && ballData.runScoredOnThisBall!=null && ballData.batsmenName!=null &&ballData.bowlerName!=null && ballData.currentOverNo!=null) {
+    final batsmenDocRef = DatabaseController.getBatsmenDocRef(
+        batsmenName: ballData.scoreBoardData.strikerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final bowlerDocRef = DatabaseController.getBowlerDocRef(
+        bowlerName: ballData.scoreBoardData.bowlerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final overDocRef = DatabaseController.getOverDoc(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId,
+        overNo: ballData.scoreBoardData.currentOverNo);
+
+    if (ballData.scoreBoardData.matchData.getInningNo() != null &&
+        ballData.runScoredOnThisBall != null &&
+        ballData.outBatsmenName != null &&
+        ballData.scoreBoardData.bowlerName != null &&
+        ballData.scoreBoardData.currentOverNo != null) {
       //1. generalMatchData
-       matchDocReference.update({
-        "currentBallNo": FieldValue.increment(1),
-         "realBallNo": FieldValue.increment(1),
-         "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-        "totalRunsOfInning${ballData.inningNo}": FieldValue.increment(
-            ballData.runScoredOnThisBall),
+
+      scoreBoardRef.update({
+        "dummyBallOfTheOver": FieldValue.increment(1),
+        "ballOfTheOver": FieldValue.increment(1),
+        "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
       });
 
-      //2. scoreBoardData
-      if (ballData.inningNo == 1) {
-       matchDocReference.collection('FirstInning')
-            .doc("scoreBoardData")
-            .update(
-            {
-              "ballOfTheOver": FieldValue.increment(1),
-              "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-            });
-      }
-      if (ballData.inningNo == 2) {
-       matchDocReference.collection('SecondInning')
-            .doc("scoreBoardData")
-            .update(
-            {
-              "ballOfTheOver": FieldValue.increment(1),
-              "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-            });
-      }
-
       //3. batsmenData
-       matchDocReference.collection(
-          '${ballData.inningNo}InningBattingData')
-          .doc(ballData.batsmenName)
-          .update(
-          {
-            "balls": FieldValue.increment(1),
-          });
+      batsmenDocRef.update({
+        "balls": FieldValue.increment(1),
+      });
 
       //4.bowlerData
-       matchDocReference.collection(
-          '${ballData.inningNo}InningBowlingData')
-          .doc(ballData.bowlerName)
-          .update(
-          {
-            "ballOfTheOver": FieldValue.increment(1),
-          });
+      bowlerDocRef.update({
+        "ballOfTheOver": FieldValue.increment(1),
+      });
 
       //5. particular over data
-       matchDocReference.collection('inning${ballData.inningNo}overs').doc(
-          "over${ballData.currentOverNo}").update(
-          {
-            "fullOverData.${ballData.currentBallNo + 1}": ballData
-                .runToShowOnUI,
-            "currentBall": FieldValue.increment(1)
-          });
+      overDocRef.update({
+        "fullOverData.${ballData.scoreBoardData.dummyBallNo + 1}":
+            ballData.runToShowOnUI,
+        "currentBall": FieldValue.increment(1)
+      });
     }
     setIsUploadingDataToFalse();
     return;
@@ -171,118 +142,100 @@ class RunUpdater {
 
   //[NB,wide,overThrow]
   void updateNoBallRuns({Ball ballData}) {
+    final scoreBoardRef = DatabaseController.getScoreBoardDocRef(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
 
-    if(ballData.inningNo!=null && ballData.runScoredOnThisBall!=null && ballData.batsmenName!=null &&ballData.bowlerName!=null && ballData.currentOverNo!=null) {
+    final batsmenDocRef = DatabaseController.getBatsmenDocRef(
+        batsmenName: ballData.scoreBoardData.strikerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final bowlerDocRef = DatabaseController.getBowlerDocRef(
+        bowlerName: ballData.scoreBoardData.bowlerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final overDocRef = DatabaseController.getOverDoc(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId,
+        overNo: ballData.scoreBoardData.currentOverNo);
+
+    if (ballData.scoreBoardData.matchData.getInningNo() != null &&
+        ballData.runScoredOnThisBall != null &&
+        ballData.outBatsmenName != null &&
+        ballData.scoreBoardData.bowlerName != null &&
+        ballData.scoreBoardData.currentOverNo != null) {
       //1. generalMatchData
-      matchDocReference.update({
-        "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-        "totalRunsOfInning${ballData.inningNo}": FieldValue.increment(
-            ballData.runScoredOnThisBall),
-        "currentBallNo":FieldValue.increment(1)
-      });
 
-      //2. scoreBoardData
-      if (ballData.inningNo == 1) {
-         matchDocReference.collection('FirstInning')
-            .doc("scoreBoardData")
-            .update(
-            {
-              "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-            });
-      }
-      if (ballData.inningNo == 2) {
-         matchDocReference.collection('SecondInning')
-            .doc("scoreBoardData")
-            .update(
-            {
-              "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-            });
-      }
+      scoreBoardRef.update({
+        "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
+        "dummyBallOfTheOver": FieldValue.increment(1)
+      });
 
       //3. batsmenData
       if (ballData.runScoredOnThisBall == 7) {
-         matchDocReference.collection(
-            '${ballData.inningNo}InningBattingData')
-            .doc(ballData.batsmenName)
-            .update(
-            {
-              "runs": FieldValue.increment(ballData.runScoredOnThisBall-1),
-              "noOf6s": FieldValue.increment(1),
-            });
+        batsmenDocRef.update({
+          "runs": FieldValue.increment(ballData.runScoredOnThisBall - 1),
+          "noOf6s": FieldValue.increment(1),
+        });
       } else if (ballData.runScoredOnThisBall == 5) {
-         matchDocReference.collection(
-            '${ballData.inningNo}InningBattingData')
-            .doc(ballData.batsmenName)
-            .update(
-            {
-              "runs": FieldValue.increment(ballData.runScoredOnThisBall-1),
-              "noOf4s": FieldValue.increment(1),
-            });
+        batsmenDocRef.update({
+          "runs": FieldValue.increment(ballData.runScoredOnThisBall - 1),
+          "noOf4s": FieldValue.increment(1),
+        });
       } else {
-         matchDocReference.collection(
-            '${ballData.inningNo}InningBattingData')
-            .doc(ballData.batsmenName)
-            .update(
-            {
-              "runs": FieldValue.increment(ballData.runScoredOnThisBall-1),
-            });
+        batsmenDocRef.update({
+          "runs": FieldValue.increment(ballData.runScoredOnThisBall - 1),
+        });
       }
 
       //4.bowlerData
-       matchDocReference.collection(
-          '${ballData.inningNo}InningBowlingData')
-          .doc(ballData.bowlerName)
-          .update(
-          {
-            "runs": FieldValue.increment(ballData.runScoredOnThisBall),
-            "overLength":FieldValue.increment(1)
-          });
+      bowlerDocRef.update({
+        "runs": FieldValue.increment(ballData.runScoredOnThisBall),
+        "overLength": FieldValue.increment(1)
+      });
 
       //5. particular over data
-       matchDocReference.collection('inning${ballData.inningNo}overs').doc(
-          "over${ballData.currentOverNo}").update(
-          {
-            "overLength": FieldValue.increment(1),
-            "fullOverData.${ballData.currentBallNo + 1}": ballData
-                .runToShowOnUI,
-            "currentBall":FieldValue.increment(1)
-          });
+      overDocRef.update({
+        "overLength": FieldValue.increment(1),
+        "fullOverData.${ballData.scoreBoardData.dummyBallNo + 1}":
+            ballData.runToShowOnUI,
+        "currentBall": FieldValue.increment(1)
+      });
     }
     setIsUploadingDataToFalse();
   }
 
   void updateWideAndOverThrowRuns({Ball ballData}) {
+    final scoreBoardRef = DatabaseController.getScoreBoardDocRef(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
 
-    if(ballData.inningNo!=null && ballData.runScoredOnThisBall!=null && ballData.batsmenName!=null &&ballData.bowlerName!=null && ballData.currentOverNo!=null) {
+    final bowlerDocRef = DatabaseController.getBowlerDocRef(
+        bowlerName: ballData.scoreBoardData.bowlerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final overDocRef = DatabaseController.getOverDoc(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId,
+        overNo: ballData.scoreBoardData.currentOverNo);
+
+    if (ballData.scoreBoardData.matchData.getInningNo() != null &&
+        ballData.runScoredOnThisBall != null &&
+        ballData.outBatsmenName != null &&
+        ballData.scoreBoardData.bowlerName != null &&
+        ballData.scoreBoardData.currentOverNo != null) {
       //1. generalMatchData
-       matchDocReference.update({
+      scoreBoardRef.update({
         "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-        "totalRunsOfInning${ballData.inningNo}": FieldValue.increment(
-            ballData.runScoredOnThisBall),
-        "currentBallNo":FieldValue.increment(1)
+        "dummyBallOfTheOver": FieldValue.increment(1)
       });
-
-      //2. scoreBoardData
-      if (ballData.inningNo == 1) {
-        matchDocReference.collection('FirstInning')
-            .doc("scoreBoardData")
-            .update(
-            {
-              "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-            });
-      }
-      if (ballData.inningNo == 2) {
-         matchDocReference.collection('SecondInning')
-            .doc("scoreBoardData")
-            .update(
-            {
-              "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-            });
-      }
 
       //3. batsmenData
       // await matchDocReference.collection(
-      //     '${ballData.inningNo}InningBattingData')
+      //     '${ballData.scoreBoardData.matchData.getInningNo()}InningBattingData')
       //     .doc(ballData.batsmenName)
       //     .update(
       //     {
@@ -290,24 +243,18 @@ class RunUpdater {
       //     });
 
       //4.bowlerData
-       matchDocReference.collection(
-          '${ballData.inningNo}InningBowlingData')
-          .doc(ballData.bowlerName)
-          .update(
-          {
-            "runs": FieldValue.increment(ballData.runScoredOnThisBall),
-            "overLength":FieldValue.increment(1)
-          });
+      bowlerDocRef.update({
+        "runs": FieldValue.increment(ballData.runScoredOnThisBall),
+        "overLength": FieldValue.increment(1)
+      });
 
       //5. particular over data
-       matchDocReference.collection('inning${ballData.inningNo}overs').doc(
-          "over${ballData.currentOverNo}").update(
-          {
-            "fullOverData.${ballData.currentBallNo + 1}": ballData
-                .runToShowOnUI,
-            "overLength": FieldValue.increment(1),
-            "currentBall":FieldValue.increment(1)
-          });
+      overDocRef.update({
+        "fullOverData.${ballData.scoreBoardData.dummyBallNo + 1}":
+            ballData.runToShowOnUI,
+        "overLength": FieldValue.increment(1),
+        "currentBall": FieldValue.increment(1)
+      });
     }
 
     setIsUploadingDataToFalse();
@@ -315,21 +262,40 @@ class RunUpdater {
 
   ///wickets update
   void updateWicket({Ball ballData}) {
+    final scoreBoardRef = DatabaseController.getScoreBoardDocRef(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
 
-    if(ballData.inningNo!=null && ballData.runScoredOnThisBall!=null && ballData.batsmenName!=null &&ballData.bowlerName!=null && ballData.currentOverNo!=null) {
+    final batsmenDocRef = DatabaseController.getBatsmenDocRef(
+        batsmenName: ballData.scoreBoardData.strikerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final bowlerDocRef = DatabaseController.getBowlerDocRef(
+        bowlerName: ballData.scoreBoardData.bowlerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final overDocRef = DatabaseController.getOverDoc(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId,
+        overNo: ballData.scoreBoardData.currentOverNo);
+
+    if (ballData.scoreBoardData.matchData.getInningNo() != null &&
+        ballData.runScoredOnThisBall != null &&
+        ballData.outBatsmenName != null &&
+        ballData.scoreBoardData.bowlerName != null &&
+        ballData.scoreBoardData.currentOverNo != null) {
       //1. generalData
 
-      matchDocReference.update({
-            "currentBallNo": FieldValue.increment(1),
-             "realBallNo": FieldValue.increment(1),
-             "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-            "wicketsDown": FieldValue.increment(1),
-            "totalRunsOfInning${ballData.inningNo}": FieldValue.increment(
-                ballData.runScoredOnThisBall),
-            "totalWicketsOfInning${ballData.inningNo}": FieldValue.increment(1),
-            "strikerBatsmen": null,
-        "nonStrikerBatsmen":null
-          });
+      scoreBoardRef.update({
+        "dummyBallOfTheOver": FieldValue.increment(1),
+        "ballOfTheOver": FieldValue.increment(1),
+        "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
+        "wicketsDown": FieldValue.increment(1),
+        "strikerBatsmen": null,
+        "nonStrikerBatsmen": null
+      });
 
       // if (ballData.strikerName == ballData.batsmenName) {
       //    matchDocReference.update({
@@ -337,9 +303,9 @@ class RunUpdater {
       //      "realBallNo": FieldValue.increment(1),
       //      "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
       //     "wicketsDown": FieldValue.increment(1),
-      //     "totalRunsOfInning${ballData.inningNo}": FieldValue.increment(
+      //     "totalRunsOfInning${ballData.scoreBoardData.matchData.getInningNo()}": FieldValue.increment(
       //         ballData.runScoredOnThisBall),
-      //     "totalWicketsOfInning${ballData.inningNo}": FieldValue.increment(1),
+      //     "totalWicketsOfInning${ballData.scoreBoardData.matchData.getInningNo()}": FieldValue.increment(1),
       //     "strikerBatsmen": null,
       //   });
       // } else if (ballData.nonStrikerName == ballData.batsmenName) {
@@ -348,40 +314,13 @@ class RunUpdater {
       //     "currentBallNo": FieldValue.increment(1),
       //     "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
       //     "wicketsDown": FieldValue.increment(1),
-      //     "totalWicketsOfInning${ballData.inningNo}": FieldValue.increment(1),
+      //     "totalWicketsOfInning${ballData.scoreBoardData.matchData.getInningNo()}": FieldValue.increment(1),
       //     "nonStrikerBatsmen": null,
       //   });
       // }
 
-      //2. scoreBoardData
-      if (ballData.inningNo == 1) {
-        ///updating in SCOREBOARD_DATA
-         matchesRef
-            .doc(matchId)
-            .collection('FirstInning')
-            .doc("scoreBoardData")
-            .update({
-          "ballOfTheOver": FieldValue.increment(1),
-          "wicketsDown": FieldValue.increment(1),
-           "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
-        });
-      } else if (ballData.inningNo == 2) {
-         matchesRef
-            .doc(matchId)
-            .collection('SecondInning')
-            .doc("scoreBoardData")
-            .update({"ballOfTheOver": FieldValue.increment(1),
-          "wicketsDown": FieldValue.increment(1),
-           "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
-         });
-      }
-
       //3. batsmenData
-       matchesRef
-          .doc(matchId)
-          .collection('${ballData.inningNo}InningBattingData')
-          .doc(ballData.batsmenName)
-          .update({
+      batsmenDocRef.update({
         "balls": FieldValue.increment(1),
         "runs": FieldValue.increment(ballData.runScoredOnThisBall),
         "isOut": true,
@@ -390,70 +329,58 @@ class RunUpdater {
       });
 
       //4. BowlerData
-       matchesRef
-          .doc(matchId)
-          .collection('${ballData.inningNo}InningBowlingData')
-          .doc(ballData.bowlerName)
-          .update({
+      bowlerDocRef.update({
         "ballOfTheOver": FieldValue.increment(1),
         "runs": FieldValue.increment(ballData.runScoredOnThisBall),
         "wickets": FieldValue.increment(1),
       });
 
       //overData
-       matchDocReference.collection('inning${ballData.inningNo}overs').doc(
-          "over${ballData.currentOverNo}").update(
-          {
-            "fullOverData.${ballData.currentBallNo + 1}": ballData
-                .runToShowOnUI,
-            "currentBall": FieldValue.increment(1)
-          });
+      overDocRef.update({
+        "fullOverData.${ballData.scoreBoardData.dummyBallNo + 1}":
+            ballData.runToShowOnUI,
+        "currentBall": FieldValue.increment(1)
+      });
     }
     setIsUploadingDataToFalse();
-
   }
 
   void updateWidePlusStump({Ball ballData}) {
+    final scoreBoardRef = DatabaseController.getScoreBoardDocRef(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
 
-    if(ballData.inningNo!=null && ballData.runScoredOnThisBall!=null && ballData.batsmenName!=null &&ballData.bowlerName!=null && ballData.currentOverNo!=null) {
+    final batsmenDocRef = DatabaseController.getBatsmenDocRef(
+        batsmenName: ballData.scoreBoardData.strikerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final bowlerDocRef = DatabaseController.getBowlerDocRef(
+        bowlerName: ballData.scoreBoardData.bowlerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final overDocRef = DatabaseController.getOverDoc(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId,
+        overNo: ballData.scoreBoardData.currentOverNo);
+
+    if (ballData.scoreBoardData.matchData.getInningNo() != null &&
+        ballData.runScoredOnThisBall != null &&
+        ballData.outBatsmenName != null &&
+        ballData.scoreBoardData.bowlerName != null &&
+        ballData.scoreBoardData.currentOverNo != null) {
       //1. generalData
-      matchDocReference.update({
+      scoreBoardRef.update({
         "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-        "totalRunsOfInning${ballData.inningNo}": FieldValue.increment(
-          ballData.runScoredOnThisBall),
         "wicketsDown": FieldValue.increment(1),
-        "totalWicketsOfInning${ballData.inningNo}": FieldValue.increment(1),
-          "strikerBatsmen": null,
-          "currentBallNo":FieldValue.increment(1),
-          "nonStrikerBatsmen":null
+        "strikerBatsmen": null,
+        "currentBallNo": FieldValue.increment(1),
+        "nonStrikerBatsmen": null
       });
 
-      //2. scoreBoardData
-      if (ballData.inningNo == 1) {
-        ///updating in SCOREBOARD_DATA
-         matchesRef
-            .doc(matchId)
-            .collection('FirstInning')
-            .doc("scoreBoardData")
-            .update({
-          "wicketsDown": FieldValue.increment(1),
-        });
-      } else if (ballData.inningNo == 2) {
-         matchesRef
-            .doc(matchId)
-            .collection('SecondInning')
-            .doc("scoreBoardData")
-            .update({
-          "wicketsDown": FieldValue.increment(1),
-        });
-      }
-
       //3. batsmenData
-       matchesRef
-          .doc(matchId)
-          .collection('${ballData.inningNo}InningBattingData')
-          .doc(ballData.batsmenName)
-          .update({
+      batsmenDocRef.update({
         "runs": FieldValue.increment(ballData.runScoredOnThisBall),
         "isOut": true,
         "isBatting": false,
@@ -461,113 +388,97 @@ class RunUpdater {
       });
 
       //4. BowlerData
-       matchesRef
-          .doc(matchId)
-          .collection('${ballData.inningNo}InningBowlingData')
-          .doc(ballData.bowlerName)
-          .update({
+      bowlerDocRef.update({
         "runs": FieldValue.increment(ballData.runScoredOnThisBall),
         "wickets": FieldValue.increment(1),
       });
 
       //overData
-       matchDocReference.collection('inning${ballData.inningNo}overs').doc(
-          "over${ballData.currentOverNo}").update(
-          {
-            "fullOverData.${ballData.currentBallNo + 1}": ballData
-                .runToShowOnUI,
-            "overLength": FieldValue.increment(1),
-            "currentBall":FieldValue.increment(1)
-          });
+      overDocRef.update({
+        "fullOverData.${ballData.scoreBoardData.dummyBallNo + 1}":
+            ballData.runToShowOnUI,
+        "overLength": FieldValue.increment(1),
+        "currentBall": FieldValue.increment(1)
+      });
     }
     setIsUploadingDataToFalse();
   }
 
   ///wickets update
   void updateRunOut({Ball ballData}) {
+    final scoreBoardRef = DatabaseController.getScoreBoardDocRef(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
 
-    if(ballData.inningNo!=null && ballData.runScoredOnThisBall!=null && ballData.batsmenName!=null &&ballData.bowlerName!=null && ballData.currentOverNo!=null) {
+    final batsmenDocRef = DatabaseController.getBatsmenDocRef(
+        batsmenName: ballData.outBatsmenName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final bowlerDocRef = DatabaseController.getBowlerDocRef(
+        bowlerName: ballData.scoreBoardData.bowlerName,
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId);
+
+    final overDocRef = DatabaseController.getOverDoc(
+        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
+        matchId: matchId,
+        overNo: ballData.scoreBoardData.currentOverNo);
+
+    if (ballData.scoreBoardData.matchData.getInningNo() != null &&
+        ballData.runScoredOnThisBall != null &&
+        ballData.outBatsmenName != null &&
+        ballData.scoreBoardData.bowlerName != null &&
+        ballData.scoreBoardData.currentOverNo != null) {
       //1. generalData
 
-      matchDocReference.update({
+      scoreBoardRef.update({
         "currentBallNo": FieldValue.increment(1),
         "realBallNo": FieldValue.increment(1),
         "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
         "wicketsDown": FieldValue.increment(1),
-        "totalRunsOfInning${ballData.inningNo}": FieldValue.increment(
-            ballData.runScoredOnThisBall),
-        "totalWicketsOfInning${ballData.inningNo}": FieldValue.increment(1),
         "strikerBatsmen": null,
-        "nonStrikerBatsmen":null
+        "nonStrikerBatsmen": null
       });
 
-      //2. scoreBoardData
-      if (ballData.inningNo == 1) {
-        ///updating in SCOREBOARD_DATA
-        matchesRef
-            .doc(matchId)
-            .collection('FirstInning')
-            .doc("scoreBoardData")
-            .update({
-          "ballOfTheOver": FieldValue.increment(1),
-          "wicketsDown": FieldValue.increment(1),
-          "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
-        });
-      } else if (ballData.inningNo == 2) {
-        matchesRef
-            .doc(matchId)
-            .collection('SecondInning')
-            .doc("scoreBoardData")
-            .update({"ballOfTheOver": FieldValue.increment(1),
-          "wicketsDown": FieldValue.increment(1),
-          "totalRuns":FieldValue.increment(ballData.runScoredOnThisBall),
-        });
-      }
-
       //3. batsmenData
-      print("Striker : ${ballData.strikerName}");
-      print("RunOut  : ${ballData.batsmenName}");
+      print("Striker : ${ballData.scoreBoardData.strikerName}");
+      print("RunOut  : ${ballData.outBatsmenName}");
       matchesRef
           .doc(matchId)
-          .collection('${ballData.inningNo}InningBattingData')
-          .doc(ballData.strikerName)
+          .collection(
+              '${ballData.scoreBoardData.matchData.getInningNo()}InningBattingData')
+          .doc(ballData.scoreBoardData.strikerName)
           .update({
         "balls": FieldValue.increment(1),
         "runs": FieldValue.increment(ballData.runScoredOnThisBall),
       });
 
-      matchesRef
-          .doc(matchId)
-          .collection('${ballData.inningNo}InningBattingData')
-          .doc(ballData.batsmenName)
-          .update({
+      batsmenDocRef.update({
         "isOut": true,
         "isBatting": false,
         "isOnStrike": false,
       });
 
-      //4. BowlerData
-      matchesRef
-          .doc(matchId)
-          .collection('${ballData.inningNo}InningBowlingData')
-          .doc(ballData.bowlerName)
-          .update({
-        "ballOfTheOver": FieldValue.increment(1),
-        "runs": FieldValue.increment(ballData.runScoredOnThisBall),
-        // "wickets": FieldValue.increment(1),
-      });
+      //4. BowlerData -RUNOUT not going in bowlers account
+      // matchesRef
+      //     .doc(matchId)
+      //     .collection(
+      //         '${ballData.scoreBoardData.matchData.getInningNo()}InningBowlingData')
+      //     .doc(ballData.scoreBoardData.bowlerName)
+      //     .update({
+      //   "ballOfTheOver": FieldValue.increment(1),
+      //   "runs": FieldValue.increment(ballData.runScoredOnThisBall),
+      //   // "wickets": FieldValue.increment(1),
+      // });
 
       //overData
-      matchDocReference.collection('inning${ballData.inningNo}overs').doc(
-          "over${ballData.currentOverNo}").update(
-          {
-            "fullOverData.${ballData.currentBallNo + 1}": ballData
-                .runToShowOnUI,
-            "currentBall": FieldValue.increment(1)
-          });
+      overDocRef.update({
+        "fullOverData.${ballData.scoreBoardData.dummyBallNo + 1}":
+            ballData.runToShowOnUI,
+        "currentBall": FieldValue.increment(1)
+      });
     }
     setIsUploadingDataToFalse();
-
   }
-
 }

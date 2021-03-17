@@ -4,11 +4,10 @@ import 'package:share/share.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/first_in_sc.dart';
-import 'package:umiperer/screens/full_score_card_for_audience.dart';
+import 'package:umiperer/screens/other_match_screens/first_in_sc.dart';
 import 'package:umiperer/screens/matchDetailsScreens/score_counting_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
-import 'package:umiperer/screens/second_inn_sc.dart';
+import 'package:umiperer/screens/other_match_screens/second_inn_sc.dart';
 
 class MatchDetails extends StatefulWidget {
   MatchDetails({this.match, this.user});
@@ -25,7 +24,7 @@ class _MatchDetailsState extends State<MatchDetails> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    //  implement initState
     super.initState();
     tabBarView = [
       TeamDetails(
@@ -74,7 +73,7 @@ class _MatchDetailsState extends State<MatchDetails> {
             PopupMenuButton<String>(
               padding: EdgeInsets.zero,
               onSelected: (value) {
-                //TODO: make switch cases
+                // make switch cases
                 switch (value) {
                   case "Delete Match":
                     deleteTheMatchFromCloud(context);
@@ -101,7 +100,7 @@ class _MatchDetailsState extends State<MatchDetails> {
           automaticallyImplyLeading: false,
           title: Text(
             "${widget.match.getTeam1Name().toUpperCase()} v ${widget.match.getTeam2Name().toUpperCase()}",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           bottom: TabBar(
             labelColor: Colors.black,
@@ -161,13 +160,13 @@ class _MatchDetailsState extends State<MatchDetails> {
 
     matchesRef
         .doc(widget.match.getMatchId())
-        .collection("FirstInning")
+        .collection("Inning1")
         .doc("scoreBoardData")
         .delete();
 
     matchesRef
         .doc(widget.match.getMatchId())
-        .collection("SecondInning")
+        .collection("Inning2")
         .doc("scoreBoardData")
         .delete();
 

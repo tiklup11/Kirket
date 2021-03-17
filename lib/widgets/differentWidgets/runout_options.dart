@@ -39,15 +39,14 @@ class _RunOutOptionsState extends State<RunOutOptions> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     print("BS ; ${widget.nonStriker}");
     print("BS ; ${widget.striker}");
 
     if (widget.striker != null) {
-      widget.ball.strikerName = widget.striker;
-      selectedRunOutBatsmen = widget.ball.strikerName;
+      widget.ball.scoreBoardData.strikerName = widget.striker;
+      selectedRunOutBatsmen = widget.ball.scoreBoardData.strikerName;
       playersList.add(
         DropdownMenuItem(
           child: Text(widget.striker),
@@ -56,7 +55,7 @@ class _RunOutOptionsState extends State<RunOutOptions> {
       );
     }
     if (widget.nonStriker != null) {
-      widget.ball.nonStrikerName = widget.nonStriker;
+      widget.ball.scoreBoardData.nonStrikerName = widget.nonStriker;
       playersList.add(
         DropdownMenuItem(
           child: Text(widget.nonStriker),
@@ -65,7 +64,7 @@ class _RunOutOptionsState extends State<RunOutOptions> {
       );
     }
     runUpdater = RunUpdater(
-      matchId: widget.match.getMatchId(), userUID: widget.userUID,
+      matchId: widget.match.getMatchId(),
       context: context,
       setIsUploadingDataToFalse: widget.setUpdatingDataToFalse,
       // setWideToFalse: widget.setWideToFalse
@@ -156,12 +155,12 @@ class _RunOutOptionsState extends State<RunOutOptions> {
   customButton({int runScored, String btnText, String toShowOnUI}) {
     return ScoreButton(
         onPressed: () {
-          widget.ball.strikerName = widget.striker;
-          widget.ball.nonStrikerName = widget.nonStriker;
+          widget.ball.scoreBoardData.strikerName = widget.striker;
+          widget.ball.scoreBoardData.nonStrikerName = widget.nonStriker;
           widget.setUpdatingDataToTrue();
           widget.ball.runScoredOnThisBall = runScored;
           widget.ball.runToShowOnUI = toShowOnUI;
-          widget.ball.batsmenName = selectedRunOutBatsmen;
+          widget.ball.outBatsmenName = selectedRunOutBatsmen;
           runUpdater.updateRunOut(ballData: widget.ball);
           widget.setRunOutToFalse();
         },

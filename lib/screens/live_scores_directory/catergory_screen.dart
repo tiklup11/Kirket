@@ -20,30 +20,39 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: categoryRef.snapshots(),
-      builder:(context,snapshot){
-        List<CatCard> catCardsList=[];
-        if(!snapshot.hasData){
+      builder: (context, snapshot) {
+        List<CatCard> catCardsList = [];
+        if (!snapshot.hasData) {
           return CircularProgressIndicator();
-        }else{
+        } else {
           final catDocs = snapshot.data.docs;
           catDocs.forEach((catDoc) {
-            catCardsList.add(new CatCard(catName: catDoc.data()['catName'],user: widget.user,));
+            catCardsList.add(new CatCard(
+              catName: catDoc.data()['catName'],
+              user: widget.user,
+            ));
           });
           return Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 20,top: 10),
+                padding: EdgeInsets.only(left: 20, top: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text("Live"),
+                    Text(
+                      "Live",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ),
               Expanded(
                 child: ListView.builder(
+                  cacheExtent: 4,
                   itemCount: catCardsList.length,
-                  itemBuilder: (context,int){
+                  itemBuilder: (context, int) {
                     return catCardsList[int];
                   },
                 ),
@@ -56,32 +65,38 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 }
 
-
 class CatCard extends StatelessWidget {
-  CatCard({this.catName,this.user});
+  CatCard({this.catName, this.user});
   final String catName;
   final User user;
   @override
   Widget build(BuildContext context) {
     return Bounce(
-      onPressed: (){
-        Navigator.push(context, PageTransition(
-          child: LiveScreenHome(catName: catName,user: user,),
-          type: PageTransitionType.rightToLeft
-        ));
+      onPressed: () {
+        Navigator.push(
+            context,
+            PageTransition(
+                child: LiveScreenHome(
+                  catName: catName,
+                  user: user,
+                ),
+                type: PageTransitionType.rightToLeft));
       },
       child: Container(
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black12,width: 2)
-        ),
-        margin: EdgeInsets.symmetric(horizontal: (10*SizeConfig.oneW).roundToDouble(),vertical: (10*SizeConfig.oneH).roundToDouble()),
-        padding: EdgeInsets.symmetric(horizontal: (20*SizeConfig.oneW).roundToDouble(),vertical: (20*SizeConfig.oneH).roundToDouble()),
+            border: Border.all(color: Colors.black12, width: 2)),
+        margin: EdgeInsets.symmetric(
+            horizontal: (10 * SizeConfig.oneW).roundToDouble(),
+            vertical: (10 * SizeConfig.oneH).roundToDouble()),
+        padding: EdgeInsets.symmetric(
+            horizontal: (20 * SizeConfig.oneW).roundToDouble(),
+            vertical: (20 * SizeConfig.oneH).roundToDouble()),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(catName),
+            Text(catName.toUpperCase()),
             Icon(Icons.arrow_forward_ios_rounded)
           ],
         ),
@@ -89,4 +104,3 @@ class CatCard extends StatelessWidget {
     );
   }
 }
-

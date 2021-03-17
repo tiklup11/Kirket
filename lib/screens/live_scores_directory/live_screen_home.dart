@@ -2,19 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/LiveMatchesScreen.dart';
+import 'package:umiperer/screens/other_match_screens/LiveMatchesScreen.dart';
 import 'package:umiperer/screens/live_scores_directory/ended_match_screen.dart';
 import 'package:umiperer/widgets/back_button_widget.dart';
-
 
 ///this is home screen for live matches
 ///this has two tabs - 1. LIVE   2. ENDED
 
 class LiveScreenHome extends StatelessWidget {
+  LiveScreenHome({this.user, this.catName});
 
-  LiveScreenHome({this.user,this.catName});
-
-  // final CricketMatch match;
   final User user;
   final String catName;
 
@@ -22,35 +19,30 @@ class LiveScreenHome extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(catName,style: TextStyle(color: Colors.black),),
-        // Image.asset('assets/images/kirket.png',height: SizeConfig.setHeight(40),width: SizeConfig.setWidth(120),),
-        Builder(
-          builder: (BuildContext context)=>Bounce(
-            onPressed: (){
-              Scaffold.of(context).openDrawer();
-            },
-            child: CircleAvatar(
-              radius: SizeConfig.setWidth(16),
-              backgroundImage:AssetImage("assets/images/logo.png") ,
-            ),
-          ),
+        Text(
+          catName.toUpperCase(),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        // SizedBox(width: SizeConfig.setWidth(16),),
-        // Text(title,style: TextStyle(color: Colors.black),),
+        CircleAvatar(
+          radius: SizeConfig.setWidth(16),
+          backgroundImage: AssetImage("assets/images/logo.png"),
+        ),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final tabs = [
-      "Live",
-      "Finished"
-    ];
+    final tabs = ["Live", "Finished"];
 
     final tabBarView = [
-      LiveMatchesScreen(currentUser: user,catName: catName,),
-      EndMatchesScreen(currentUser: user,),
+      LiveMatchesScreen(
+        currentUser: user,
+        catName: catName,
+      ),
+      EndMatchesScreen(
+        currentUser: user,
+      ),
     ];
 
     return DefaultTabController(
@@ -65,7 +57,7 @@ class LiveScreenHome extends StatelessWidget {
           backgroundColor: Colors.white,
           // elevation: 0.1,
           title: appBarTopRow(),
-          toolbarHeight: (100*SizeConfig.oneH).roundToDouble(),
+          toolbarHeight: (100 * SizeConfig.oneH).roundToDouble(),
           bottom: TabBar(
             indicatorSize: TabBarIndicatorSize.label,
             labelColor: Colors.black,
@@ -77,16 +69,14 @@ class LiveScreenHome extends StatelessWidget {
           ),
         ),
         body: TabBarView(
-            children: [
-              for (final tab in tabBarView)
-                Center(
-                  child: tab,
-                ),
-            ],
-          ),
-
+          children: [
+            for (final tab in tabBarView)
+              Center(
+                child: tab,
+              ),
+          ],
+        ),
       ),
-      );
+    );
   }
-
 }

@@ -7,7 +7,6 @@ import 'package:umiperer/widgets/admin_card.dart';
 import 'package:umiperer/widgets/back_button_widget.dart';
 
 ///mqd
-// final liveMatchesRef = FirebaseFirestore.instance.collection('liveMatchesData');
 
 class AdminAccessPage extends StatefulWidget {
   AdminAccessPage({

@@ -8,10 +8,9 @@ import 'package:umiperer/main.dart';
 ///MQD
 
 class AddPlayerDialog extends StatefulWidget {
-  AddPlayerDialog({this.match, this.user, @required this.areWeAddingBatsmen});
+  AddPlayerDialog({this.match, @required this.areWeAddingBatsmen});
 
   final CricketMatch match;
-  final User user;
   final bool areWeAddingBatsmen;
   @override
   _AddPlayerDialogState createState() => _AddPlayerDialogState();

@@ -3,13 +3,11 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:umiperer/main.dart';
-import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/ScoreBoardData.dart';
-import 'package:umiperer/modals/dataStreams.dart';
 import 'package:umiperer/modals/size_config.dart';
-import 'package:umiperer/screens/matchDetailsHome_forAudience.dart';
+import 'package:umiperer/screens/other_match_screens/matchDetailsHome_forAudience.dart';
+import 'package:umiperer/services/database_updater.dart';
 
 ///mqd
 class LiveMatchCard extends StatefulWidget {
@@ -20,10 +18,10 @@ class LiveMatchCard extends StatefulWidget {
     this.matchUID,
   });
 
-  CricketMatch match;
-  String creatorUID;
-  String matchUID;
-  User currentUser;
+  final CricketMatch match;
+  final String creatorUID;
+  final String matchUID;
+  final User currentUser;
   // InterstitialAd interstitialAd;
 
   @override
@@ -31,7 +29,6 @@ class LiveMatchCard extends StatefulWidget {
 }
 
 class _LiveMatchCardState extends State<LiveMatchCard> {
-  DataStreams _dataStreams;
   ScoreBoardData _scoreBoardData;
 
   InterstitialAd _interstitialAd;
@@ -50,46 +47,27 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _dataStreams =
-        DataStreams(userUID: widget.creatorUID, matchId: widget.matchUID);
     _scoreBoardData = ScoreBoardData(
-      inningNo: widget.match.getInningNo(),
-      battingTeamName: widget.match.getCurrentBattingTeam(),
-      bowlingTeam: widget.match.getCurrentBowlingTeam(),
-      team1name: widget.match.getTeam1Name(),
-      team2name: widget.match.getTeam2Name(),
-    );
+        battingTeamName: widget.match.getCurrentBattingTeam(),
+        bowlingTeam: widget.match.getCurrentBowlingTeam(),
+        matchData: widget.match);
   }
 
   @override
   Widget build(BuildContext context) {
     _interstitialAd = createInterstitialAd()..load();
 
-    Stream<DocumentSnapshot> stream;
-
-    if (widget.match.getInningNo() == 1) {
-      stream = matchesRef
-          .doc(widget.matchUID)
-          .collection('FirstInning')
-          .doc("scoreBoardData")
-          .snapshots();
-    } else if (widget.match.getInningNo() == 2) {
-      stream = matchesRef
-          .doc(widget.matchUID)
-          .collection('SecondInning')
-          .doc("scoreBoardData")
-          .snapshots();
-    }
-
     return StreamBuilder<DocumentSnapshot>(
-        stream: stream,
+        stream: DatabaseController.getScoreBoardDocRef(
+          inningNo: widget.match.inningNumber,
+          matchId: widget.match.getMatchId(),
+        ).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return miniScoreLoadingScreen();
           } else {
-            _interstitialAd = createInterstitialAd()..load();
+            // _interstitialAd = createInterstitialAd()..load();
             if (widget.match.getIsMatchStarted()) {
               final scoreBoardData = snapshot.data.data();
               final ballOfTheOver = scoreBoardData['ballOfTheOver'];
