@@ -41,7 +41,7 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
         Container(
             color: Colors.white,
             child: ListView(
-              physics: BouncingScrollPhysics(),
+              physics: ScrollPhysics(),
               children: [
                 widget.match.isSecondInningEnd
                     ? HeadLineWidget(headLineString: "Second inning ended")

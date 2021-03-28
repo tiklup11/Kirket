@@ -44,7 +44,8 @@ class BallWidget extends StatelessWidget {
                       color: Colors.black, fontSize: fontSize.toDouble()),
                 ),
           radius: ballRadius,
-          backgroundColor: currentBall.runToShowOnUI == "W"
+          backgroundColor: currentBall.runToShowOnUI.startsWith('W') &&
+                  !currentBall.runToShowOnUI.startsWith('Wd')
               ? Colors.red.shade400
               : Colors.blueAccent.shade100,
         ));

@@ -144,25 +144,7 @@ class CricketMatch {
   List<String> team1List = [];
   List<String> team2List = [];
 
-  String getFinalResult() {
-    String resultLine;
 
-    // if (totalRunsOf1stInning != null &&
-    //     totalWicketsOf2ndInning != null &&
-    //     getInningNo() == 2) {
-    //   if (totalRunsOf1stInning > totalRunsOf2ndInning) {
-    //     resultLine =
-    //         "${firstBattingTeam.toUpperCase()} won by ${totalRunsOf1stInning - totalRunsOf2ndInning} runs";
-    //     return resultLine;
-    //   }
-    //   if (totalRunsOf1stInning < totalRunsOf2ndInning) {
-    //     resultLine =
-    //         "${secondBattingTeam.toUpperCase()} won by ${getPlayerCount() - 1 - totalWicketsOf2ndInning} wickets";
-    //     return resultLine;
-    //   }
-    // }
-    return null;
-  }
 
   String getCurrentBowlingTeam() {
     if (inningNumber == 1) {

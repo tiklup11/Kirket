@@ -31,6 +31,8 @@ dependencies:
   url_launcher: ^5.7.10
   uuid: ^2.2.2
   your_splash: ^0.2.2
+  facebook_audience_network: ^0.9.0
+  font_awesome_flutter: ^8.12.0
 
 dev_dependencies:
   flutter_test:

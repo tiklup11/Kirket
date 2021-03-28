@@ -26,7 +26,6 @@ class _TeamDetailsState extends State<TeamDetails> {
     return Container(
       color: Colors.white,
       child: ListView(
-        physics: BouncingScrollPhysics(),
         children: [
           //matchINFO
           Container(

@@ -50,7 +50,7 @@ class _CategoryPageState extends State<CategoryPage> {
               ),
               Expanded(
                 child: ListView.builder(
-                  cacheExtent: 4,
+                  cacheExtent: 10,
                   itemCount: catCardsList.length,
                   itemBuilder: (context, int) {
                     return catCardsList[int];

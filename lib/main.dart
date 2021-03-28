@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,9 @@ final categoryRef = FirebaseFirestore.instance.collection('categories');
 PackageInfo packageInfo;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final ok = await FirebaseAdMob.instance
-      .initialize(appId: "ca-app-pub-7348080910995117~8961750013");
-  print("OKAYS $ok");
+  
+  // final ok = await FirebaseAdMob.instance
+  // .initialize(appId: "ca-app-pub-7348080910995117~8961750013");
   await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
@@ -38,10 +39,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (context)=>CategoryController())
-          ],
-          child: LayoutBuilder(builder: (context, constraints) {
+      providers: [
+        ChangeNotifierProvider(create: (context) => CategoryController())
+      ],
+      child: LayoutBuilder(builder: (context, constraints) {
         return OrientationBuilder(builder: (context, orientation) {
           SizeConfig().init(constraints, orientation);
           return MaterialApp(

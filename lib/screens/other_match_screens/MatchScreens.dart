@@ -111,7 +111,6 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
               accountEmail: Text(widget.user.email),
               currentAccountPicture: CircleAvatar(
                 backgroundImage: NetworkImage(widget.user.photoURL),
-                // backgroundColor:Colors.white,
               ),
             ),
             widget.user.uid == "4VwUugdc6XVPJkR2yltZtFGh4HN2" ||
@@ -146,10 +145,6 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
                 iconData: Icons.stacked_line_chart_rounded,
                 text: "Support Devs",
                 onTab: () {
-                  RewardedVideoAd.instance.load(
-                      adUnitId: "ca-app-pub-7348080910995117/3729480926",
-                      targetingInfo:
-                          MobileAdTargetingInfo(childDirected: true));
                   supportDevsDialog(context: context);
                 }),
             space,
@@ -399,7 +394,6 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
       transitionDuration: const Duration(milliseconds: 800),
       transitionCurve: Curves.easeInOut,
-      physics: const BouncingScrollPhysics(),
       axisAlignment: isPortrait ? 0.0 : -1.0,
       openAxisAlignment: 0.0,
       maxWidth: isPortrait ? 600 : 500,

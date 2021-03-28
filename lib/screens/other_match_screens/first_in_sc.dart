@@ -29,7 +29,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
     return Container(
       color: Colors.white,
       child: ListView(
-        physics: BouncingScrollPhysics(),
+        physics: ScrollPhysics(),
         children: [
           tossLineWidget(),
           widget.match.isFirstInningEnd

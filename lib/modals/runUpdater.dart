@@ -297,28 +297,6 @@ class RunUpdater {
         "nonStrikerBatsmen": null
       });
 
-      // if (ballData.strikerName == ballData.batsmenName) {
-      //    matchDocReference.update({
-      //     "currentBallNo": FieldValue.increment(1),
-      //      "realBallNo": FieldValue.increment(1),
-      //      "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-      //     "wicketsDown": FieldValue.increment(1),
-      //     "totalRunsOfInning${ballData.scoreBoardData.matchData.getInningNo()}": FieldValue.increment(
-      //         ballData.runScoredOnThisBall),
-      //     "totalWicketsOfInning${ballData.scoreBoardData.matchData.getInningNo()}": FieldValue.increment(1),
-      //     "strikerBatsmen": null,
-      //   });
-      // } else if (ballData.nonStrikerName == ballData.batsmenName) {
-      //    matchDocReference.update({
-      //      "realBallNo": FieldValue.increment(1),
-      //     "currentBallNo": FieldValue.increment(1),
-      //     "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
-      //     "wicketsDown": FieldValue.increment(1),
-      //     "totalWicketsOfInning${ballData.scoreBoardData.matchData.getInningNo()}": FieldValue.increment(1),
-      //     "nonStrikerBatsmen": null,
-      //   });
-      // }
-
       //3. batsmenData
       batsmenDocRef.update({
         "balls": FieldValue.increment(1),
@@ -415,11 +393,6 @@ class RunUpdater {
         inningNo: ballData.scoreBoardData.matchData.getInningNo(),
         matchId: matchId);
 
-    final bowlerDocRef = DatabaseController.getBowlerDocRef(
-        bowlerName: ballData.scoreBoardData.bowlerName,
-        inningNo: ballData.scoreBoardData.matchData.getInningNo(),
-        matchId: matchId);
-
     final overDocRef = DatabaseController.getOverDoc(
         inningNo: ballData.scoreBoardData.matchData.getInningNo(),
         matchId: matchId,
@@ -433,8 +406,8 @@ class RunUpdater {
       //1. generalData
 
       scoreBoardRef.update({
-        "currentBallNo": FieldValue.increment(1),
-        "realBallNo": FieldValue.increment(1),
+        "dummyBallOfTheOver": FieldValue.increment(1),
+        "ballOfTheOver": FieldValue.increment(1),
         "totalRuns": FieldValue.increment(ballData.runScoredOnThisBall),
         "wicketsDown": FieldValue.increment(1),
         "strikerBatsmen": null,
@@ -459,18 +432,6 @@ class RunUpdater {
         "isBatting": false,
         "isOnStrike": false,
       });
-
-      //4. BowlerData -RUNOUT not going in bowlers account
-      // matchesRef
-      //     .doc(matchId)
-      //     .collection(
-      //         '${ballData.scoreBoardData.matchData.getInningNo()}InningBowlingData')
-      //     .doc(ballData.scoreBoardData.bowlerName)
-      //     .update({
-      //   "ballOfTheOver": FieldValue.increment(1),
-      //   "runs": FieldValue.increment(ballData.runScoredOnThisBall),
-      //   // "wickets": FieldValue.increment(1),
-      // });
 
       //overData
       overDocRef.update({

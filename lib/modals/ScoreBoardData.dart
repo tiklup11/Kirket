@@ -5,6 +5,7 @@ class ScoreBoardData {
   ScoreBoardData(
       {this.totalWicketsDown,
       this.totalRuns,
+      this.totalRunsOfInning1,
       this.currentOverNo,
       this.battingTeamName,
       this.currentBallNo,
@@ -26,6 +27,7 @@ class ScoreBoardData {
         battingTeamName: doc.data()['battingTeam'],
         bowlingTeam: doc.data()['bowlingTeam'],
         totalRuns: doc.data()['totalRuns'],
+        totalRunsOfInning1: doc.data()['totalRunsOfInning1'],
         totalWicketsDown: doc.data()['wicketsDown']);
   }
 
@@ -34,6 +36,7 @@ class ScoreBoardData {
   String battingTeamName;
   String bowlingTeam;
   int totalRuns;
+  int totalRunsOfInning1;
   int totalWicketsDown;
   int currentOverNo;
   int currentBallNo;
@@ -59,5 +62,28 @@ class ScoreBoardData {
     String runsFormat =
         "$totalRuns/$totalWicketsDown (${currentOverNo - 1}.$currentBallNo)";
     return runsFormat;
+  }
+
+  //this will be called at inning 2
+  //so, totalRuns will be = totalRunsOfInning2
+  //and same will be case with totalWicketsDown
+  String getFinalResult() {
+    String resultLine;
+
+    if (totalRunsOfInning1 != null &&
+        totalRuns != null &&
+        matchData.getInningNo() == 2) {
+      if (totalRunsOfInning1 > totalRuns) {
+        resultLine =
+            "${matchData.getFirstBattingTeam().toUpperCase()} won by ${totalRunsOfInning1 - totalRuns} runs";
+        return resultLine;
+      }
+      if (totalRunsOfInning1 < totalRuns) {
+        resultLine =
+            "${matchData.getSecondBattingTeam().toUpperCase()} won by ${matchData.getPlayerCount() - 1 - totalWicketsDown} wickets";
+        return resultLine;
+      }
+    }
+    return null;
   }
 }

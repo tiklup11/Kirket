@@ -26,13 +26,6 @@ class MatchCardForCounting extends StatefulWidget {
 class _MatchCardForCountingState extends State<MatchCardForCounting> {
   bool loadingAd = false;
 
-  @override
-  void initState() {
-    super.initState();
-    RewardedVideoAd.instance.load(
-        adUnitId: "ca-app-pub-7348080910995117/3729480926",
-        targetingInfo: MobileAdTargetingInfo(childDirected: true));
-  }
 
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
@@ -95,13 +88,23 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
             padding: EdgeInsets.symmetric(
                 horizontal: (20 * SizeConfig.oneW).roundToDouble(),
                 vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "LIVE",
+                      style: TextStyle(
+                          color: Colors.green, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
                 Text(
-                  "LIVE",
+                  "CATEGORY : ${widget.match.category.toUpperCase()}",
                   style: TextStyle(
-                      color: Colors.green, fontWeight: FontWeight.bold),
+                      color: Colors.black26, fontWeight: FontWeight.bold),
                 )
               ],
             ),
@@ -110,13 +113,23 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
             padding: EdgeInsets.symmetric(
                 horizontal: (20 * SizeConfig.oneW).roundToDouble(),
                 vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "NOT LIVE : Go to MORE OPTIONS",
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
                 Text(
-                  "NOT LIVE : Go to MORE OPTIONS",
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  "CATEGORY : ${widget.match.category.toUpperCase()}",
+                  style: TextStyle(
+                      color: Colors.black26, fontWeight: FontWeight.bold),
                 )
               ],
             ),
@@ -142,7 +155,6 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
       ),
     );
   }
-
 
   mainBtn() {
     return Bounce(
@@ -317,7 +329,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                           Navigator.pop(context);
                           widget.match.isMatchLive
                               ? toggleLiveOnOff(false)
-                              : liveOnDialog(context: context);
+                              : toggleLiveOnOff(true);
                         },
                         btnText: widget.match.isMatchLive
                             ? "TURN OFF LIVE"
@@ -347,7 +359,8 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                         iconData: Icons.delete,
                         onPressed: () {
                           Navigator.pop(context);
-                          DatabaseController.deleteMatch(matchId: widget.match.getMatchId());
+                          DatabaseController.deleteMatch(
+                              matchId: widget.match.getMatchId());
                           // print("pressed");
                         },
                         btnText: "DELETE MATCH")
@@ -387,70 +400,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
     );
   }
 
-  liveOnDialog({BuildContext context}) {
-    Widget cancelButton = TextButton(
-      child: Text("Go back"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-    Widget logoutButton = TextButton(
-      child: Text("Turn ON LIVE"),
-      onPressed: () {
-        adLoop();
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: Text("LIVE TELECAST"),
-      content: loadingAd
-          ? Text("Loading ad")
-          : Text(
-              "Watch an Rewarding ad and TELECAST LIVE Score. You may need to click 3-4 times on Live button"),
-      actions: [
-        cancelButton,
-        logoutButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  adLoop() async {
-    bool didItEnterListener = false;
-
-    print("Entering AdLoop");
-    bool isAdLoaded = await RewardedVideoAd.instance.load(
-        adUnitId: "ca-app-pub-7348080910995117/3729480926",
-        targetingInfo: MobileAdTargetingInfo(childDirected: true));
-    if (isAdLoaded) {
-      print("enter 1");
-      RewardedVideoAd.instance.show();
-
-      RewardedVideoAd.instance.listener =
-          (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-        print("enter ${event.toString()}");
-        if (event == RewardedVideoAdEvent.rewarded) {
-          print("enter 2");
-          didItEnterListener = true;
-          Navigator.pop(context);
-          toggleLiveOnOff(true);
-        } else if (event == RewardedVideoAdEvent.failedToLoad) {
-          print("enter 3");
-          RewardedVideoAd.instance.load(
-              adUnitId: "ca-app-pub-7348080910995117/3729480926",
-              targetingInfo: MobileAdTargetingInfo(childDirected: true));
-        }
-      };
-    }
-  }
-
+  
   _shareMatch(BuildContext context) {
     final String playStoreUrl =
         "https://play.google.com/store/apps/details?id=com.okays.umiperer";

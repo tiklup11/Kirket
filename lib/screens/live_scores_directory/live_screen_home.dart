@@ -42,6 +42,7 @@ class LiveScreenHome extends StatelessWidget {
       ),
       EndMatchesScreen(
         currentUser: user,
+        catName: catName,
       ),
     ];
 

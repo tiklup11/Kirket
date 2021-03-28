@@ -122,138 +122,140 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
   }
 
   void onCreateBtnPressed() {
-    if (widget.match.getInningNo() == 1) {
-      if (widget.areWeAddingBatsmen) {
-        matchesRef
-            .doc(widget.match.getMatchId())
-            .collection('1InningBattingData')
-            .doc(playerName)
-            .set({
-          "name": playerName,
-          "runs": 0,
-          "balls": 0,
-          "noOf4s": 0,
-          "noOf6s": 0,
-          "isOnStrike": false,
-          "isBatting": false,
-          "isOut": false,
-        });
+    if (playerName != null) {
+      if (widget.match.getInningNo() == 1) {
+        if (widget.areWeAddingBatsmen) {
+          matchesRef
+              .doc(widget.match.getMatchId())
+              .collection('1InningBattingData')
+              .doc(playerName)
+              .set({
+            "name": playerName,
+            "runs": 0,
+            "balls": 0,
+            "noOf4s": 0,
+            "noOf6s": 0,
+            "isOnStrike": false,
+            "isBatting": false,
+            "isOut": false,
+          });
 
-        matchesRef
-            .doc(widget.match.getMatchId())
-            .collection('2InningBowlingData')
-            .doc(playerName)
-            .set({
-          "name": playerName,
-          "runs": 0,
-          "overs": 0,
-          "wickets": 0,
-          "maidens": 0,
-          "isBowling": false,
-          "totalBalls": 6,
-          "overLength": 6,
-          "ballOfTheOver": 0,
-        });
-      } else {
-        matchesRef
-            .doc(widget.match.getMatchId())
-            .collection('1InningBowlingData')
-            .doc(playerName)
-            .set({
-          "name": playerName,
-          "runs": 0,
-          "overs": 0,
-          "wickets": 0,
-          "maidens": 0,
-          "isBowling": false,
-          "ballOfTheOver": 0,
-          "totalBalls": 6,
-          "overLength": 6,
-        });
+          matchesRef
+              .doc(widget.match.getMatchId())
+              .collection('2InningBowlingData')
+              .doc(playerName)
+              .set({
+            "name": playerName,
+            "runs": 0,
+            "overs": 0,
+            "wickets": 0,
+            "maidens": 0,
+            "isBowling": false,
+            "totalBalls": 6,
+            "overLength": 6,
+            "ballOfTheOver": 0,
+          });
+        } else {
+          matchesRef
+              .doc(widget.match.getMatchId())
+              .collection('1InningBowlingData')
+              .doc(playerName)
+              .set({
+            "name": playerName,
+            "runs": 0,
+            "overs": 0,
+            "wickets": 0,
+            "maidens": 0,
+            "isBowling": false,
+            "ballOfTheOver": 0,
+            "totalBalls": 6,
+            "overLength": 6,
+          });
 
-        matchesRef
-            .doc(widget.match.getMatchId())
-            .collection('2InningBattingData')
-            .doc(playerName)
-            .set({
-          "name": playerName,
-          "runs": 0,
-          "balls": 0,
-          "noOf4s": 0,
-          "noOf6s": 0,
-          "isOnStrike": false,
-          "isBatting": false,
-          "isOut": false,
-        });
+          matchesRef
+              .doc(widget.match.getMatchId())
+              .collection('2InningBattingData')
+              .doc(playerName)
+              .set({
+            "name": playerName,
+            "runs": 0,
+            "balls": 0,
+            "noOf4s": 0,
+            "noOf6s": 0,
+            "isOnStrike": false,
+            "isBatting": false,
+            "isOut": false,
+          });
+        }
       }
-    }
 
-    if (widget.match.getInningNo() == 2) {
-      if (widget.areWeAddingBatsmen) {
-        matchesRef
-            .doc(widget.match.getMatchId())
-            .collection('2InningBattingData')
-            .doc(playerName)
-            .set({
-          "name": playerName,
-          "runs": 0,
-          "balls": 0,
-          "noOf4s": 0,
-          "noOf6s": 0,
-          "isOnStrike": false,
-          "isBatting": false,
-          "isOut": false,
-        });
+      if (widget.match.getInningNo() == 2) {
+        if (widget.areWeAddingBatsmen) {
+          matchesRef
+              .doc(widget.match.getMatchId())
+              .collection('2InningBattingData')
+              .doc(playerName)
+              .set({
+            "name": playerName,
+            "runs": 0,
+            "balls": 0,
+            "noOf4s": 0,
+            "noOf6s": 0,
+            "isOnStrike": false,
+            "isBatting": false,
+            "isOut": false,
+          });
 
-        matchesRef
-            .doc(widget.match.getMatchId())
-            .collection('1InningBowlingData')
-            .doc(playerName)
-            .set({
-          "name": playerName,
-          "runs": 0,
-          "overs": 0,
-          "wickets": 0,
-          "maidens": 0,
-          "isBowling": false,
-          "ballOfTheOver": 0,
-          "totalBalls": 6,
-          "overLength": 6,
-          "isOut": false,
-        });
-      } else {
-        matchesRef
-            .doc(widget.match.getMatchId())
-            .collection('2InningBowlingData')
-            .doc(playerName)
-            .set({
-          "name": playerName,
-          "runs": 0,
-          "overs": 0,
-          "wickets": 0,
-          "maidens": 0,
-          "isBowling": false,
-          "ballOfTheOver": 0,
-          "totalBalls": 6,
-          "overLength": 6,
-        });
+          matchesRef
+              .doc(widget.match.getMatchId())
+              .collection('1InningBowlingData')
+              .doc(playerName)
+              .set({
+            "name": playerName,
+            "runs": 0,
+            "overs": 0,
+            "wickets": 0,
+            "maidens": 0,
+            "isBowling": false,
+            "ballOfTheOver": 0,
+            "totalBalls": 6,
+            "overLength": 6,
+            "isOut": false,
+          });
+        } else {
+          matchesRef
+              .doc(widget.match.getMatchId())
+              .collection('2InningBowlingData')
+              .doc(playerName)
+              .set({
+            "name": playerName,
+            "runs": 0,
+            "overs": 0,
+            "wickets": 0,
+            "maidens": 0,
+            "isBowling": false,
+            "ballOfTheOver": 0,
+            "totalBalls": 6,
+            "overLength": 6,
+          });
 
-        matchesRef
-            .doc(widget.match.getMatchId())
-            .collection('1InningBattingData')
-            .doc(playerName)
-            .set({
-          "name": playerName,
-          "runs": 0,
-          "balls": 0,
-          "noOf4s": 0,
-          "noOf6s": 0,
-          "isOnStrike": false,
-          "isBatting": false,
-          "isOut": false,
-        });
+          matchesRef
+              .doc(widget.match.getMatchId())
+              .collection('1InningBattingData')
+              .doc(playerName)
+              .set({
+            "name": playerName,
+            "runs": 0,
+            "balls": 0,
+            "noOf4s": 0,
+            "noOf6s": 0,
+            "isOnStrike": false,
+            "isBatting": false,
+            "isOut": false,
+          });
+        }
       }
+      Navigator.pop(context);
     }
-    Navigator.pop(context);
   }
 }

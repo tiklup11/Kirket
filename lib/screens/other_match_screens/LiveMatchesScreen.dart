@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/main.dart';
@@ -18,6 +19,15 @@ class LiveMatchesScreen extends StatefulWidget {
 }
 
 class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FacebookAudienceNetwork.init(
+      testingId: "2312433698835503_2964944860251047",
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildCards();

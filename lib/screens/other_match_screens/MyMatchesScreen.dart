@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
-import 'package:provider/provider.dart';
 import 'package:umiperer/main.dart';
-import 'package:umiperer/modals/CategoryController.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/other_match_screens/fill_new_match_details_screen.dart';
@@ -30,12 +28,17 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
         floatingActionButton: Bounce(
           duration: Duration(milliseconds: 120),
           onPressed: () {
-            _modalBottomSheetMenu(context);
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return FillNewMatchDetailsPage(
+                user: widget.user,
+              );
+            }));
           },
-          child: FloatingActionButton(
+          child: FloatingActionButton.extended(
+            label: Text("New Match"),
+            icon: Icon(Icons.add),
             backgroundColor: Colors.blueAccent.withOpacity(0.7),
             // backgroundColor: Colors.blueAccent.shade400,
-            child: Icon(Icons.add),
           ),
         ),
         body: Column(
@@ -97,45 +100,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                 }
 
                 for (var matchData in matchesData) {
-                  final CricketMatch match = CricketMatch();
-
-                  match.setTeam1Name(matchData.data()['team1name']);
-                  match.setTeam2Name(matchData.data()['team2name']);
-                  match.setOverCount(matchData.data()['overCount']);
-
-                  match.setMatchId(matchData.data()['matchId']);
-                  match.creatorUid = matchData.data()['creatorUid'];
-                  match.setPlayerCount(matchData.data()['playerCount']);
-                  match.setTossWinner(matchData.data()['tossWinner']);
-                  match.setBatOrBall(matchData.data()['whatChoose']);
-                  match.setLocation(matchData.data()['matchLocation']);
-                  match.setIsMatchStarted(matchData.data()['isMatchStarted']);
-
-                  match.isSecondInningEnd =
-                      matchData.data()['isSecondInningEnd'];
-
-                  match.isFirstInningEnd = matchData.data()['isFirstInningEnd'];
-                  match.isFirstInningStartedYet =
-                      (matchData.data()['isFirstInningStarted']);
-                  match.isSecondInningStartedYet =
-                      (matchData.data()['isSecondStartedYet']);
-                  match.setInningNo(matchData.data()['inningNumber']);
-
-                  match.isMatchLive = matchData.data()['isLive'];
-                  match.isLiveChatOn = matchData.data()['isLiveChatOn'];
-
-                  /**
-                   * Players list of both team ,may be used later
-                   */
-                  // if (matchData.data()['teamAPlayers'] != null) {
-                  //   final teamAPlayers =
-                  //       matchData.data()['teamAPlayers'].cast<String>();
-                  //   final teamBPlayers =
-                  //       matchData.data()['teamBPlayers'].cast<String>();
-
-                  //   match.team1List = teamAPlayers;
-                  //   match.team2List = teamBPlayers;
-                  // }
+                  CricketMatch match = CricketMatch.from(matchData);
 
                   matchCards.add(MatchCardForCounting(
                     match: match,
@@ -144,7 +109,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                 }
 
                 return ListView.builder(
-                    // physics: BouncingScrollPhysics(),
+                    // physics: ScrollPhysics(),
                     itemCount: matchCards.length,
                     itemBuilder: (context, int) {
                       return matchCards[int];
@@ -156,6 +121,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
   }
 
   fabBtn({Function onPressed, String btnText}) {
+    // ignore: missing_required_param
     return Bounce(
       onPressed: onPressed,
       child: Container(

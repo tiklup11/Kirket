@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/ScoreBoardData.dart';
+import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/other_match_screens/matchDetailsHome_forAudience.dart';
 import 'package:umiperer/services/database_updater.dart';
@@ -30,34 +32,31 @@ class LiveMatchCard extends StatefulWidget {
 
 class _LiveMatchCardState extends State<LiveMatchCard> {
   ScoreBoardData _scoreBoardData;
-
-  InterstitialAd _interstitialAd;
-
-  InterstitialAd createInterstitialAd() {
-    final MobileAdTargetingInfo targetingInfo =
-        new MobileAdTargetingInfo(childDirected: true);
-    return InterstitialAd(
-      adUnitId: "ca-app-pub-7348080910995117/7503637616",
-      targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
-        print("InterstitialAd event is $event");
-      },
-    );
-  }
+  bool _isInterstitialAdLoaded = false;
 
   @override
   void initState() {
     super.initState();
+    FacebookAudienceNetwork.init(
+      testingId: "2312433698835503_2964944860251047",
+    );
+    print("Inning ${widget.match.getInningNo()}");
+    _loadInterstitialAd();
     _scoreBoardData = ScoreBoardData(
         battingTeamName: widget.match.getCurrentBattingTeam(),
         bowlingTeam: widget.match.getCurrentBowlingTeam(),
         matchData: widget.match);
   }
 
+  _showInterstitialAd() {
+    if (_isInterstitialAdLoaded == true)
+      FacebookInterstitialAd.showInterstitialAd();
+    else
+      print("Interstial Ad not yet loaded!");
+  }
+
   @override
   Widget build(BuildContext context) {
-    _interstitialAd = createInterstitialAd()..load();
-
     return StreamBuilder<DocumentSnapshot>(
         stream: DatabaseController.getScoreBoardDocRef(
           inningNo: widget.match.inningNumber,
@@ -67,18 +66,9 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
           if (!snapshot.hasData) {
             return miniScoreLoadingScreen();
           } else {
-            // _interstitialAd = createInterstitialAd()..load();
             if (widget.match.getIsMatchStarted()) {
-              final scoreBoardData = snapshot.data.data();
-              final ballOfTheOver = scoreBoardData['ballOfTheOver'];
-              final currentOverNo = scoreBoardData['currentOverNo'];
-              final totalRuns = scoreBoardData['totalRuns'];
-              final wicketsDown = scoreBoardData['wicketsDown'];
-
-              _scoreBoardData.currentBallNo = ballOfTheOver;
-              _scoreBoardData.currentOverNo = currentOverNo;
-              _scoreBoardData.totalRuns = totalRuns;
-              _scoreBoardData.totalWicketsDown = wicketsDown;
+              _scoreBoardData = ScoreBoardData.from(snapshot.data);
+              _scoreBoardData.matchData = widget.match;
             }
             return liveCardUI(scoreBoardData: _scoreBoardData);
           }
@@ -90,6 +80,27 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
       color: Colors.black12,
       height: 2,
       width: double.infinity,
+    );
+  }
+
+  void _loadInterstitialAd() {
+    FacebookInterstitialAd.loadInterstitialAd(
+      placementId: K_INTERSTIAL_ID,
+      listener: (result, value) {
+        print(">> FAN > Interstitial Ad: $result --> $value");
+        if (result == InterstitialAdResult.LOADED)
+          _isInterstitialAdLoaded = true;
+        else
+          print(InterstitialAdResult.ERROR);
+
+        /// Once an Interstitial Ad has been dismissed and becomes invalidated,
+        /// load a fresh Ad by calling this function.
+        if (result == InterstitialAdResult.DISMISSED &&
+            value["invalidated"] == true) {
+          _isInterstitialAdLoaded = false;
+          _loadInterstitialAd();
+        }
+      },
     );
   }
 
@@ -125,7 +136,7 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
         padding: EdgeInsets.zero,
         onPressed: () {
           if (widget.match.getIsMatchStarted()) {
-            _interstitialAd?.show();
+            _showInterstitialAd();
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return MatchDetailsHomeForAudience(
                 currentUser: widget.currentUser,
@@ -232,17 +243,17 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
 
     String tossString =
         "${widget.match.getTossWinner().toUpperCase()} won the TOSS and choose to ${widget.match.getChoosedOption().toUpperCase()}";
-    if (widget.match.getFinalResult() != null &&
+    if (_scoreBoardData.getFinalResult() != null &&
         widget.match.isSecondInningEnd) {
       return Container(
         child: Text(
-          widget.match.getFinalResult(),
+          _scoreBoardData.getFinalResult(),
           maxLines: 4,
           style: textStyle,
         ),
       );
     } else if (widget.match.isSecondInningEnd &&
-        widget.match.getFinalResult() == null) {
+        _scoreBoardData.getFinalResult() == null) {
       return Container(
         child: Center(
           child: Text(

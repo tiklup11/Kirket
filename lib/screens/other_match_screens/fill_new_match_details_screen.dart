@@ -168,6 +168,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'nonStrikerBatsmen': null,
       'currentBowler': null,
       "dummyBallOfTheOver": 0,
+      "totalRunsOfInning1": 0,
     });
 
     matchesRef.doc(newMatch.getMatchId()).set({

@@ -51,9 +51,6 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Timer(Duration(seconds: 5), (){
-    // _bannerAd..load();
-    //   _bannerAd?.show();
 
     return StreamBuilder<DocumentSnapshot>(
         stream: matchesRef.doc(widget.matchUID).snapshots(),
@@ -70,7 +67,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
             return Container(
               color: Colors.white,
               child: ListView(
-                physics: BouncingScrollPhysics(),
+                physics: ScrollPhysics(),
                 shrinkWrap: true,
                 // mainAxisSize: MainAxisSize.min,
                 children: [

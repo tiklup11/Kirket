@@ -28,19 +28,10 @@ class DummyOverCard extends StatefulWidget {
 class _DummyOverCardState extends State<DummyOverCard> {
   ///over container with 6balls
   ///we will increase no of balls in specific cases
-  ///TODO: increase no of balls...in the lower section
   overCard()
 //String bowlerName,String batsman1Name,String batsman2Name
   {
-    List<Widget> zeroOverBalls = [
-      BallWidget(),
-      BallWidget(),
-      BallWidget(),
-      BallWidget(),
-      BallWidget(),
-      BallWidget(),
-    ];
-    Ball currentBall = null;
+    Ball currentBall;
 
     return Container(
         // width: 400,
@@ -113,11 +104,16 @@ class _DummyOverCardState extends State<DummyOverCard> {
                     Container(
                       height: (60 * SizeConfig.oneH).roundToDouble(),
                       child: ListView(
-                        cacheExtent: 10,
+                          cacheExtent: 10,
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           children: balls),
                     ),
+                    Divider(
+                      height: 6,
+                      thickness: 1,
+                      color: Colors.black12,
+                    )
                   ],
                 );
               }

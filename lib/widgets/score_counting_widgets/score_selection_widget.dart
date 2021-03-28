@@ -91,9 +91,6 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
     isOut = false;
     isRunOut = false;
 
-    ///update isBowling to false
-    updateIsBowling(bowlerName: bowlerName, setTo: false);
-
     ///ballOfTheOver==0 || displaySelectBowlerBtn ||currentOver++
     // currentBowler = dummyBowler;
     ///updateDataInScoreBoard when Over is finished
@@ -106,6 +103,9 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
       "ballOfTheOver": 0,
       "currentOverNo": FieldValue.increment(1)
     });
+
+    ///update isBowling to false
+    updateIsBowling(bowlerName: bowlerName, setTo: false);
   }
 
   ///this is placed at the bottom, contains many run buttons
@@ -371,6 +371,9 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
     print(ballData.scoreBoardData.strikerName == null);
     print(ballData.scoreBoardData.nonStrikerName == null);
 
+    DatabaseController.getScoreBoardDocRef(inningNo: 2, matchId: matchId)
+        .update({"totalRunsOfInning1": ballData.scoreBoardData.totalRuns});
+
     if (ballData.scoreBoardData.strikerName != null) {
       DatabaseController.getBatsmenDocRef(
               batsmenName: ballData.scoreBoardData.strikerName,
@@ -426,25 +429,6 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
         "isFirstInningEnd": true,
         "inningNumber": 2,
       });
-
-      // if (ballData.scoreBoardData.currentBallNo == 1) {
-      //   DatabaseController.getScoreBoardDocRef(inningNo: 1, matchId: matchId)
-      //       .update({
-      //     "ballOfTheOver": 0,
-      //     "currentOverNo": FieldValue.increment(1),
-      //     "battingTeam":
-      //         widget.ballData.scoreBoardData.matchData.getSecondBattingTeam(),
-      //     "currentBattingTeam":
-      //         widget.ballData.scoreBoardData.matchData.getSecondBattingTeam(),
-      //     "currentOverNumber": 1,
-      //     "nonStrikerBatsmen": null,
-      //     "currentBowler": null,
-      //     "strikerBatsmen": null,
-      //     "totalRuns": 0,
-      //     "wicketsDown": 0,
-      //     "realBallNo": 0
-      //   });
-      // }
     }
 
     if (widget.ballData.scoreBoardData.matchData.getInningNo() == 2) {
@@ -488,9 +472,19 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
       return LoadingProgressWidget();
     }
 
+    if (ballData.scoreBoardData.strikerName == null &&
+        ballData.scoreBoardData.nonStrikerName == null) {
+      return selectBatsmenButton();
+    }
+
+    if (ballData.scoreBoardData.strikerName == null) {
+      return Center(
+        child: Text("Select Striker : Tap on batsmens name"),
+      );
+    }
+
     if (ballData.scoreBoardData.bowlerName == null) {
-      //TODO: add batsmen condition please
-      return selectPlayersBtn();
+      return selectBowlerBtn();
     } else {
       if (isWideBall) {
         ballData.runKey = K_WIDEBALL;
@@ -619,15 +613,6 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
 
   ///function after 1st inning end
   start2ndInningFunction() {
-    // DatabaseController.getScoreBoardDocRef(
-    //   inningNo: widget.ballData.scoreBoardData.matchData.getInningNo(),
-    //   matchId: widget.ballData.scoreBoardData.matchData.getMatchId(),
-    // ).update({
-    //   "strikerBatsmen": null,
-    //   "nonStrikerBatsmen": null,
-    //   "currentBowler": null,
-    // });
-
     DatabaseController.getGeneralMatchDoc(
             matchId: widget.ballData.scoreBoardData.matchData.getMatchId())
         .update({"isSecondStartedYet": true});
@@ -636,12 +621,11 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
 
   ///final match result
   finalResult() {
-    TextStyle textStyle = new TextStyle(
+    TextStyle textStyle = TextStyle(
       fontSize: 16,
     );
 
-    String resultLine =
-        widget.ballData.scoreBoardData.matchData.getFinalResult();
+    String resultLine = widget.ballData.scoreBoardData.getFinalResult();
 
     //TODO: MatchTied function when runs EQUAL
 
@@ -720,12 +704,12 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
     });
   }
 
-  selectPlayersBtn() {
+  selectBatsmenButton() {
     return Container(
       height: scoreSelectionAreaLength.toDouble(),
       color: Colors.blueAccent.shade100,
       padding: EdgeInsets.symmetric(
-          horizontal: (70 * SizeConfig.oneW).roundToDouble()),
+          vertical: 50, horizontal: (70 * SizeConfig.oneW).roundToDouble()),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -734,12 +718,21 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
             btnText: "Select Batsmen",
             match: widget.ballData.scoreBoardData.matchData,
           ),
-          SelectPlayerButton(
-            currentOverNo: widget.ballData.scoreBoardData.currentOverNo,
-            btnText: "Select Bowler",
-            match: widget.ballData.scoreBoardData.matchData,
-          ),
         ],
+      ),
+    );
+  }
+
+  selectBowlerBtn() {
+    return Container(
+      height: scoreSelectionAreaLength.toDouble(),
+      color: Colors.blueAccent.shade100,
+      padding: EdgeInsets.symmetric(
+          vertical: 50, horizontal: (70 * SizeConfig.oneW).roundToDouble()),
+      child: SelectPlayerButton(
+        currentOverNo: widget.ballData.scoreBoardData.currentOverNo,
+        btnText: "Select Bowler",
+        match: widget.ballData.scoreBoardData.matchData,
       ),
     );
   }
@@ -747,6 +740,13 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
   void setIsUploadingDataToFalse() {
     setState(() {
       isUploadingData = false;
+      isWideBall = false;
+      isNoBall = false;
+      isLegBye = false;
+      isBye = false;
+      isNoBall = false;
+      isOut = false;
+      isOverThrow = false;
     });
   }
 }

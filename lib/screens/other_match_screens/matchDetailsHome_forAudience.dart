@@ -1,8 +1,10 @@
-import 'package:firebase_admob/firebase_admob.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
+import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/other_match_screens/first_in_sc.dart';
 import 'package:umiperer/screens/live_chat_screens/live_chat_page.dart';
@@ -28,48 +30,38 @@ class _MatchDetailsHomeForAudienceState
     extends State<MatchDetailsHomeForAudience> {
   List tabBarView;
 
-  BannerAd _bannerAd;
-
-  BannerAd createBannerAd() {
-    final MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo();
-    return BannerAd(
-      adUnitId: "ca-app-pub-7348080910995117/5980363458",
-      size: AdSize.smartBanner,
-      targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
-        print("BannerAd event is $event");
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    // _bannerAd.
-    _bannerAd..dispose();
-  }
-
-  List<String> tabs = [];
+  List<Widget> tabs = [];
 
   @override
   void initState() {
     super.initState();
-    _bannerAd = createBannerAd()..load();
-    _bannerAd?.show(
-      // anchorOffset: 60.0,
-      // // Positions the banner ad 10 pixels from the center of the screen to the right
-      // horizontalCenterOffset: 10.0,
-      // // Banner Position
-      anchorType: AnchorType.top,
-    );
+
     print("currentUID: ${widget.creatorUID}");
 
+    // tabs = [
+    // "Details",
+    // "Live Score",
+    // "1st Inning",
+    // "2nd Inning"
+    // "Overs"
+    // ];
+
     tabs = [
-      "Details",
-      "Live Score",
-      "1st Inning",
-      "2nd Inning"
-      // "Overs"
+      Icon(Icons.info_outline),
+      // Icon(Icons.live_tv),
+      Text(
+        "Live",
+        style: TextStyle(fontSize: 16),
+      ),
+      Text(
+        "1st",
+        style: TextStyle(fontSize: 16),
+      ),
+      Text(
+        "2nd",
+        style: TextStyle(fontSize: 16),
+      ),
+      // Icon(Icons.ballot)
     ];
 
     tabBarView = [
@@ -97,7 +89,7 @@ class _MatchDetailsHomeForAudienceState
     ];
 
     if (widget.match.isLiveChatOn) {
-      tabs.add("Chat");
+      tabs.add(Icon(Icons.chat_bubble_outline_rounded));
       tabBarView.add(
         LiveChatPage(
           match: widget.match,
@@ -112,6 +104,14 @@ class _MatchDetailsHomeForAudienceState
       tabBarView.removeAt(1);
     }
   }
+
+  FacebookBannerAd _currentAd = FacebookBannerAd(
+    placementId: K_BANNER_ID, //testid
+    bannerSize: BannerSize.STANDARD,
+    listener: (result, value) {
+      print("Banner Ad: $result -->  $value");
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -149,16 +149,25 @@ class _MatchDetailsHomeForAudienceState
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           bottom: TabBar(
+            labelPadding: EdgeInsets.only(bottom: 10, left: 10, right: 10),
             labelColor: Colors.black,
             isScrollable: true,
-            tabs: [
-              for (final tab in tabs) Tab(text: tab),
-            ],
+            tabs: tabs,
           ),
         ),
-        body: TabBarView(
+        body: Column(
           children: [
-            for (final tab in tabBarView) tab,
+            Flexible(
+              child: TabBarView(
+                children: [
+                  for (final tab in tabBarView) tab,
+                ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _currentAd,
+            )
           ],
         ),
       ),
