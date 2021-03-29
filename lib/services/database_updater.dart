@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:umiperer/main.dart';
 
 class DatabaseController {
@@ -59,9 +60,12 @@ class DatabaseController {
     return matchesRef.doc(matchId).collection('inning${inningNo}overs');
   }
 
-  static void deleteMatch({String matchId}) async {
+  static void deleteMatch(
+      {@required String matchId, @required String catName}) async {
     ///when we delete a collection,
     ///inner collections are not deleted, so we have to delete inner collections also
+
+    categoryRef.doc(catName).update({"count": FieldValue.increment(-1)});
 
     final batsmen1Ref =
         await matchesRef.doc(matchId).collection("1InningBattingData").get();

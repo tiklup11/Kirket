@@ -20,7 +20,7 @@ class HeadLineWidget extends StatelessWidget {
       child: Text(
         headLineString.toUpperCase(),
         maxLines: 2,
-        style: TextStyle(fontWeight: FontWeight.w600),
+        style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black38),
       ),
     );
   }

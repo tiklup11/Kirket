@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/live_scores_directory/live_screen_home.dart';
+import 'package:umiperer/screens/other_match_screens/zero_doc_screen.dart';
 
 class CategoryPage extends StatefulWidget {
   CategoryPage({this.user});
@@ -26,11 +26,24 @@ class _CategoryPageState extends State<CategoryPage> {
           return CircularProgressIndicator();
         } else {
           final catDocs = snapshot.data.docs;
+
+          if (catDocs.isEmpty) {
+            return ZeroDocScreen(
+              showLearnMore: true,
+              dialogText:
+                  "To start scoring, go to HOME and press (+ NEW MATCH)",
+              textMsg: "NO LIVE MATCHES",
+              iconData: Icons.live_tv_rounded,
+            );
+          }
+
           catDocs.forEach((catDoc) {
-            catCardsList.add(new CatCard(
-              catName: catDoc.data()['catName'],
-              user: widget.user,
-            ));
+            if (catDoc.data()["count"] != 0) {
+              catCardsList.add(new CatCard(
+                catName: catDoc.data()['catName'],
+                user: widget.user,
+              ));
+            }
           });
           return Column(
             children: [

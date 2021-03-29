@@ -20,7 +20,7 @@ final categoryRef = FirebaseFirestore.instance.collection('categories');
 PackageInfo packageInfo;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // final ok = await FirebaseAdMob.instance
   // .initialize(appId: "ca-app-pub-7348080910995117~8961750013");
   await Firebase.initializeApp();
@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
             ),
             home: SplashScreen.timed(
               seconds: 1,
-              route: MaterialPageRoute(builder: (_) => AfterSplashScreen()),
+              route: MaterialPageRoute(builder: (_) => LandingPage()),
               body: Scaffold(
                 backgroundColor: Colors.white,
                 body: Center(
@@ -78,25 +78,5 @@ class _MyAppState extends State<MyApp> {
         });
       }),
     );
-  }
-}
-
-class AfterSplashScreen extends StatefulWidget {
-  // This widget is the root of your application.
-  @override
-  _AfterSplashScreenState createState() => _AfterSplashScreenState();
-}
-
-class _AfterSplashScreenState extends State<AfterSplashScreen> {
-  @override
-  void initState() {
-    //  implement initState
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print("Building");
-    return LandingPage();
   }
 }

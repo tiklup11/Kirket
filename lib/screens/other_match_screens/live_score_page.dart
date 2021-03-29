@@ -27,7 +27,6 @@ class LiveScorePage extends StatefulWidget {
 class _LiveScorePageState extends State<LiveScorePage> {
   final scoreSelectionAreaLength = (220 * SizeConfig.oneH).roundToDouble();
   List<Batsmen> currentBothBatsmen;
-  ScrollController _scrollController;
 
   Bowler dummyBowler = Bowler(
       playerName: "-------",
@@ -46,7 +45,6 @@ class _LiveScorePageState extends State<LiveScorePage> {
     super.initState();
     // FirebaseAdMob.instance.initialize(appId: "ca-app-pub-7348080910995117/5980363458");
     currentBothBatsmen = [];
-    _scrollController = ScrollController(keepScrollOffset: true);
   }
 
   @override
@@ -111,7 +109,6 @@ class _LiveScorePageState extends State<LiveScorePage> {
               BorderRadius.circular((10 * SizeConfig.oneW).roundToDouble())),
       child: ListView.builder(
         shrinkWrap: true,
-        controller: _scrollController,
         scrollDirection: Axis.vertical,
         itemCount: widget.match.getOverCount(),
         itemBuilder: (BuildContext context, int index) => DummyOverCard(

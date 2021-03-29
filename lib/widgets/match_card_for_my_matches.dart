@@ -1,10 +1,9 @@
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
-import 'package:share/share.dart';
 import 'package:umiperer/main.dart';
+import 'package:umiperer/modals/ShareMatch.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/matchDetailsScreens/matchDetailsHOME.dart';
@@ -25,7 +24,6 @@ class MatchCardForCounting extends StatefulWidget {
 
 class _MatchCardForCountingState extends State<MatchCardForCounting> {
   bool loadingAd = false;
-
 
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
@@ -196,10 +194,6 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
         width: (180 * SizeConfig.oneW).roundToDouble(),
         padding: EdgeInsets.symmetric(
             horizontal: (20 * SizeConfig.oneW).roundToDouble()),
-        // elevation: 0,
-        // highlightElevation: 0,
-        // color: Colors.blueAccent.shade400,
-        // minWidth: double.infinity,
         child: btnLogic(),
       ),
     );
@@ -352,7 +346,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                         iconData: Icons.share_outlined,
                         onPressed: () {
                           Navigator.pop(context);
-                          _shareMatch(context);
+                          ShareMatch(widget.match).shareMatch(context);
                         },
                         btnText: "SHARE MATCH"),
                     fabBtn(
@@ -360,6 +354,7 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
                         onPressed: () {
                           Navigator.pop(context);
                           DatabaseController.deleteMatch(
+                              catName: widget.match.category,
                               matchId: widget.match.getMatchId());
                           // print("pressed");
                         },
@@ -398,19 +393,5 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
         ),
       ),
     );
-  }
-
-  
-  _shareMatch(BuildContext context) {
-    final String playStoreUrl =
-        "https://play.google.com/store/apps/details?id=com.okays.umiperer";
-    final String msg =
-        "Watch live score of Cricket Match between ${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()} [${widget.match.getLocation()}] on Kirket app. $playStoreUrl";
-
-    final RenderBox box = context.findRenderObject();
-    final sharingText = msg;
-    Share.share(sharingText,
-        subject: 'Download Kirket app and watch live scores',
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }

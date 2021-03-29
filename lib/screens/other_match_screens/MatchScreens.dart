@@ -107,8 +107,14 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text(widget.user.displayName),
-              accountEmail: Text(widget.user.email),
+              accountName: Text(
+                widget.user.displayName,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              accountEmail: Text(
+                widget.user.email,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               currentAccountPicture: CircleAvatar(
                 backgroundImage: NetworkImage(widget.user.photoURL),
               ),
@@ -142,11 +148,18 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
                 }),
             space,
             customTile(
-                iconData: Icons.stacked_line_chart_rounded,
-                text: "Support Devs",
+                iconData: Icons.movie,
+                text: "Watch App Demo",
                 onTab: () {
-                  supportDevsDialog(context: context);
+                  //TODO: watchDemo
                 }),
+            // space,
+            // customTile(
+            //     iconData: Icons.stacked_line_chart_rounded,
+            //     text: "Support Devs",
+            //     onTab: () {
+            //       supportDevsDialog(context: context);
+            //     }),
             space,
             customTile(
                 iconData: Icons.login_rounded,
@@ -199,16 +212,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          // mainAxisSize: MainAxisSize.max,
           children: [
-            Image.asset(
-              'assets/images/kirket.png',
-              height: SizeConfig.setHeight(40),
-              width: SizeConfig.setWidth(120),
-            ),
-            // FloatingSearchAppBar(
-            //   automaticallyImplyDrawerHamburger: false,
-            // ),
             Builder(
               builder: (BuildContext context) => Bounce(
                 onPressed: () {
@@ -222,6 +226,11 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
                   ),
                 ),
               ),
+            ),
+            Image.asset(
+              'assets/images/kirket.png',
+              height: SizeConfig.setHeight(40),
+              width: SizeConfig.setWidth(120),
             ),
             // SizedBox(width: SizeConfig.setWidth(16),),
             // Text(title,style: TextStyle(color: Colors.black),),
@@ -322,10 +331,18 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
   }
 
   adminTile() {
+    TextStyle style =
+        TextStyle(fontWeight: FontWeight.bold, color: Colors.black54);
+
     return ListTile(
       // tileColor: Colors.blueGrey.shade50,
-      leading: Icon(Icons.lock_rounded),
-      title: Text('Admin Access'),
+      leading: Icon(
+        Icons.lock_rounded,
+      ),
+      title: Text(
+        'Admin Access',
+        style: style,
+      ),
       onTap: () {
         // Update the state of the app.
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -336,10 +353,16 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
   }
 
   customTile({String text, IconData iconData, Function onTab}) {
+    TextStyle style =
+        TextStyle(fontWeight: FontWeight.bold, color: Colors.black54);
+
     return ListTile(
       // tileColor: Colors.blueGrey.shade50,
       leading: Icon(iconData),
-      title: Text(text),
+      title: Text(
+        text,
+        style: style,
+      ),
       onTap: onTab,
     );
   }

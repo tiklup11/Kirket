@@ -35,6 +35,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
             }));
           },
           child: FloatingActionButton.extended(
+            heroTag: "fab",
             label: Text("New Match"),
             icon: Icon(Icons.add),
             backgroundColor: Colors.blueAccent.withOpacity(0.7),

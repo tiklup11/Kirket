@@ -8,6 +8,8 @@ import 'package:umiperer/screens/other_match_screens/first_in_sc.dart';
 import 'package:umiperer/screens/matchDetailsScreens/score_counting_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
 import 'package:umiperer/screens/other_match_screens/second_inn_sc.dart';
+import 'package:umiperer/modals/ShareMatch.dart';
+import 'package:umiperer/services/database_updater.dart';
 
 class MatchDetails extends StatefulWidget {
   MatchDetails({this.match, this.user});
@@ -54,10 +56,10 @@ class _MatchDetailsState extends State<MatchDetails> {
   @override
   Widget build(BuildContext context) {
     final tabs = [
-      "Details",
-      "Counting",
-      "1st Inning",
-      "2nd Inning"
+      "Info",
+      "Scoring",
+      "1st Inn",
+      "2nd Inn"
       // "BallByBall"
       // "Overs"
     ];
@@ -76,10 +78,13 @@ class _MatchDetailsState extends State<MatchDetails> {
                 // make switch cases
                 switch (value) {
                   case "Delete Match":
-                    deleteTheMatchFromCloud(context);
+                    Navigator.pop(context);
+                    DatabaseController.deleteMatch(
+                      catName: widget.match.category,
+                        matchId: widget.match.getMatchId());
                     break;
                   case "Share match":
-                    _shareMatch(context);
+                    ShareMatch(widget.match).shareMatch(context);
                     break;
                 }
               },
@@ -117,97 +122,6 @@ class _MatchDetailsState extends State<MatchDetails> {
         ),
       ),
     );
-  }
-
-  deleteTheMatchFromCloud(BuildContext context) async {
-    ///when we delete a collection,
-    ///inner collections are not deleted, so we have to delete inner collections also
-
-    Navigator.pop(context);
-    // print("deleting the docs");
-
-    final batsmen1Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("1InningBattingData")
-        .get();
-    for (var docs in batsmen1Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final batsmen2Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("2InningBattingData")
-        .get();
-    for (var docs in batsmen2Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final bowler1Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("1InningBowlingData")
-        .get();
-    for (var docs in bowler1Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final bowler2Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("2InningBowlingData")
-        .get();
-    for (var docs in bowler2Ref.docs) {
-      docs.reference.delete();
-    }
-
-    matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("Inning1")
-        .doc("scoreBoardData")
-        .delete();
-
-    matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("Inning2")
-        .doc("scoreBoardData")
-        .delete();
-
-    final overs1Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("inning1overs")
-        .get();
-    for (var docs in overs1Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final overs2Ref = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("inning2overs")
-        .get();
-    for (var docs in overs2Ref.docs) {
-      docs.reference.delete();
-    }
-
-    final chatCollection = await matchesRef
-        .doc(widget.match.getMatchId())
-        .collection("chatData")
-        .get();
-    for (var docs in chatCollection.docs) {
-      docs.reference.delete();
-    }
-
-    matchesRef.doc(widget.match.getMatchId()).delete();
-  }
-
-  _shareMatch(BuildContext context) {
-    final String playStoreUrl =
-        "https://play.google.com/store/apps/details?id=com.okays.umiperer";
-    final String msg =
-        "Watch live score of Cricket Match between ${widget.match.getTeam1Name()} vs ${widget.match.getTeam2Name()} on Kirket app. $playStoreUrl";
-
-    final RenderBox box = context.findRenderObject();
-    final sharingText = msg;
-    Share.share(sharingText,
-        subject: 'Download Kirket app and watch live scores',
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
   zeroData({String msg, IconData iconData}) {

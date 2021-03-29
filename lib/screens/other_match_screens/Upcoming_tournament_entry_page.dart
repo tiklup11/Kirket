@@ -10,7 +10,8 @@ import 'package:umiperer/widgets/back_button_widget.dart';
 import 'package:uuid/uuid.dart';
 
 ///media querydone
-final upcomingTournamentCollectionRef = FirebaseFirestore.instance.collection('upcomingTournaments');
+final upcomingTournamentCollectionRef =
+    FirebaseFirestore.instance.collection('upcomingTournaments');
 
 class AnnounceNewTournament extends StatelessWidget {
   AnnounceNewTournament({this.user});
@@ -18,7 +19,9 @@ class AnnounceNewTournament extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TournamentEntryForm(user: user,);
+    return TournamentEntryForm(
+      user: user,
+    );
   }
 }
 
@@ -29,7 +32,6 @@ class TournamentEntryForm extends StatefulWidget {
   @override
   TournamentEntryFormState createState() => TournamentEntryFormState();
 }
-
 
 class TournamentEntryFormState extends State<TournamentEntryForm> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -46,17 +48,20 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-
   void _handleSubmitted() {
-
     ///null checking and then generating MatchID, then uploading
     ///data to cloud.
 
-    if (tournament.startingDate!=null && tournament.entryFees!=null &&
-        tournament.tournamentName!=null && tournament.matchLocation!=null && tournament.contactNumber!=null &&
-        tournament.startingDate.toString()!='' && tournament.contactNumber.toString()!='' &&
-        tournament.tournamentName!='' && tournament.entryFees.toString()!='' && tournament.matchLocation!=''
-    ) {
+    if (tournament.startingDate != null &&
+        tournament.entryFees != null &&
+        tournament.tournamentName != null &&
+        tournament.matchLocation != null &&
+        tournament.contactNumber != null &&
+        tournament.startingDate.toString() != '' &&
+        tournament.contactNumber.toString() != '' &&
+        tournament.tournamentName != '' &&
+        tournament.entryFees.toString() != '' &&
+        tournament.matchLocation != '') {
       // print('QWWWWWWWWW:::   ${newMatch.getTeam1Name()}');
       generateIdForUpcomingTournament();
       //TODO: 1.Upload Match Details on firebase
@@ -76,14 +81,14 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
   }
 
   ///generating a random ID
-  generateIdForUpcomingTournament(){
+  generateIdForUpcomingTournament() {
     final String matchId = uuid.v1();
-    tournament.upcomingTournamentId=matchId;
+    tournament.tournamentUID = matchId;
   }
 
-  uploadMatchDataToCloud(){
-    upcomingTournamentCollectionRef.doc(tournament.upcomingTournamentId).set({
-      'utID':tournament.upcomingTournamentId,
+  uploadMatchDataToCloud() {
+    upcomingTournamentCollectionRef.doc(tournament.tournamentUID).set({
+      'utID': tournament.tournamentUID,
       'tournamentName': tournament.tournamentName,
       'location': tournament.matchLocation,
       'entryFees': tournament.entryFees,
@@ -111,7 +116,10 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text('Tournament Details',style: TextStyle(color: Colors.black),),
+        title: Text(
+          'Tournament Details',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       key: _scaffoldKey,
       body: Form(
@@ -119,7 +127,8 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
         child: Scrollbar(
           child: SingleChildScrollView(
             dragStartBehavior: DragStartBehavior.down,
-            padding: EdgeInsets.symmetric(horizontal: (16*SizeConfig.oneW).roundToDouble()),
+            padding: EdgeInsets.symmetric(
+                horizontal: (16 * SizeConfig.oneW).roundToDouble()),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -129,13 +138,14 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
                     border: new OutlineInputBorder(),
-                    icon: Icon(Icons.whatshot_rounded,),
+                    icon: Icon(
+                      Icons.whatshot_rounded,
+                    ),
                     hintText: "Tournament Name",
-                    labelText:
-                    "Tournament Name",
+                    labelText: "Tournament Name",
                   ),
                   onChanged: (value) {
-                    tournament.tournamentName=value;
+                    tournament.tournamentName = value;
                   },
                 ),
                 sizedBoxSpace,
@@ -148,68 +158,67 @@ class TournamentEntryFormState extends State<TournamentEntryForm> {
                     // prefixText: '+1 ',
                   ),
                   onChanged: (value) {
-                    tournament.matchLocation=value;
+                    tournament.matchLocation = value;
                   },
                 ),
                 sizedBoxSpace,
                 TextFormField(
                   decoration: InputDecoration(
                     border: new OutlineInputBorder(),
-                    icon: Icon(Icons.attach_money_rounded,),
+                    icon: Icon(
+                      Icons.attach_money_rounded,
+                    ),
                     hintText: "Entry Fees",
-                    labelText:
-                    "Entry Fees",
+                    labelText: "Entry Fees",
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
-                    tournament.entryFees=(int.parse(value));
-                  },
-                ),
-                sizedBoxSpace,
-                TextFormField
-                  (
-                  decoration: InputDecoration(
-                    border: new OutlineInputBorder(),
-                    icon: Icon(Icons.phone,),
-                    hintText: "Contact Number",
-                    labelText:
-                    "Contact Number",
-                  ),
-                  keyboardType: TextInputType.number,
-
-                  onChanged: (value) {
-                    tournament.contactNumber=(int.parse(value));
+                    tournament.entryFees = (int.parse(value));
                   },
                 ),
                 sizedBoxSpace,
                 TextFormField(
                   decoration: InputDecoration(
                     border: new OutlineInputBorder(),
-                    icon:  Icon(Icons.date_range,),
+                    icon: Icon(
+                      Icons.phone,
+                    ),
+                    hintText: "Contact Number",
+                    labelText: "Contact Number",
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    tournament.contactNumber = (int.parse(value));
+                  },
+                ),
+                sizedBoxSpace,
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: new OutlineInputBorder(),
+                    icon: Icon(
+                      Icons.date_range,
+                    ),
                     hintText: "Starting Date",
-                    labelText:
-                    "Starting Date",
+                    labelText: "Starting Date",
                   ),
                   onChanged: (value) {
-                    tournament.startingDate=value;
+                    tournament.startingDate = value;
                   },
                 ),
                 sizedBoxSpace,
                 Bounce(
-                  onPressed: (){
+                  onPressed: () {
                     _handleSubmitted();
                   },
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.blueAccent.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.black12,width: 2)
-                    ),
+                        border: Border.all(color: Colors.black12, width: 2)),
                     margin: EdgeInsets.symmetric(horizontal: 60),
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Center(
-                      child: Text(
-                          "Announce Tournament"),
+                      child: Text("Announce Tournament"),
                     ),
                   ),
                 ),

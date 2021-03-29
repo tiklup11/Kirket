@@ -22,6 +22,12 @@ class _LiveChatPageState extends State<LiveChatPage> {
   String typedMsg;
 
   @override
+  void dispose() {
+    super.dispose();
+    _editingController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print("currentUID: ${widget.creatorUid}");
     return Container(
@@ -79,7 +85,7 @@ class _LiveChatPageState extends State<LiveChatPage> {
 
             return Expanded(
               child: ListView.builder(
-                cacheExtent: 10,
+                  cacheExtent: 10,
                   shrinkWrap: true,
                   reverse: true,
                   itemCount: allMsgList.length,

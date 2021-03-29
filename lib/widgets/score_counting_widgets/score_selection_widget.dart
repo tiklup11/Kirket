@@ -371,8 +371,10 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
     print(ballData.scoreBoardData.strikerName == null);
     print(ballData.scoreBoardData.nonStrikerName == null);
 
-    DatabaseController.getScoreBoardDocRef(inningNo: 2, matchId: matchId)
-        .update({"totalRunsOfInning1": ballData.scoreBoardData.totalRuns});
+    if (inningNo == 1) {
+      DatabaseController.getScoreBoardDocRef(inningNo: 2, matchId: matchId)
+          .update({"totalRunsOfInning1": ballData.scoreBoardData.totalRuns});
+    }
 
     if (ballData.scoreBoardData.strikerName != null) {
       DatabaseController.getBatsmenDocRef(
@@ -638,12 +640,13 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
           width: (100 * SizeConfig.oneW).roundToDouble(),
         ),
         // Image.asset(gifPaths[0],width: 100,height: 100,),
-        resultLine != null
-            ? Text(
-                resultLine,
-                style: textStyle,
-              )
-            : Text(""),
+        // resultLine != null
+        // ?
+        Text(
+          resultLine,
+          style: textStyle,
+        ),
+        // : Text(""),
         startNewInningBtn(
             btnText: "Go Home",
             whatToUpdateFunction: () {
@@ -672,8 +675,10 @@ class _ScoreSelectionWidgetState extends State<ScoreSelectionWidget> {
                     "1st Inning Ended",
                     style: textStyle,
                   ),
-                  // TODO: Text("Target - ${widget.match.totalRunsOf1stInning + 1}",
-                  //     style: textStyle),
+                  Text(
+                    "Target - ${widget.ballData.scoreBoardData.totalRunsOfInning1 + 1}",
+                    //     style: textStyle),
+                  )
                 ],
               )
             : Container(),

@@ -10,6 +10,7 @@ import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/other_match_screens/matchDetailsHome_forAudience.dart';
 import 'package:umiperer/services/database_updater.dart';
+import 'package:umiperer/modals/FbAds.dart';
 
 ///mqd
 class LiveMatchCard extends StatefulWidget {
@@ -31,28 +32,23 @@ class LiveMatchCard extends StatefulWidget {
 }
 
 class _LiveMatchCardState extends State<LiveMatchCard> {
+  FbAds fbAds = new FbAds();
   ScoreBoardData _scoreBoardData;
-  bool _isInterstitialAdLoaded = false;
 
   @override
   void initState() {
     super.initState();
-    FacebookAudienceNetwork.init(
-      testingId: "2312433698835503_2964944860251047",
-    );
+
+    fbAds.initFbAudienceNetwork();
+
     print("Inning ${widget.match.getInningNo()}");
-    _loadInterstitialAd();
+
+    fbAds.loadInterstitialAd();
+
     _scoreBoardData = ScoreBoardData(
         battingTeamName: widget.match.getCurrentBattingTeam(),
         bowlingTeam: widget.match.getCurrentBowlingTeam(),
         matchData: widget.match);
-  }
-
-  _showInterstitialAd() {
-    if (_isInterstitialAdLoaded == true)
-      FacebookInterstitialAd.showInterstitialAd();
-    else
-      print("Interstial Ad not yet loaded!");
   }
 
   @override
@@ -80,27 +76,6 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
       color: Colors.black12,
       height: 2,
       width: double.infinity,
-    );
-  }
-
-  void _loadInterstitialAd() {
-    FacebookInterstitialAd.loadInterstitialAd(
-      placementId: K_INTERSTIAL_ID,
-      listener: (result, value) {
-        print(">> FAN > Interstitial Ad: $result --> $value");
-        if (result == InterstitialAdResult.LOADED)
-          _isInterstitialAdLoaded = true;
-        else
-          print(InterstitialAdResult.ERROR);
-
-        /// Once an Interstitial Ad has been dismissed and becomes invalidated,
-        /// load a fresh Ad by calling this function.
-        if (result == InterstitialAdResult.DISMISSED &&
-            value["invalidated"] == true) {
-          _isInterstitialAdLoaded = false;
-          _loadInterstitialAd();
-        }
-      },
     );
   }
 
@@ -136,7 +111,7 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
         padding: EdgeInsets.zero,
         onPressed: () {
           if (widget.match.getIsMatchStarted()) {
-            _showInterstitialAd();
+            fbAds.showInterstitialAd();
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return MatchDetailsHomeForAudience(
                 currentUser: widget.currentUser,

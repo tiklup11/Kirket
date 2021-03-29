@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:umiperer/modals/UpcomingTournament.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/other_match_screens/Upcoming_tournament_entry_page.dart';
@@ -22,8 +23,11 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text("Your Ad"),
+          icon: Icon(Icons.add),
+          heroTag: "fab",
+          backgroundColor: Colors.blueAccent.withOpacity(0.7),
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return AnnounceNewTournament(
@@ -56,69 +60,55 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
 
   ///
   upcoming() {
-    return StreamBuilder<QuerySnapshot>(
-        stream: upcomingTournamentCollectionRef.snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Expanded(
-                child: Container(
-                    child: Center(child: CircularProgressIndicator())));
-          } else {
-            //ut  = upcomingTournaments
-            final utDocList = snapshot.data.docs;
+    return Expanded(
+      child: StreamBuilder<QuerySnapshot>(
+          stream: upcomingTournamentCollectionRef.snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container(
+                  child: Center(child: CircularProgressIndicator()));
+            } else {
+              //ut  = upcomingTournaments
+              final utDocList = snapshot.data.docs;
 
-            if (utDocList.isEmpty) {
-              return Expanded(
-                child: ZeroDocScreen(
-                  dialogText:
-                      "Tab + to announce your Upcoming Tournament and It will be visible to all the users.",
-                  textMsg: "Tab + to announce your Upcoming Tournament",
-                  showLearnMore: true,
-                  iconData: Icons.sports_cricket_outlined,
-                ),
-              );
+              if (utDocList.isEmpty) {
+                return Expanded(
+                  child: ZeroDocScreen(
+                    dialogText:
+                        "Tab + to announce your Upcoming Tournament and It will be visible to all the users.",
+                    textMsg: "Tab + to announce your Upcoming Tournament",
+                    showLearnMore: true,
+                    iconData: Icons.sports_cricket_outlined,
+                  ),
+                );
+              }
+
+              List<UpcomingTournamentCard> upcomingTournamentsCardList = [];
+
+              utDocList.forEach((upcomingTournamentDoc) {
+                UpcomingTournament upcomingTournament =
+                    UpcomingTournament.from(upcomingTournamentDoc);
+
+                upcomingTournament.tournamentUID = upcomingTournamentDoc.id;
+
+                upcomingTournamentsCardList.add(UpcomingTournamentCard(
+                  upcomingTournament: upcomingTournament,
+                  showBottomModalSheet: () {
+                    _modalBottomSheetMenu(upcomingTournament);
+                  },
+                ));
+              });
+
+              return ListView.builder(
+                  itemCount: upcomingTournamentsCardList.length,
+                  itemBuilder: (context, index) {
+                    return upcomingTournamentsCardList[index];
+                  });
+
+              // listOfUpcomingTournaments();
             }
-
-            List<UpcomingTournamentCard> upcomingTournamentsCardList = [];
-
-            utDocList.forEach((upcomingTournamentDoc) {
-              UpcomingTournament upcomingTournament = new UpcomingTournament();
-
-              upcomingTournament.tournamentUID = upcomingTournamentDoc.id;
-
-              final upcomingTournamentData = upcomingTournamentDoc.data();
-
-              upcomingTournament.startingDate =
-                  upcomingTournamentData['startingDate'];
-              upcomingTournament.tournamentName =
-                  upcomingTournamentData['tournamentName'];
-              upcomingTournament.contactNumber =
-                  upcomingTournamentData['contactNumber'];
-              upcomingTournament.matchLocation =
-                  upcomingTournamentData['location'];
-              upcomingTournament.entryFees =
-                  upcomingTournamentData['entryFees'];
-              upcomingTournament.creatorUID = upcomingTournamentData['userUID'];
-
-              print("UPcoming :::::  ${upcomingTournament.startingDate}");
-
-              upcomingTournamentsCardList.add(UpcomingTournamentCard(
-                upcomingTournament: upcomingTournament,
-                showBottomModalSheet: () {
-                  _modalBottomSheetMenu(upcomingTournament);
-                },
-              ));
-            });
-
-            return ListView.builder(
-                itemCount: upcomingTournamentsCardList.length,
-                itemBuilder: (context, index) {
-                  return upcomingTournamentsCardList[index];
-                });
-
-            // listOfUpcomingTournaments();
-          }
-        });
+          }),
+    );
   }
 
   void _modalBottomSheetMenu(UpcomingTournament upcomingTournament) {
@@ -161,46 +151,69 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
                 upcomingTournament.creatorUID == widget.user.uid
                     ?
                     //Remove Btn
-                    MaterialButton(
-                        minWidth: double.infinity,
-                        // animationDuration: Duration(milliseconds: 1),
-                        elevation: 0,
-                        highlightElevation: 0,
-                        color: Colors.blueGrey.shade400,
-                        child: Text("Remove"),
+                    Bounce(
                         onPressed: () {
                           showAlertDialog(
                               context: context,
                               tournamentUID: upcomingTournament.tournamentUID);
-                        })
+                        },
+                        child: Container(
+                          height: (35 * SizeConfig.oneH).roundToDouble(),
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 2, color: Colors.black12),
+                            color: Colors.blueAccent.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(7.0),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  (4 * SizeConfig.oneW).roundToDouble()),
+                          child: Center(child: Text("Remove")),
+                        ),
+                      )
                     : Column(
                         children: [
-                          MaterialButton(
-                              minWidth: double.infinity,
-                              // animationDuration: Duration(milliseconds: 1),
-                              elevation: 0,
-                              highlightElevation: 0,
-                              color: Colors.blueGrey.shade400,
-                              child: Text("Call"),
-                              onPressed: () {
-                                _launchCaller(
-                                    phoneNo: upcomingTournament.contactNumber
-                                        .toString());
-                                Navigator.pop(context);
-                              }),
-                          MaterialButton(
-                              minWidth: double.infinity,
-                              // animationDuration: Duration(milliseconds: 1),
-                              elevation: 0,
-                              highlightElevation: 0,
-                              color: Colors.blueGrey.shade400,
-                              child: Text("Whatsapp"),
-                              onPressed: () {
-                                _launchWhatsapp(
-                                    phoneNo: upcomingTournament.contactNumber
-                                        .toString());
-                                Navigator.pop(context);
-                              }),
+                          Bounce(
+                            onPressed: () {
+                              _launchCaller(
+                                  phoneNo: upcomingTournament.contactNumber
+                                      .toString());
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              height: (35 * SizeConfig.oneH).roundToDouble(),
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 2, color: Colors.black12),
+                                color: Colors.blueAccent.withOpacity(0.6),
+                                borderRadius: BorderRadius.circular(7.0),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      (4 * SizeConfig.oneW).roundToDouble()),
+                              child: Center(child: Text("Call")),
+                            ),
+                          ),
+                          Bounce(
+                            onPressed: () {
+                              _launchWhatsapp(
+                                  phoneNo: upcomingTournament.contactNumber
+                                      .toString());
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              height: (35 * SizeConfig.oneH).roundToDouble(),
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 2, color: Colors.black12),
+                                color: Colors.blueAccent.withOpacity(0.6),
+                                borderRadius: BorderRadius.circular(7.0),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      (4 * SizeConfig.oneW).roundToDouble()),
+                              child: Center(child: Text("Whatsapp")),
+                            ),
+                          ),
                         ],
                       )
               ],

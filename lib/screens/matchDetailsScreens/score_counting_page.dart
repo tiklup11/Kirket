@@ -36,7 +36,6 @@ class ScoreCountingPage extends StatefulWidget {
 class _ScoreCountingPageState extends State<ScoreCountingPage> {
   Ball ballData = new Ball();
   DataStreams dataStreams;
-  ScrollController _overCardScrollController;
   Random random = new Random();
   RunUpdater runUpdater;
   final scoreSelectionAreaLength = (220 * SizeConfig.oneH).roundToDouble();
@@ -82,7 +81,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
   void initState() {
     super.initState();
 
-    _overCardScrollController = ScrollController(keepScrollOffset: true);
     dataStreams = DataStreams(
         userUID: widget.user.uid, matchId: widget.match.getMatchId());
     runUpdater = RunUpdater(
@@ -569,7 +567,6 @@ class _ScoreCountingPageState extends State<ScoreCountingPage> {
     return Container(
       height: SizeConfig.setHeight(105),
       child: ListView.builder(
-        controller: _overCardScrollController,
         scrollDirection: Axis.horizontal,
         itemCount: widget.match.getOverCount(),
         itemBuilder: (BuildContext context, int index) =>

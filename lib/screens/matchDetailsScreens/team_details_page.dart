@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/widgets/headline_widget.dart';
 
 ///MQD
 //this tab is under MatchDetails
@@ -28,16 +29,8 @@ class _TeamDetailsState extends State<TeamDetails> {
       child: ListView(
         children: [
           //matchINFO
-          Container(
-            margin: EdgeInsets.only(
-                top: (22 * SizeConfig.oneH).roundToDouble(),
-                bottom: (2 * SizeConfig.oneH).roundToDouble()),
-            padding: EdgeInsets.only(
-              left: (16 * SizeConfig.oneW).roundToDouble(),
-            ),
-            child: Text(
-              "INFO",
-            ),
+          HeadLineWidget(
+            headLineString: "INFO",
           ),
           matchInfo(),
         ],

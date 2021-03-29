@@ -23,6 +23,7 @@ class CreateNewCategoryDialog extends StatefulWidget {
 
 class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
   String playerName;
+  bool isCatAlreadyExists = false;
   String newCatName;
 
   void showInSnackBar(String value) {
@@ -85,27 +86,26 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
   Widget dialogContent(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 10,
+          height: 0,
         ),
         hintTextTop(),
-        SizedBox(
-          height: 18,
-        ),
         enterForm(),
         // radioButtonPublicOrPrivate(),
         // SizedBox(
         //   height: 16,
         // ),
+        // isCatAlreadyExists ? errorText() : Container(),
         endBtns()
       ],
     );
   }
 
-  void onCreateBtnPressed() {
+  void createNewCategoryOnCloud() {
     categoryRef.doc(newCatName).set({
-      "catName": newCatName,
+      "catName": newCatName.toUpperCase(),
       // "isPublic": selectedState=="Public"? true:false,
       "creatorUid": widget.user.uid,
       "count": 0,
@@ -126,10 +126,10 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
         ),
         Text(
             "Category can be your Tournament name, Location etc. Next time you create a similar new match, you can put it in same category."),
-        SizedBox(
-          height: SizeConfig.setHeight(8),
-        ),
-        Text("Public : Other users can also use your category")
+        // SizedBox(
+        //   height: SizeConfig.setHeight(8),
+        // ),
+        // Text("Public : Other users can also use your category")
       ],
     ));
   }
@@ -172,20 +172,26 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
     return TextFormField(
       decoration: InputDecoration(
         border: OutlineInputBorder(),
-        hintText: "Create new category",
+        hintText: "category name",
         labelText: "New Category",
       ),
       onChanged: (value) {
-        newCatName = value;
+        newCatName = value.toUpperCase();
       },
     );
   }
 
   onCreateButtonPressed() async {
-    final catDoc = await categoryRef.doc(newCatName).get();
-    if (catDoc.exists) {
-      //
-    } else {}
+    if (newCatName != null) {
+      final catDoc = await categoryRef.doc(newCatName).get();
+      if (catDoc.exists) {
+        setState(() {
+          isCatAlreadyExists = true;
+        });
+      } else {
+        createNewCategoryOnCloud();
+      }
+    }
   }
 
   endBtns() {
@@ -212,9 +218,9 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
               if (!catDoc.exists) {
                 final String ncn = newCatName;
                 if (newCatName != null && ncn.trim().length != 0) {
-                  onCreateBtnPressed();
+                  onCreateButtonPressed();
                   cc.setSelectedCategory(to: newCatName);
-                  Navigator.pop(context);
+                  Navigator.pop(context,cc.selectedCategory);
                 }
               } else {
                 showInSnackBar("Category already exist, enter new name");
@@ -232,6 +238,13 @@ class _CreateNewCategoryDialogState extends State<CreateNewCategoryDialog> {
           ),
         ],
       ),
+    );
+  }
+
+  errorText() {
+    return Text(
+      "Use other category name",
+      style: TextStyle(color: Colors.red),
     );
   }
 }

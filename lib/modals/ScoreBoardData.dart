@@ -76,11 +76,13 @@ class ScoreBoardData {
       if (totalRunsOfInning1 > totalRuns) {
         resultLine =
             "${matchData.getFirstBattingTeam().toUpperCase()} won by ${totalRunsOfInning1 - totalRuns} runs";
+        print(resultLine);
         return resultLine;
       }
       if (totalRunsOfInning1 < totalRuns) {
         resultLine =
             "${matchData.getSecondBattingTeam().toUpperCase()} won by ${matchData.getPlayerCount() - 1 - totalWicketsDown} wickets";
+        print(resultLine);
         return resultLine;
       }
     }

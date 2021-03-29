@@ -72,7 +72,6 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           border: Border.all(color: Colors.black12, width: 2)),
       child: ListView.builder(
         shrinkWrap: true,
-        controller: ScrollController(),
         scrollDirection: Axis.vertical,
         itemCount: widget.match.getOverCount(),
         itemBuilder: (BuildContext context, int index) => DummyOverCard(

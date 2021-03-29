@@ -26,48 +26,35 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
   ScoreBoardData secondInningScoreBoard = ScoreBoardData();
   @override
   Widget build(BuildContext context) {
-    final Batsmen dummyBatsmen = Batsmen(
-        isClickable: false,
-        isOnStrike: false,
-        runs: "-",
-        playerName: "--------",
-        sR: "-",
-        noOf6s: "-",
-        noOf4s: "-",
-        balls: "-");
-
-    return
-        // widget.match.getInningNo()==2?
-        Container(
-            color: Colors.white,
-            child: ListView(
-              physics: ScrollPhysics(),
-              children: [
-                widget.match.isSecondInningEnd
-                    ? HeadLineWidget(headLineString: "Second inning ended")
-                    : Container(),
-                HeadLineWidget(headLineString: "SCORECARD"),
-                MiniScoreCard(
-                  isLiveScoreCard: false,
-                  inningNo: 2,
-                  matchId: widget.match.getMatchId(),
-                ),
-                HeadLineWidget(
-                    headLineString: widget.match.getSecondBattingTeam()),
-                BatsmenDataList(
-                  inningNo: 2,
-                  matchId: widget.match.getMatchId(),
-                ),
-                HeadLineWidget(
-                    headLineString: widget.match.getSecondBowlingTeam()),
-                BowlersDataList(
-                  inningNo: 2,
-                  matchId: widget.match.getMatchId(),
-                ),
-                HeadLineWidget(headLineString: "OVERS"),
-                buildOversList()
-              ],
-            ));
+    return Container(
+        color: Colors.white,
+        child: ListView(
+          children: [
+            widget.match.isSecondInningEnd
+                ? Center(
+                    child:
+                        HeadLineWidget(headLineString: "Second inning ended"))
+                : Container(),
+            HeadLineWidget(headLineString: "SCORECARD"),
+            MiniScoreCard(
+              isLiveScoreCard: false,
+              inningNo: 2,
+              matchId: widget.match.getMatchId(),
+            ),
+            HeadLineWidget(headLineString: widget.match.getSecondBattingTeam()),
+            BatsmenDataList(
+              inningNo: 2,
+              matchId: widget.match.getMatchId(),
+            ),
+            HeadLineWidget(headLineString: widget.match.getSecondBowlingTeam()),
+            BowlersDataList(
+              inningNo: 2,
+              matchId: widget.match.getMatchId(),
+            ),
+            HeadLineWidget(headLineString: "OVERS"),
+            buildOversList()
+          ],
+        ));
   }
 
   buildOversList() {
@@ -83,7 +70,6 @@ class _SecondInningScoreCardState extends State<SecondInningScoreCard> {
           border: Border.all(color: Colors.black12, width: 2)),
       child: ListView.builder(
         shrinkWrap: true,
-        controller: ScrollController(),
         scrollDirection: Axis.vertical,
         itemCount: widget.match.getOverCount(),
         itemBuilder: (BuildContext context, int index) => DummyOverCard(

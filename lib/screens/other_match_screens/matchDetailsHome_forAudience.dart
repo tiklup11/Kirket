@@ -1,7 +1,6 @@
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/constants.dart';
@@ -10,6 +9,7 @@ import 'package:umiperer/screens/other_match_screens/first_in_sc.dart';
 import 'package:umiperer/screens/live_chat_screens/live_chat_page.dart';
 import 'package:umiperer/screens/other_match_screens/live_score_page.dart';
 import 'package:umiperer/screens/matchDetailsScreens/team_details_page.dart';
+import 'package:umiperer/modals/ShareMatch.dart';
 import 'package:umiperer/screens/other_match_screens/second_inn_sc.dart';
 
 ///this contains 3-4 tabs and show to audience
@@ -30,7 +30,7 @@ class _MatchDetailsHomeForAudienceState
     extends State<MatchDetailsHomeForAudience> {
   List tabBarView;
 
-  List<Widget> tabs = [];
+  List<String> tabs = [];
 
   @override
   void initState() {
@@ -47,21 +47,10 @@ class _MatchDetailsHomeForAudienceState
     // ];
 
     tabs = [
-      Icon(Icons.info_outline),
-      // Icon(Icons.live_tv),
-      Text(
-        "Live",
-        style: TextStyle(fontSize: 16),
-      ),
-      Text(
-        "1st",
-        style: TextStyle(fontSize: 16),
-      ),
-      Text(
-        "2nd",
-        style: TextStyle(fontSize: 16),
-      ),
-      // Icon(Icons.ballot)
+      "Info",
+      "Live",
+      "1st Inn",
+      "2nd Inn",
     ];
 
     tabBarView = [
@@ -89,7 +78,7 @@ class _MatchDetailsHomeForAudienceState
     ];
 
     if (widget.match.isLiveChatOn) {
-      tabs.add(Icon(Icons.chat_bubble_outline_rounded));
+      tabs.add("Chat");
       tabBarView.add(
         LiveChatPage(
           match: widget.match,
@@ -129,7 +118,8 @@ class _MatchDetailsHomeForAudienceState
               onSelected: (value) {
                 switch (value) {
                   case "Share match":
-                    _shareMatch(context);
+                    ShareMatch(widget.match).shareMatch(context);
+
                     break;
                 }
               },
@@ -152,7 +142,9 @@ class _MatchDetailsHomeForAudienceState
             labelPadding: EdgeInsets.only(bottom: 10, left: 10, right: 10),
             labelColor: Colors.black,
             isScrollable: true,
-            tabs: tabs,
+            tabs: [
+              for (final tab in tabs) Text(tab),
+            ],
           ),
         ),
         body: Column(

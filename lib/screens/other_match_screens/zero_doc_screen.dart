@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ZeroDocScreen extends StatelessWidget {
-
-  ZeroDocScreen({this.iconData,this.textMsg,this.showLearnMore,this.dialogText});
+  ZeroDocScreen(
+      {this.iconData, this.textMsg, this.showLearnMore, this.dialogText});
 
   final String textMsg;
   final IconData iconData;
@@ -11,56 +11,61 @@ class ZeroDocScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    if(showLearnMore==null)
-    {showLearnMore = false;}
+    if (showLearnMore == null) {
+      showLearnMore = false;
+    }
 
     return Container(
-        child:Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(iconData),
-              SizedBox(height: 4,),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32),
-                child: Text(textMsg,textAlign: TextAlign.center,),
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(iconData),
+            SizedBox(
+              height: 4,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                textMsg,
+                textAlign: TextAlign.center,
               ),
-              showLearnMore?
-                  TextButton(onPressed: (){
-                    showLearnModeDialog(context);
-                  },
-                      child: Text("Learn More")):Container(),
-            ],
-          ),
+            ),
+            showLearnMore
+                ? TextButton(
+                    onPressed: () {
+                      showLearnModeDialog(context);
+                    },
+                    child: Text("Learn More"))
+                : Container(),
+          ],
         ),
+      ),
     );
   }
 
-showLearnModeDialog(context) async {
-  await showDialog<String>(
-    context: context,
-    // barrierDismissible: false,
-    builder: (BuildContext context) {
-      String title = "Notice";
-      String message =
-          dialogText;
-      String btnLabel = "Okays";
-      return AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            child: Text(btnLabel),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
+  showLearnModeDialog(context) async {
+    await showDialog<String>(
+      context: context,
+      // barrierDismissible: false,
+      builder: (BuildContext context) {
+        String title = "Note";
+        String message = dialogText;
+        String btnLabel = "Okays";
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text(btnLabel),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

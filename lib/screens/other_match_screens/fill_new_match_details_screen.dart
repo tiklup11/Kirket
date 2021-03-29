@@ -66,18 +66,11 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
         selectedCat != "Create new Category" &&
         selectedCat.trim().length != 0) {
       generateIdForMatch();
-      //TODO: 1.Upload Match Details on firebase
+      //Upload Match Details on firebase
       uploadMatchDataToCloud();
-
       increamentCatCount(selectedCat);
-
       //2. Navigate to a screen and pass Match
       Navigator.pop(context);
-
-      // showInSnackBar("Match Created");
-
-      print('exiting handling sub');
-      //buildPlayersName();
     } else {
       showInSnackBar(
         "Please fill all details",
@@ -99,9 +92,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
   }
 
   uploadMatchDataToCloud() {
-    // print("QQQQQQQQQQQQQQQ:::  ${widget.user.email}");
-    // print("QQQQQQQQQQQQQQQ:::  ${newMatch.getMatchId()}");
-    ///making everyOver doc inside Overs Collections inside first innings collections
     for (int i = 0; i < newMatch.getOverCount(); i++) {
       var completeOverData = {
         "1": null,
@@ -187,18 +177,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
       'tossWinner': null,
       'whatChoose': null, //bat or ball
       'isMatchStarted': false,
-      // 'currentOverNumber': 1,
       'inningNumber': 1,
-      // 'strikerBatsmen': null,
-      // 'nonStrikerBatsmen':null,
-      // 'currentBowler': null,
-      // 'totalRunsOfCurrentInning': 0,
-      // 'totalWicketsOfInning1':0,
-      // 'totalWicketsOfInning2':0,
-      // 'totalRunsOfInning1':0,
-      // 'totalRunsOfInning2':0,
-      // 'currentBallNo': 0,
-      // 'realBallNo':0,
       'winningMsg': null,
       'isLive': false,
       'isLiveChatOn': true,
@@ -284,8 +263,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                           decoration: InputDecoration(
                             border: new OutlineInputBorder(),
                             icon: Icon(Icons.create),
-                            hintText: "Players in one team",
-                            labelText: "Players Count",
+                            hintText: "in one team",
+                            labelText: "Players Number",
                           ),
                           keyboardType: TextInputType.number,
                           onChanged: (value) {
@@ -301,8 +280,8 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                         child: TextFormField(
                           decoration: InputDecoration(
                             border: new OutlineInputBorder(),
-                            hintText: "Number of overs",
-                            labelText: "Overs Count",
+                            hintText: "in one Inning",
+                            labelText: "Total Overs",
                           ),
                           keyboardType: TextInputType.number,
                           // onEditingComplete: ,
@@ -341,8 +320,6 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     );
   }
 
-  // String _currentSelectedValue;
-
   categoryWidget() {
     return Consumer<CategoryController>(
       builder: (_, categoryController, child) => FormField<String>(
@@ -378,12 +355,12 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: categoryController.selectedCategory,
-                        onChanged: (String newValue) {
+                        onChanged: (String newValue) async {
                           selectedCat = newValue;
                           categoryController.setSelectedCategory(to: newValue);
                           state.didChange(newValue);
                           if (newValue == "Create new Category") {
-                            openCreateNewCategoryDialog();
+                            selectedCat = await openCreateNewCategoryDialog();
                           }
                         },
                         items: catList.map((String value) {
@@ -402,7 +379,7 @@ class MatchDetailsFormState extends State<MatchDetailsForm> {
     );
   }
 
-  openCreateNewCategoryDialog() {
+  Future openCreateNewCategoryDialog() {
     return showDialog(
         context: context,
         builder: (context) {
