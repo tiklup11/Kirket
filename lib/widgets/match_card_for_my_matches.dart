@@ -298,71 +298,73 @@ class _MatchCardForCountingState extends State<MatchCardForCounting> {
 
   void _modalBottomSheetMenuOptions(BuildContext context) {
     showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          return Container(
-            height: (260 * SizeConfig.oneH).roundToDouble(),
-            color: Color(0xFF737373),
-            // color: Colors.transparent, //could change this to Color(0xFF737373),
-            //so you don't have to change MaterialApp canvasColor
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(
-                            (8 * SizeConfig.oneW).roundToDouble()),
-                        topRight: Radius.circular(
-                            (8 * SizeConfig.oneW).roundToDouble()))),
-                child: Column(
-                  children: [
-                    fabBtn(
-                        iconData: widget.match.isMatchLive
-                            ? Icons.toggle_on_outlined
-                            : Icons.toggle_off_outlined,
-                        onPressed: () {
-                          Navigator.pop(context);
-                          widget.match.isMatchLive
-                              ? toggleLiveOnOff(false)
-                              : toggleLiveOnOff(true);
-                        },
-                        btnText: widget.match.isMatchLive
-                            ? "TURN OFF LIVE"
-                            : "TURN ON LIVE"),
-                    fabBtn(
-                        iconData: widget.match.isLiveChatOn
-                            ? Icons.toggle_on_outlined
-                            : Icons.toggle_off_outlined,
-                        onPressed: () {
-                          widget.match.isLiveChatOn
-                              ? toggleLiveChat(false)
-                              : toggleLiveChat(true);
-                          Navigator.pop(context);
-                          // print("pressed");
-                        },
-                        btnText: widget.match.isLiveChatOn
-                            ? "TURN OFF LIVE CHAT"
-                            : "TURN ON LIVE CHAT"),
-                    fabBtn(
-                        iconData: Icons.share_outlined,
-                        onPressed: () {
-                          Navigator.pop(context);
-                          ShareMatch(widget.match).shareMatch(context);
-                        },
-                        btnText: "SHARE MATCH"),
-                    fabBtn(
-                        iconData: Icons.delete,
-                        onPressed: () {
-                          Navigator.pop(context);
-                          DatabaseController.deleteMatch(
-                              catName: widget.match.category,
-                              matchId: widget.match.getMatchId());
-                          // print("pressed");
-                        },
-                        btnText: "DELETE MATCH")
-                  ],
-                )),
-          );
-        });
+      context: context,
+      builder: (builder) {
+        return Container(
+          height: (260 * SizeConfig.oneH).roundToDouble(),
+          color: Color(0xFF737373),
+          // color: Colors.transparent, //could change this to Color(0xFF737373),
+          //so you don't have to change MaterialApp canvasColor
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft:
+                        Radius.circular((8 * SizeConfig.oneW).roundToDouble()),
+                    topRight: Radius.circular(
+                        (8 * SizeConfig.oneW).roundToDouble()))),
+            child: Column(
+              children: [
+                fabBtn(
+                    iconData: widget.match.isMatchLive
+                        ? Icons.toggle_on_outlined
+                        : Icons.toggle_off_outlined,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      widget.match.isMatchLive
+                          ? toggleLiveOnOff(false)
+                          : toggleLiveOnOff(true);
+                    },
+                    btnText: widget.match.isMatchLive
+                        ? "TURN OFF LIVE"
+                        : "TURN ON LIVE"),
+                fabBtn(
+                    iconData: widget.match.isLiveChatOn
+                        ? Icons.toggle_on_outlined
+                        : Icons.toggle_off_outlined,
+                    onPressed: () {
+                      widget.match.isLiveChatOn
+                          ? toggleLiveChat(false)
+                          : toggleLiveChat(true);
+                      Navigator.pop(context);
+                      // print("pressed");
+                    },
+                    btnText: widget.match.isLiveChatOn
+                        ? "TURN OFF LIVE CHAT"
+                        : "TURN ON LIVE CHAT"),
+                fabBtn(
+                    iconData: Icons.share_outlined,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      ShareMatch(widget.match).shareMatch(context);
+                    },
+                    btnText: "SHARE MATCH"),
+                fabBtn(
+                    iconData: Icons.delete,
+                    onPressed: () {
+                      DatabaseController.showDeleteDialog(
+                          context: context,
+                          catName: widget.match.category,
+                          matchId: widget.match.getMatchId());
+                      // print("pressed");
+                    },
+                    btnText: "DELETE MATCH")
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   fabBtn(

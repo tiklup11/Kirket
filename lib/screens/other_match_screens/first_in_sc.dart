@@ -71,6 +71,7 @@ class _FirstInningScoreCardState extends State<FirstInningScoreCard> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.black12, width: 2)),
       child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: widget.match.getOverCount(),

@@ -22,40 +22,46 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        floatingActionButton: FloatingActionButton.extended(
-          label: Text("Your Ad"),
-          icon: Icon(Icons.add),
-          heroTag: "fab",
-          backgroundColor: Colors.blueAccent.withOpacity(0.7),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return AnnounceNewTournament(
-                user: widget.user,
-              );
-            }));
-          },
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 20, top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Upcoming Tournaments",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+      backgroundColor: Colors.white,
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text("Your Ad", style: TextStyle(fontWeight: FontWeight.bold)),
+        icon: Icon(Icons.add),
+        heroTag: "fab",
+        backgroundColor: Colors.blueAccent.withOpacity(0.7),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return AnnounceNewTournament(
+                  user: widget.user,
+                );
+              },
             ),
-            upcoming(),
-          ],
-        ));
+          );
+        },
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 20, top: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Upcoming Tournaments",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          upcoming(),
+        ],
+      ),
+    );
   }
 
   ///
@@ -77,7 +83,7 @@ class _UpcomingMatchesScreenState extends State<UpcomingMatchesScreen> {
                     dialogText:
                         "Tab + to announce your Upcoming Tournament and It will be visible to all the users.",
                     textMsg: "Tab + to announce your Upcoming Tournament",
-                    showLearnMore: true,
+                    showLearnMore: false,
                     iconData: Icons.sports_cricket_outlined,
                   ),
                 );

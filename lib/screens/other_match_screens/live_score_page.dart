@@ -49,7 +49,6 @@ class _LiveScorePageState extends State<LiveScorePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder<DocumentSnapshot>(
         stream: matchesRef.doc(widget.matchUID).snapshots(),
         builder: (context, snapshot) {
@@ -108,6 +107,7 @@ class _LiveScorePageState extends State<LiveScorePage> {
           borderRadius:
               BorderRadius.circular((10 * SizeConfig.oneW).roundToDouble())),
       child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: widget.match.getOverCount(),

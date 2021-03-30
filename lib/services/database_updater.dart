@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:umiperer/main.dart';
 
 class DatabaseController {
@@ -122,5 +123,57 @@ class DatabaseController {
     }
 
     matchesRef.doc(matchId).delete();
+  }
+
+  static void showDeleteDialog(
+      {BuildContext context,
+      @required String catName,
+      @required String matchId}) {
+    TextStyle textStyle = TextStyle(fontWeight: FontWeight.bold);
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(
+        "Cancel",
+        style: textStyle,
+      ),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text(
+        "Delete",
+        style: textStyle.copyWith(color: Colors.red),
+      ),
+      onPressed: () {
+        Navigator.pop(context);
+        //remove this tournament from firebase
+        deleteMatch(catName: catName, matchId: matchId);
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(
+        "Delete",
+        style: textStyle,
+      ),
+      content: Text(
+        "Confirm delete match ?",
+      ),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

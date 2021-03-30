@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
-import 'package:umiperer/main.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/other_match_screens/first_in_sc.dart';
@@ -72,35 +70,19 @@ class _MatchDetailsState extends State<MatchDetails> {
           iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Colors.white,
           actions: [
-            PopupMenuButton<String>(
-              padding: EdgeInsets.zero,
-              onSelected: (value) {
-                // make switch cases
-                switch (value) {
-                  case "Delete Match":
-                    Navigator.pop(context);
-                    DatabaseController.deleteMatch(
+            IconButton(
+                icon: Icon(Icons.share),
+                onPressed: () {
+                  ShareMatch(widget.match).shareMatch(context);
+                }),
+            IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  DatabaseController.showDeleteDialog(
+                      context: context,
                       catName: widget.match.category,
-                        matchId: widget.match.getMatchId());
-                    break;
-                  case "Share match":
-                    ShareMatch(widget.match).shareMatch(context);
-                    break;
-                }
-              },
-              itemBuilder: (context) {
-                return <PopupMenuItem<String>>[
-                  PopupMenuItem<String>(
-                    value: "Share match",
-                    child: Text("Share match"),
-                  ),
-                  PopupMenuItem<String>(
-                    value: "Delete Match",
-                    child: Text("Delete Match"),
-                  ),
-                ];
-              },
-            ),
+                      matchId: widget.match.getMatchId());
+                }),
           ],
           automaticallyImplyLeading: false,
           title: Text(

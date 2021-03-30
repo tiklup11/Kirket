@@ -27,16 +27,6 @@ class _CategoryPageState extends State<CategoryPage> {
         } else {
           final catDocs = snapshot.data.docs;
 
-          if (catDocs.isEmpty) {
-            return ZeroDocScreen(
-              showLearnMore: true,
-              dialogText:
-                  "To start scoring, go to HOME and press (+ NEW MATCH)",
-              textMsg: "NO LIVE MATCHES",
-              iconData: Icons.live_tv_rounded,
-            );
-          }
-
           catDocs.forEach((catDoc) {
             if (catDoc.data()["count"] != 0) {
               catCardsList.add(new CatCard(
@@ -45,6 +35,36 @@ class _CategoryPageState extends State<CategoryPage> {
               ));
             }
           });
+
+          if (catCardsList.isEmpty) {
+            return Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 20, top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Live",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ZeroDocScreen(
+                    showLearnMore: true,
+                    dialogText:
+                        "To start scoring, go to HOME and press (+ NEW MATCH)",
+                    textMsg: "NO LIVE MATCHES",
+                    iconData: Icons.live_tv_rounded,
+                  ),
+                ),
+              ],
+            );
+          }
           return Column(
             children: [
               Padding(

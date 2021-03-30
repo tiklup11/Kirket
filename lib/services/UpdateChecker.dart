@@ -4,8 +4,7 @@ import 'package:package_info/package_info.dart';
 import 'package:umiperer/modals/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class UpdateChecker{
-
+class UpdateChecker {
   UpdateChecker({this.context});
 
   BuildContext context;
@@ -13,15 +12,15 @@ class UpdateChecker{
   double _currentVersionOnApp;
   double _latestAppVersion;
 
-  void _setCurrentBuildNo(double value){
+  void _setCurrentBuildNo(double value) {
     _currentVersionOnApp = value;
   }
 
-  void _setLatestBuildNo(double value){
-    _latestAppVersion=value;
+  void _setLatestBuildNo(double value) {
+    _latestAppVersion = value;
   }
 
-  _showUpdateDialog(){
+  _showUpdateDialog() {
     if (_latestAppVersion > _currentVersionOnApp) {
       _showVersionDialog(context);
     }
@@ -30,7 +29,8 @@ class UpdateChecker{
   check(context) async {
     //Get Current installed version of app
     final PackageInfo info = await PackageInfo.fromPlatform();
-    double currentBuildNo = double.parse(info.buildNumber.trim().replaceAll(".", ""));
+    double currentBuildNo =
+        double.parse(info.buildNumber.trim().replaceAll(".", ""));
 
     _setCurrentBuildNo(currentBuildNo);
 
@@ -43,8 +43,8 @@ class UpdateChecker{
       await remoteConfig.activateFetched();
       remoteConfig.getString('force_update_current_version');
 
-      double newVersion = double.parse(remoteConfig
-          .getString('force_update_build_no'));
+      double newVersion =
+          double.parse(remoteConfig.getString('force_update_build_no'));
 
       _setLatestBuildNo(newVersion);
 
@@ -52,7 +52,6 @@ class UpdateChecker{
       print(currentBuildNo);
 
       _showUpdateDialog();
-
     } on FetchThrottledException catch (exception) {
       // Fetch throttled.
       print(exception);
@@ -68,20 +67,28 @@ class UpdateChecker{
       barrierDismissible: false,
       builder: (BuildContext context) {
         String title = "New Update Available";
-        String message =
-            "There are some issues in this version. Please update. If you don't see update option, First uninstall and then install.";
+        String message = "Please update to new version to enjoy more features.";
         String btnLabel = "Update Now";
         // String btnLabelCancel = "Later";
         return AlertDialog(
-          title: Text(title),
+          title: Text(
+            title,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           content: Text(message),
           actions: <Widget>[
-            FlatButton(
-              child: Text("Cancel"),
+            TextButton(
+              child: Text(
+                "Cancel",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onPressed: () => _launchOnPs(PLAY_STORE_URL),
             ),
-            FlatButton(
-              child: Text(btnLabel),
+            TextButton(
+              child: Text(
+                btnLabel,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onPressed: () => _launchOnPs(PLAY_STORE_URL),
             ),
           ],
@@ -97,5 +104,4 @@ class UpdateChecker{
       throw 'Could not launch $url';
     }
   }
-
 }

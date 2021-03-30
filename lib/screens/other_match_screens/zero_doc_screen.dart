@@ -21,7 +21,11 @@ class ZeroDocScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(iconData),
+            Icon(
+              iconData,
+              size: 120,
+              color: Colors.black26,
+            ),
             SizedBox(
               height: 4,
             ),
@@ -30,6 +34,8 @@ class ZeroDocScreen extends StatelessWidget {
               child: Text(
                 textMsg,
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.black38),
               ),
             ),
             showLearnMore
@@ -37,7 +43,12 @@ class ZeroDocScreen extends StatelessWidget {
                     onPressed: () {
                       showLearnModeDialog(context);
                     },
-                    child: Text("Learn More"))
+                    child: Text(
+                      "Learn More",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ))
                 : Container(),
           ],
         ),
@@ -54,11 +65,12 @@ class ZeroDocScreen extends StatelessWidget {
         String message = dialogText;
         String btnLabel = "Okays";
         return AlertDialog(
-          title: Text(title),
+          title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text(btnLabel),
+              child:
+                  Text(btnLabel, style: TextStyle(fontWeight: FontWeight.bold)),
               onPressed: () {
                 Navigator.pop(context);
               },

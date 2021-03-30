@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
+import 'package:umiperer/modals/FbAds.dart';
 import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/other_match_screens/first_in_sc.dart';
@@ -29,23 +30,18 @@ class MatchDetailsHomeForAudience extends StatefulWidget {
 class _MatchDetailsHomeForAudienceState
     extends State<MatchDetailsHomeForAudience> {
   List tabBarView;
+  FbAds fbAds = FbAds();
 
   List<String> tabs = [];
 
   @override
   void initState() {
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => fbAds.showInterstitialAd());
+
     super.initState();
-
-    print("currentUID: ${widget.creatorUID}");
-
-    // tabs = [
-    // "Details",
-    // "Live Score",
-    // "1st Inning",
-    // "2nd Inning"
-    // "Overs"
-    // ];
-
+    fbAds.initFbAudienceNetwork();
+    fbAds.loadInterstitialAd();
     tabs = [
       "Info",
       "Live",
@@ -113,25 +109,29 @@ class _MatchDetailsHomeForAudienceState
           iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Colors.white,
           actions: [
-            PopupMenuButton<String>(
-              padding: EdgeInsets.zero,
-              onSelected: (value) {
-                switch (value) {
-                  case "Share match":
-                    ShareMatch(widget.match).shareMatch(context);
-
-                    break;
-                }
-              },
-              itemBuilder: (context) {
-                return <PopupMenuItem<String>>[
-                  PopupMenuItem<String>(
-                    value: "Share match",
-                    child: Text("Share match"),
-                  ),
-                ];
-              },
-            ),
+            IconButton(
+                icon: Icon(Icons.share),
+                onPressed: () {
+                  ShareMatch(widget.match).shareMatch(context);
+                }),
+            // PopupMenuButton<String>(
+            //   padding: EdgeInsets.zero,
+            //   onSelected: (value) {
+            //     switch (value) {
+            //       case "Share match":
+            //         ShareMatch(widget.match).shareMatch(context);
+            //         break;
+            //     }
+            //   },
+            //   itemBuilder: (context) {
+            //     return <PopupMenuItem<String>>[
+            //       PopupMenuItem<String>(
+            //         value: "Share match",
+            //         child: Text("Share match"),
+            //       ),
+            //     ];
+            //   },
+            // ),
           ],
           automaticallyImplyLeading: false,
           title: Text(

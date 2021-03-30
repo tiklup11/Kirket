@@ -1,10 +1,8 @@
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/other_match_screens/MyMatchesScreen.dart';
@@ -274,7 +272,7 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
     Widget logoutButton = TextButton(
       child: Text("Okays"),
       onPressed: () {
-        RewardedVideoAd.instance.show();
+        // RewardedVideoAd.instance.show();
       },
     );
 
@@ -385,19 +383,29 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       builder: (BuildContext context) {
         String title = "Report";
         String message =
-            "The app is in early development stage, means you can find some issues. Please report us with the screenshot of the issue. Stay with the Latest Version. Thanks";
+            "The app is in early development stage,which means you can find some issues. Please report us with the screenshot of the issue. Stay with the Latest Version. Thanks";
         return AlertDialog(
-          title: Text(title),
+          title: Text(
+            title,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text("Okays"),
+              child: Text(
+                "Okays",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.black38),
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             TextButton(
-              child: Text("Report"),
+              child: Text(
+                "Report",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onPressed: () {
                 _launchEmail();
               },
@@ -407,56 +415,4 @@ class _MatchHomeScreensState extends State<MatchHomeScreens> {
       },
     );
   }
-
-  Widget buildFloatingSearchBar() {
-    final isPortrait =
-        MediaQuery.of(context).orientation == Orientation.portrait;
-
-    return FloatingSearchBar(
-      hint: 'Search...',
-      scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
-      transitionDuration: const Duration(milliseconds: 800),
-      transitionCurve: Curves.easeInOut,
-      axisAlignment: isPortrait ? 0.0 : -1.0,
-      openAxisAlignment: 0.0,
-      maxWidth: isPortrait ? 600 : 500,
-      debounceDelay: const Duration(milliseconds: 500),
-      onQueryChanged: (query) {
-        // Call your model, bloc, controller here.
-      },
-      // Specify a custom transition to be used for
-      // animating between opened and closed stated.
-      transition: CircularFloatingSearchBarTransition(),
-      actions: [
-        FloatingSearchBarAction(
-          showIfOpened: false,
-          child: CircularButton(
-            icon: const Icon(Icons.place),
-            onPressed: () {},
-          ),
-        ),
-        FloatingSearchBarAction.searchToClear(
-          showIfClosed: false,
-        ),
-      ],
-      builder: (context, transition) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Material(
-            color: Colors.white,
-            elevation: 4.0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: Colors.accents.map((color) {
-                return Container(height: 112, color: color);
-              }).toList(),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-//TODO: Move profile to app drawer
-
 }

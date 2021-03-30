@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +7,7 @@ import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:umiperer/modals/CategoryController.dart';
 import 'package:umiperer/modals/size_config.dart';
+import 'package:umiperer/screens/floaty_heads/floaty_ex.dart';
 import 'package:umiperer/signin_screens/landing_page.dart';
 import 'package:your_splash/your_splash.dart';
 
@@ -52,28 +52,29 @@ class _MyAppState extends State<MyApp> {
               primaryColor: Colors.blueAccent,
               // focusColor: Colors.blueGrey,
             ),
-            home: SplashScreen.timed(
-              seconds: 1,
-              route: MaterialPageRoute(builder: (_) => LandingPage()),
-              body: Scaffold(
-                backgroundColor: Colors.white,
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Hero(
-                          tag: "Logo",
-                          child: Image.asset(
-                            'assets/gifs/load5.gif',
-                            scale: 12,
-                          )),
-                      Text("Loading..")
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            home: LandingPage(),
+            // home: SplashScreen.timed(
+            //   seconds: 1,
+            //   route: MaterialPageRoute(builder: (_) => LandingPage()),
+            //   body: Scaffold(
+            //     backgroundColor: Colors.white,
+            //     body: Center(
+            //       child: Column(
+            //         mainAxisAlignment: MainAxisAlignment.center,
+            //         crossAxisAlignment: CrossAxisAlignment.center,
+            //         children: [
+            //           Hero(
+            //               tag: "Logo",
+            //               child: Image.asset(
+            //                 'assets/gifs/load5.gif',
+            //                 scale: 12,
+            //               )),
+            //           Text("Loading..")
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
           );
         });
       }),

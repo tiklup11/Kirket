@@ -4,8 +4,8 @@ import 'package:umiperer/modals/constants.dart';
 class FbAds {
   bool _isInterstitialAdLoaded = false;
 
-  void initFbAudienceNetwork() {
-    FacebookAudienceNetwork.init(
+  Future<void> initFbAudienceNetwork() {
+    return FacebookAudienceNetwork.init(
       testingId: "2312433698835503_2964944860251047",
     );
   }
@@ -17,7 +17,7 @@ class FbAds {
       print("Interstial Ad not yet loaded!");
   }
 
-  void loadInterstitialAd() {
+  bool loadInterstitialAd() {
     FacebookInterstitialAd.loadInterstitialAd(
       placementId: K_INTERSTIAL_ID,
       listener: (result, value) {
@@ -36,5 +36,6 @@ class FbAds {
         }
       },
     );
+    return _isInterstitialAdLoaded;
   }
 }

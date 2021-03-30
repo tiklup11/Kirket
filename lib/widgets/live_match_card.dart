@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:facebook_audience_network/facebook_audience_network.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:umiperer/modals/CricketMatch.dart';
 import 'package:umiperer/modals/ScoreBoardData.dart';
-import 'package:umiperer/modals/constants.dart';
 import 'package:umiperer/modals/size_config.dart';
 import 'package:umiperer/screens/other_match_screens/matchDetailsHome_forAudience.dart';
 import 'package:umiperer/services/database_updater.dart';
@@ -25,25 +22,17 @@ class LiveMatchCard extends StatefulWidget {
   final String creatorUID;
   final String matchUID;
   final User currentUser;
-  // InterstitialAd interstitialAd;
 
   @override
   _LiveMatchCardState createState() => _LiveMatchCardState();
 }
 
 class _LiveMatchCardState extends State<LiveMatchCard> {
-  FbAds fbAds = new FbAds();
   ScoreBoardData _scoreBoardData;
 
   @override
   void initState() {
     super.initState();
-
-    fbAds.initFbAudienceNetwork();
-
-    print("Inning ${widget.match.getInningNo()}");
-
-    fbAds.loadInterstitialAd();
 
     _scoreBoardData = ScoreBoardData(
         battingTeamName: widget.match.getCurrentBattingTeam(),
@@ -111,7 +100,6 @@ class _LiveMatchCardState extends State<LiveMatchCard> {
         padding: EdgeInsets.zero,
         onPressed: () {
           if (widget.match.getIsMatchStarted()) {
-            fbAds.showInterstitialAd();
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return MatchDetailsHomeForAudience(
                 currentUser: widget.currentUser,

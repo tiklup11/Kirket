@@ -36,7 +36,12 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
           },
           child: FloatingActionButton.extended(
             heroTag: "fab",
-            label: Text("New Match"),
+            label: Text(
+              "New Match",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             icon: Icon(Icons.add),
             backgroundColor: Colors.blueAccent.withOpacity(0.7),
             // backgroundColor: Colors.blueAccent.shade400,
@@ -88,11 +93,10 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                     children: [
                       Expanded(
                         child: ZeroDocScreen(
-                          showLearnMore: true,
-                          dialogText:
-                              "Currently matches created by you will not be LIVE. In a week with the new update you will get this feature.",
+                          showLearnMore: false,
+                          dialogText: "You can control the match visiblity",
                           textMsg:
-                              "Tab + to create your own match to count runs. Live feature is coming soon.",
+                              "Tab + to create your own match and start scoring.",
                           iconData: Icons.calculate_outlined,
                         ),
                       ),
